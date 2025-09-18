@@ -2,26 +2,56 @@ import { NavItem } from './nav-item/nav-item';
 
 export const navItems: NavItem[] = [
   {
-    navCap: 'Home',
+    navCap: 'Job Postings',
+  },
+
+  {
+    displayName: 'Main-Dashboard',
+    iconName: 'solar:posts-carousel-vertical-bold',
+    route: '/main/main-dashboard',
+  },
+  {
+    navCap: 'User Profile',
+    divider: true,
+  },
+  {
+    displayName: 'Profile',
+    iconName: 'solar:user-bold',
+    route: '/main/user-profile',
+  },
+  {
+    displayName: 'Requirements',
+    iconName: 'solar:clipboard-list-bold',
+    route: '/main/requirements',
+  },
+  {
+    navCap: 'Job Application Dashboard',
+    divider: true,
+  },
+  {
+    displayName: 'Job Application Status',
+    iconName: 'solar:archive-minimalistic-bold',
+    route: '/main/job-application',
+  },
+  {
+    displayName: 'Job Offer',
+    iconName: 'solar:pen-2-bold',
+    route: '/main/job-offer',
+  },
+  {
+    displayName: 'Appointment Calendar',
+    iconName: 'solar:calendar-broken',
+    route: '/main/appointment-calendar',
+  },
+
+  {
+    navCap: 'Ui Components',
+    divider: true,
   },
   {
     displayName: 'Dashboard',
     iconName: 'solar:widget-add-line-duotone',
     route: '/dashboard',
-  },
-  {
-    displayName: 'Main-Dashboard',
-    iconName: 'solar:widget-add-line-duotone',
-    route: '/main/main-dashboard',
-  },
-  {
-    displayName: 'Profile',
-    iconName: 'solar:widget-add-line-duotone',
-    route: '/main/user-profile',
-  },
-  {
-    navCap: 'Ui Components',
-    divider: true,
   },
   {
     displayName: 'Badge',
