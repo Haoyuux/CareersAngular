@@ -1,0 +1,204 @@
+<div class="job-container">
+  <!-- Left Side - Job Headers -->
+  <!-- [style.border-color]="
+        job.id === selectedJobId
+          ? getBorderColor(job.theme)
+          : 'rgba(255, 255, 255, 0.2)'
+      " -->
+  <div class="job-header">
+    <div class="search-bar">
+      <input
+        #q
+        type="search"
+        placeholder="Search jobs, companies, locations, tags…"
+      />
+    </div>
+    <div
+      *ngFor="let job of jobPostData?.data"
+      class="job-card"
+      [class.selected]="job.jobPostingId === selectedJobId"
+      (click)="selectJob(job.jobPostingId)"
+    >
+      <div class="company-info">
+        <div class="company-logo">
+          <svg
+            width="60"
+            height="60"
+            viewBox="0 0 60 60"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            [attr.fill]="'#383c42ff'"
+          >
+            <rect width="60" height="60" rx="12" />
+            <!-- [attr.fill]="getLogoColor(job.theme)" -->
+            <text
+              x="50%"
+              y="50%"
+              text-anchor="middle"
+              dominant-baseline="middle"
+              fill="white"
+              font-weight="bold"
+              textLength="48"
+              lengthAdjust="spacingAndGlyphs"
+            >
+              {{ job.logoInitial }}
+            </text>
+          </svg>
+        </div>
+        <div class="company-details">
+          <h1 class="job-title">{{ job.jobTitleName }}</h1>
+          <h2 class="company-name">{{ job.bussinessUnit }}</h2>
+          <div class="job-meta">
+            <span class="location">{{ job.location }}</span>
+            <!-- <span class="job-type">{{ job.type }}</span> -->
+            <span class="salary">
+              PHP
+              {{ job.minRate * 27 | number : "1.0-0" }}
+              -
+              {{ job.maxRate - (job.maxRate % 1000) | number : "1.0-0" }}
+              MONTH</span
+            >
+            <span class="posted-date">{{
+              job.creationTime | date : "MMM d, yyyy"
+            }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="apply-btn primary">Apply Now</button>
+        <!-- <button class="save-btn secondary">💾 Save Job</button>
+        <button class="share-btn secondary">📤 Share</button> -->
+      </div>
+
+      <div class="job-tags">
+        <!-- <span class="tag" *ngFor="let tag of job.tags">{{ tag }}</span> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side - Job Details -->
+  <div class="job-details">
+    <div class="job-poster">
+      <img
+        src="../../assets/images/backgrounds/BrigadaJobBanner.png"
+        alt="Job Poster"
+      />
+    </div>
+
+    <section class="section">
+      <h3>About the Role</h3>
+      <div class="about-role" [innerHTML]="selectedJob?.jobDescription"></div>
+    </section>
+
+    <section class="section">
+      <h3>Key Responsibilities</h3>
+      <ul>
+        <!-- <li *ngFor="let responsibility of selectedJob.responsibilities">
+          {{ responsibility }}
+        </li> -->
+
+        <div
+          class="key-responsibilities"
+          [innerHTML]="selectedJob?.essentialDuties"
+        ></div>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h3>Requirements</h3>
+      <ul>
+        <li>
+          <h4 class="sub-header">Education</h4>
+          <div class="requirements" [innerHTML]="selectedJob?.education"></div>
+        </li>
+        <li>
+          <h4 class="sub-header">Skills</h4>
+          <div class="requirements" [innerHTML]="selectedJob?.skills"></div>
+        </li>
+        <li>
+          <h4 class="sub-header">Experience</h4>
+          <div class="requirements" [innerHTML]="selectedJob?.experience"></div>
+        </li>
+        <li>
+          <h4 class="sub-header">Professional Certificate</h4>
+          <div
+            class="requirements"
+            [innerHTML]="selectedJob?.professionalCert"
+          ></div>
+        </li>
+        <li>
+          <h4 class="sub-header">Special Skills</h4>
+          <div
+            class="requirements"
+            [innerHTML]="selectedJob?.specialSkills"
+          ></div>
+        </li>
+        <li>
+          <h4 class="sub-header">Training</h4>
+          <div class="requirements" [innerHTML]="selectedJob?.training"></div>
+        </li>
+        <li>
+          <h4 class="sub-header">Working Condition</h4>
+          <div
+            class="requirements"
+            [innerHTML]="selectedJob?.workingConditions"
+          ></div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h3>Nice to Have</h3>
+      <ul>
+        <li>
+          <div
+            class="requirements"
+            [innerHTML]="selectedJob?.specialized"
+          ></div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- <section class="section">
+      <h3>Benefits</h3>
+      <ul>
+        <li *ngFor="let benefit of selectedJob.benefits">
+          {{ benefit }}
+        </li>
+        Benefits
+      </ul>
+    </section> -->
+
+    <!-- <section class="section">
+      <h3>About</h3>
+      {{ selectedJob.company }}
+      <p>
+        {{ selectedJob.companyDescription }}
+   
+      </p>
+
+      <div class="company-stats">
+        <div class="stat">
+          <span class="stat-number">{{ selectedJob.stats.employees }}</span>
+          <span class="stat-label">Employees</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">{{ selectedJob.stats.users }}</span>
+          <span class="stat-label">Users</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">{{ selectedJob.stats.countries }}</span>
+          <span class="stat-label">Countries</span>
+        </div>
+      </div>
+    </section> -->
+
+    <div class="apply-section">
+      <button class="apply-btn primary large">Apply for this Position</button>
+      <p class="apply-note">
+        By applying, you agree to our Terms of Service and Privacy Policy
+      </p>
+    </div>
+  </div>
+</div>
