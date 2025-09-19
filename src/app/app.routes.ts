@@ -37,6 +37,7 @@ export const routes: Routes = [
       },
     ],
   },
+  // UserAuthenticationRoutes
   {
     path: '',
     component: BlankComponent,
@@ -46,6 +47,13 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/authentication/authentication.routes').then(
             (m) => m.AuthenticationRoutes
+          ),
+      },
+      {
+        path: 'user-authentication',
+        loadChildren: () =>
+          import('./pages/authenticationv1/user-auth.routes').then(
+            (m) => m.UserAuthenticationRoutes
           ),
       },
     ],

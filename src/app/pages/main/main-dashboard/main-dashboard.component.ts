@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material.module';
 import {
@@ -7,6 +12,8 @@ import {
   HrmsServices,
 } from 'src/app/services/nswag/service-proxie';
 import { FormsModule } from '@angular/forms';
+import { authService } from 'src/app/services/auth-services/auth-services';
+import { loadingService } from 'src/app/services/auth-services/LoadingService';
 
 interface JobPosting {
   id: number;
@@ -39,23 +46,64 @@ interface JobPosting {
   templateUrl: './main-dashboard.component.html',
   styleUrl: './main-dashboard.component.scss',
 })
-export class MainDashboardComponent {
+export class MainDashboardComponent implements OnInit, AfterViewInit {
   // selectedJobId: number = 1;
 
-  constructor(private _hrmsService: HrmsServices) {
+  constructor(
+    private _hrmsService: HrmsServices,
+    public authservice: authService,
+    private cdr: ChangeDetectorRef,
+    private loadingService: loadingService
+  ) {}
+  ngAfterViewInit(): void {
+    // throw new Error('Method not implemented.');
+  }
+  ngOnInit(): void {
+    // throw new Error('Method not implemented.');
     this.onGetJobPosting();
+    // this.testSpinner();
   }
 
   jobPostData: ApiResponseMessageOfIListOfGetAllJobPostsDto =
     new ApiResponseMessageOfIListOfGetAllJobPostsDto();
 
   onGetJobPosting() {
+    this.loadingService.show(); // or this.loadingService.loading = true;
+
     this._hrmsService.getAllJobPosts().subscribe({
       next: (res) => {
-        console.log(res);
         this.jobPostData = res;
+        this.loadingService.hide(); // or this.loadingService.loading = false;
+      },
+      error: (err) => {
+        this.loadingService.hide();
       },
     });
+  }
+
+  // Test method to verify spinner works
+  testSpinner() {
+    console.log('=== TEST SPINNER START ===');
+    console.log('LoadingService instance:', this.loadingService);
+    console.log('Current loading state:', this.loadingService.loading);
+
+    console.log('Calling loadingService.show()...');
+    this.loadingService.show();
+
+    console.log('Loading state after show():', this.loadingService.loading);
+    console.log('Loading observable value:', this.loadingService.loading$);
+
+    // Subscribe to the observable to see if it's emitting
+    this.loadingService.loading$.subscribe((value) => {
+      console.log('Loading observable emitted:', value);
+    });
+
+    setTimeout(() => {
+      console.log('Hiding spinner after 3 seconds...');
+      this.loadingService.hide();
+      console.log('Loading state after hide():', this.loadingService.loading);
+      console.log('=== TEST SPINNER END ===');
+    }, 3000);
   }
 
   jobPostings: JobPosting[] = [

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MaterialModule } from 'src/app/material.module';
-
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 @Component({
   selector: 'app-user-profile',
   standalone: true,

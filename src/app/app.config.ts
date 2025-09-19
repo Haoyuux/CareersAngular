@@ -26,12 +26,22 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 //Import all material modules
 import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { API_BASE_URL, HrmsServices } from './services/nswag/service-proxie';
+import {
+  API_BASE_URL,
+  HrmsServices,
+  UserServices,
+} from './services/nswag/service-proxie';
 import { environment } from './environments/environment';
+import { provideToastr } from 'ngx-toastr';
+import { NgxToastrMessageComponent } from './services/ngx-toastr-message/ngx-toastr-message.component';
+import { authService } from './services/auth-services/auth-services';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     HrmsServices,
+    UserServices,
+    NgxToastrMessageComponent,
+    authService,
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
       routes,
@@ -44,7 +54,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     provideClientHydration(),
     provideAnimationsAsync(),
-
+    provideToastr(),
     importProvidersFrom(
       FormsModule,
       ReactiveFormsModule,
