@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgxToastrMessageComponent } from './services/ngx-toastr-message/ngx-toastr-message.component';
 import { authService } from './services/auth-services/auth-services';
-import { loadingService } from './services/auth-services/LoadingService';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +13,7 @@ export class AppComponent {
   /**
    *
    */
-  constructor(public loadingService: loadingService) {}
+  constructor() {}
   title = 'Modernize Angular Admin Tempplate';
 
   /**

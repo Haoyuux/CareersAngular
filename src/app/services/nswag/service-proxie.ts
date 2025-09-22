@@ -7,866 +7,1081 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-import {
-  mergeMap as _observableMergeMap,
-  catchError as _observableCatch,
-} from 'rxjs/operators';
-import {
-  Observable,
-  throwError as _observableThrow,
-  of as _observableOf,
-} from 'rxjs';
+import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
+import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpResponse,
-  HttpResponseBase,
-} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 @Injectable()
 export class HrmsServices {
-  private http: HttpClient;
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
-    undefined;
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(
-    @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
-  ) {
-    this.http = http;
-    this.baseUrl = baseUrl ?? '';
-  }
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
 
-  getAllJobPosts(): Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto> {
-    let url_ = this.baseUrl + '/api/Hrms/GetAllJobPosts';
-    url_ = url_.replace(/[?&]$/, '');
+    getAllJobPosts(): Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto> {
+        let url_ = this.baseUrl + "/api/Hrms/GetAllJobPosts";
+        url_ = url_.replace(/[?&]$/, "");
 
-    let options_: any = {
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: 'application/json',
-      }),
-    };
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
 
-    return this.http
-      .request('get', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processGetAllJobPosts(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processGetAllJobPosts(response_ as any);
-            } catch (e) {
-              return _observableThrow(
-                e
-              ) as any as Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto>;
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllJobPosts(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllJobPosts(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto>;
+        }));
+    }
+
+    protected processGetAllJobPosts(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfGetAllJobPostsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    whoAmI(): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Hrms/whoami";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWhoAmI(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWhoAmI(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processWhoAmI(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
             }
-          } else
-            return _observableThrow(
-              response_
-            ) as any as Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto>;
-        })
-      );
-  }
-
-  protected processGetAllJobPosts(
-    response: HttpResponseBase
-  ): Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
     }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result200: any = null;
-          let resultData200 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 =
-            ApiResponseMessageOfIListOfGetAllJobPostsDto.fromJS(resultData200);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
-    }
-    return _observableOf(null as any);
-  }
 }
 
 @Injectable()
 export class UserServices {
-  private http: HttpClient;
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
-    undefined;
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(
-    @Inject(HttpClient) http: HttpClient,
-    @Optional() @Inject(API_BASE_URL) baseUrl?: string
-  ) {
-    this.http = http;
-    this.baseUrl = baseUrl ?? '';
-  }
-
-  registerUser(user: UserDto): Observable<ApiResponseMessageOfString> {
-    let url_ = this.baseUrl + '/api/User/RegisterUser';
-    url_ = url_.replace(/[?&]$/, '');
-
-    const content_ = JSON.stringify(user);
-
-    let options_: any = {
-      body: content_,
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      }),
-    };
-
-    return this.http
-      .request('post', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processRegisterUser(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processRegisterUser(response_ as any);
-            } catch (e) {
-              return _observableThrow(
-                e
-              ) as any as Observable<ApiResponseMessageOfString>;
-            }
-          } else
-            return _observableThrow(
-              response_
-            ) as any as Observable<ApiResponseMessageOfString>;
-        })
-      );
-  }
-
-  protected processRegisterUser(
-    response: HttpResponseBase
-  ): Observable<ApiResponseMessageOfString> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
     }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result200: any = null;
-          let resultData200 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = ApiResponseMessageOfString.fromJS(resultData200);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
+
+    registerUser(user: UserDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/RegisterUser";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(user);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRegisterUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRegisterUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
     }
-    return _observableOf(null as any);
-  }
 
-  registerAdmin(user: RegisterUserDto): Observable<ApiResponseMessageOfString> {
-    let url_ = this.baseUrl + '/api/User/RegisterAdmin';
-    url_ = url_.replace(/[?&]$/, '');
+    protected processRegisterUser(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
 
-    const content_ = JSON.stringify(user);
-
-    let options_: any = {
-      body: content_,
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      }),
-    };
-
-    return this.http
-      .request('post', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processRegisterAdmin(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processRegisterAdmin(response_ as any);
-            } catch (e) {
-              return _observableThrow(
-                e
-              ) as any as Observable<ApiResponseMessageOfString>;
-            }
-          } else
-            return _observableThrow(
-              response_
-            ) as any as Observable<ApiResponseMessageOfString>;
-        })
-      );
-  }
-
-  protected processRegisterAdmin(
-    response: HttpResponseBase
-  ): Observable<ApiResponseMessageOfString> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
     }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result200: any = null;
-          let resultData200 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = ApiResponseMessageOfString.fromJS(resultData200);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
+
+    registerAdmin(user: RegisterUserDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/RegisterAdmin";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(user);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRegisterAdmin(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRegisterAdmin(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
     }
-    return _observableOf(null as any);
-  }
 
-  login(user: RegisterUserDto): Observable<ApiResponseMessageOfUserLoginDto> {
-    let url_ = this.baseUrl + '/api/User/Login';
-    url_ = url_.replace(/[?&]$/, '');
+    protected processRegisterAdmin(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
 
-    const content_ = JSON.stringify(user);
-
-    let options_: any = {
-      body: content_,
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      }),
-    };
-
-    return this.http
-      .request('post', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processLogin(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processLogin(response_ as any);
-            } catch (e) {
-              return _observableThrow(
-                e
-              ) as any as Observable<ApiResponseMessageOfUserLoginDto>;
-            }
-          } else
-            return _observableThrow(
-              response_
-            ) as any as Observable<ApiResponseMessageOfUserLoginDto>;
-        })
-      );
-  }
-
-  protected processLogin(
-    response: HttpResponseBase
-  ): Observable<ApiResponseMessageOfUserLoginDto> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (response as any).error instanceof Blob
-        ? (response as any).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
     }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          let result200: any = null;
-          let resultData200 =
-            _responseText === ''
-              ? null
-              : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = ApiResponseMessageOfUserLoginDto.fromJS(resultData200);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText: string) => {
-          return throwException(
-            'An unexpected server error occurred.',
-            status,
-            _responseText,
-            _headers
-          );
-        })
-      );
+
+    login(user: RegisterUserDto): Observable<ApiResponseMessageOfUserLoginDto> {
+        let url_ = this.baseUrl + "/api/User/Login";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(user);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processLogin(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processLogin(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfUserLoginDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfUserLoginDto>;
+        }));
     }
-    return _observableOf(null as any);
-  }
+
+    protected processLogin(response: HttpResponseBase): Observable<ApiResponseMessageOfUserLoginDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfUserLoginDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    refreshToken(): Observable<ApiResponseMessageOfUserLoginDto> {
+        let url_ = this.baseUrl + "/api/User/refresh-token";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRefreshToken(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRefreshToken(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfUserLoginDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfUserLoginDto>;
+        }));
+    }
+
+    protected processRefreshToken(response: HttpResponseBase): Observable<ApiResponseMessageOfUserLoginDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfUserLoginDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    logout(): Observable<ApiResponseMessageOfBoolean> {
+        let url_ = this.baseUrl + "/api/User/logout";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processLogout(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processLogout(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfBoolean>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfBoolean>;
+        }));
+    }
+
+    protected processLogout(response: HttpResponseBase): Observable<ApiResponseMessageOfBoolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfBoolean.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getUserProfileDetails(): Observable<ApiResponseMessageOfgetUserProfileDetailsDto> {
+        let url_ = this.baseUrl + "/api/User/getUserProfileDetails";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserProfileDetails(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserProfileDetails(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfgetUserProfileDetailsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfgetUserProfileDetailsDto>;
+        }));
+    }
+
+    protected processGetUserProfileDetails(response: HttpResponseBase): Observable<ApiResponseMessageOfgetUserProfileDetailsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfgetUserProfileDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
-export class ApiResponseMessageOfIListOfGetAllJobPostsDto
-  implements IApiResponseMessageOfIListOfGetAllJobPostsDto
-{
-  data!: GetAllJobPostsDto[];
-  isSuccess!: boolean;
-  errorMessage!: string;
+export class ApiResponseMessageOfIListOfGetAllJobPostsDto implements IApiResponseMessageOfIListOfGetAllJobPostsDto {
+    data!: GetAllJobPostsDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
 
-  constructor(data?: IApiResponseMessageOfIListOfGetAllJobPostsDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (this as any)[property] = (data as any)[property];
-      }
+    constructor(data?: IApiResponseMessageOfIListOfGetAllJobPostsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
     }
-    if (!data) {
-      this.data = [];
-    }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      if (Array.isArray(_data['data'])) {
-        this.data = [] as any;
-        for (let item of _data['data'])
-          this.data!.push(GetAllJobPostsDto.fromJS(item));
-      }
-      this.isSuccess = _data['isSuccess'];
-      this.errorMessage = _data['errorMessage'];
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(GetAllJobPostsDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
     }
-  }
 
-  static fromJS(data: any): ApiResponseMessageOfIListOfGetAllJobPostsDto {
-    data = typeof data === 'object' ? data : {};
-    let result = new ApiResponseMessageOfIListOfGetAllJobPostsDto();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    if (Array.isArray(this.data)) {
-      data['data'] = [];
-      for (let item of this.data)
-        data['data'].push(item ? item.toJSON() : (undefined as any));
+    static fromJS(data: any): ApiResponseMessageOfIListOfGetAllJobPostsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfGetAllJobPostsDto();
+        result.init(data);
+        return result;
     }
-    data['isSuccess'] = this.isSuccess;
-    data['errorMessage'] = this.errorMessage;
-    return data;
-  }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
 }
 
 export interface IApiResponseMessageOfIListOfGetAllJobPostsDto {
-  data: GetAllJobPostsDto[];
-  isSuccess: boolean;
-  errorMessage: string;
+    data: GetAllJobPostsDto[];
+    isSuccess: boolean;
+    errorMessage: string;
 }
 
 export class GetAllJobPostsDto implements IGetAllJobPostsDto {
-  jobPostingId!: string;
-  jobTitleId!: string | undefined;
-  jobAdsPic!: string;
-  location!: string;
-  minRate!: number;
-  maxRate!: number;
-  jobTitleName!: string | undefined;
-  jobDescription!: string;
-  essentialDuties!: string;
-  education!: string;
-  specialized!: string;
-  skills!: string;
-  experience!: string;
-  professionalCert!: string;
-  specialSkills!: string;
-  training!: string;
-  workingConditions!: string;
-  bussinessUnit!: string;
-  creationTime!: Date;
-  introStatement!: string;
-  logoInitial!: string | undefined;
+    jobPostingId!: string;
+    jobTitleId!: string | undefined;
+    jobAdsPic!: string;
+    location!: string;
+    minRate!: number;
+    maxRate!: number;
+    jobTitleName!: string | undefined;
+    jobDescription!: string;
+    essentialDuties!: string;
+    education!: string;
+    specialized!: string;
+    skills!: string;
+    experience!: string;
+    professionalCert!: string;
+    specialSkills!: string;
+    training!: string;
+    workingConditions!: string;
+    bussinessUnit!: string;
+    creationTime!: Date;
+    introStatement!: string;
+    logoInitial!: string | undefined;
 
-  constructor(data?: IGetAllJobPostsDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (this as any)[property] = (data as any)[property];
-      }
+    constructor(data?: IGetAllJobPostsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.jobPostingId = _data['jobPostingId'];
-      this.jobTitleId = _data['jobTitleId'];
-      this.jobAdsPic = _data['jobAdsPic'];
-      this.location = _data['location'];
-      this.minRate = _data['minRate'];
-      this.maxRate = _data['maxRate'];
-      this.jobTitleName = _data['jobTitleName'];
-      this.jobDescription = _data['jobDescription'];
-      this.essentialDuties = _data['essentialDuties'];
-      this.education = _data['education'];
-      this.specialized = _data['specialized'];
-      this.skills = _data['skills'];
-      this.experience = _data['experience'];
-      this.professionalCert = _data['professionalCert'];
-      this.specialSkills = _data['specialSkills'];
-      this.training = _data['training'];
-      this.workingConditions = _data['workingConditions'];
-      this.bussinessUnit = _data['bussinessUnit'];
-      this.creationTime = _data['creationTime']
-        ? new Date(_data['creationTime'].toString())
-        : (undefined as any);
-      this.introStatement = _data['introStatement'];
-      this.logoInitial = _data['logoInitial'];
+    init(_data?: any) {
+        if (_data) {
+            this.jobPostingId = _data["jobPostingId"];
+            this.jobTitleId = _data["jobTitleId"];
+            this.jobAdsPic = _data["jobAdsPic"];
+            this.location = _data["location"];
+            this.minRate = _data["minRate"];
+            this.maxRate = _data["maxRate"];
+            this.jobTitleName = _data["jobTitleName"];
+            this.jobDescription = _data["jobDescription"];
+            this.essentialDuties = _data["essentialDuties"];
+            this.education = _data["education"];
+            this.specialized = _data["specialized"];
+            this.skills = _data["skills"];
+            this.experience = _data["experience"];
+            this.professionalCert = _data["professionalCert"];
+            this.specialSkills = _data["specialSkills"];
+            this.training = _data["training"];
+            this.workingConditions = _data["workingConditions"];
+            this.bussinessUnit = _data["bussinessUnit"];
+            this.creationTime = _data["creationTime"] ? new Date(_data["creationTime"].toString()) : undefined as any;
+            this.introStatement = _data["introStatement"];
+            this.logoInitial = _data["logoInitial"];
+        }
     }
-  }
 
-  static fromJS(data: any): GetAllJobPostsDto {
-    data = typeof data === 'object' ? data : {};
-    let result = new GetAllJobPostsDto();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): GetAllJobPostsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAllJobPostsDto();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data['jobPostingId'] = this.jobPostingId;
-    data['jobTitleId'] = this.jobTitleId;
-    data['jobAdsPic'] = this.jobAdsPic;
-    data['location'] = this.location;
-    data['minRate'] = this.minRate;
-    data['maxRate'] = this.maxRate;
-    data['jobTitleName'] = this.jobTitleName;
-    data['jobDescription'] = this.jobDescription;
-    data['essentialDuties'] = this.essentialDuties;
-    data['education'] = this.education;
-    data['specialized'] = this.specialized;
-    data['skills'] = this.skills;
-    data['experience'] = this.experience;
-    data['professionalCert'] = this.professionalCert;
-    data['specialSkills'] = this.specialSkills;
-    data['training'] = this.training;
-    data['workingConditions'] = this.workingConditions;
-    data['bussinessUnit'] = this.bussinessUnit;
-    data['creationTime'] = this.creationTime
-      ? this.creationTime.toISOString()
-      : (undefined as any);
-    data['introStatement'] = this.introStatement;
-    data['logoInitial'] = this.logoInitial;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobPostingId"] = this.jobPostingId;
+        data["jobTitleId"] = this.jobTitleId;
+        data["jobAdsPic"] = this.jobAdsPic;
+        data["location"] = this.location;
+        data["minRate"] = this.minRate;
+        data["maxRate"] = this.maxRate;
+        data["jobTitleName"] = this.jobTitleName;
+        data["jobDescription"] = this.jobDescription;
+        data["essentialDuties"] = this.essentialDuties;
+        data["education"] = this.education;
+        data["specialized"] = this.specialized;
+        data["skills"] = this.skills;
+        data["experience"] = this.experience;
+        data["professionalCert"] = this.professionalCert;
+        data["specialSkills"] = this.specialSkills;
+        data["training"] = this.training;
+        data["workingConditions"] = this.workingConditions;
+        data["bussinessUnit"] = this.bussinessUnit;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : undefined as any;
+        data["introStatement"] = this.introStatement;
+        data["logoInitial"] = this.logoInitial;
+        return data;
+    }
 }
 
 export interface IGetAllJobPostsDto {
-  jobPostingId: string;
-  jobTitleId: string | undefined;
-  jobAdsPic: string;
-  location: string;
-  minRate: number;
-  maxRate: number;
-  jobTitleName: string | undefined;
-  jobDescription: string;
-  essentialDuties: string;
-  education: string;
-  specialized: string;
-  skills: string;
-  experience: string;
-  professionalCert: string;
-  specialSkills: string;
-  training: string;
-  workingConditions: string;
-  bussinessUnit: string;
-  creationTime: Date;
-  introStatement: string;
-  logoInitial: string | undefined;
+    jobPostingId: string;
+    jobTitleId: string | undefined;
+    jobAdsPic: string;
+    location: string;
+    minRate: number;
+    maxRate: number;
+    jobTitleName: string | undefined;
+    jobDescription: string;
+    essentialDuties: string;
+    education: string;
+    specialized: string;
+    skills: string;
+    experience: string;
+    professionalCert: string;
+    specialSkills: string;
+    training: string;
+    workingConditions: string;
+    bussinessUnit: string;
+    creationTime: Date;
+    introStatement: string;
+    logoInitial: string | undefined;
 }
 
 export class ApiResponseMessageOfString implements IApiResponseMessageOfString {
-  data!: string;
-  isSuccess!: boolean;
-  errorMessage!: string;
+    data!: string;
+    isSuccess!: boolean;
+    errorMessage!: string;
 
-  constructor(data?: IApiResponseMessageOfString) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (this as any)[property] = (data as any)[property];
-      }
+    constructor(data?: IApiResponseMessageOfString) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.data = _data['data'];
-      this.isSuccess = _data['isSuccess'];
-      this.errorMessage = _data['errorMessage'];
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"];
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
     }
-  }
 
-  static fromJS(data: any): ApiResponseMessageOfString {
-    data = typeof data === 'object' ? data : {};
-    let result = new ApiResponseMessageOfString();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): ApiResponseMessageOfString {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfString();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data['data'] = this.data;
-    data['isSuccess'] = this.isSuccess;
-    data['errorMessage'] = this.errorMessage;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data;
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
 }
 
 export interface IApiResponseMessageOfString {
-  data: string;
-  isSuccess: boolean;
-  errorMessage: string;
+    data: string;
+    isSuccess: boolean;
+    errorMessage: string;
 }
 
 export class UserDto implements IUserDto {
-  firstName!: string | undefined;
-  lastname!: string | undefined;
-  userName!: string | undefined;
-  password!: string | undefined;
+    id!: string;
+    firstName!: string | undefined;
+    lastname!: string | undefined;
+    userName!: string | undefined;
+    password!: string | undefined;
+    email!: string | undefined;
 
-  constructor(data?: IUserDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (this as any)[property] = (data as any)[property];
-      }
+    constructor(data?: IUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.firstName = _data['firstName'];
-      this.lastname = _data['lastname'];
-      this.userName = _data['userName'];
-      this.password = _data['password'];
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.firstName = _data["firstName"];
+            this.lastname = _data["lastname"];
+            this.userName = _data["userName"];
+            this.password = _data["password"];
+            this.email = _data["email"];
+        }
     }
-  }
 
-  static fromJS(data: any): UserDto {
-    data = typeof data === 'object' ? data : {};
-    let result = new UserDto();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): UserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data['firstName'] = this.firstName;
-    data['lastname'] = this.lastname;
-    data['userName'] = this.userName;
-    data['password'] = this.password;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["firstName"] = this.firstName;
+        data["lastname"] = this.lastname;
+        data["userName"] = this.userName;
+        data["password"] = this.password;
+        data["email"] = this.email;
+        return data;
+    }
 }
 
 export interface IUserDto {
-  firstName: string | undefined;
-  lastname: string | undefined;
-  userName: string | undefined;
-  password: string | undefined;
+    id: string;
+    firstName: string | undefined;
+    lastname: string | undefined;
+    userName: string | undefined;
+    password: string | undefined;
+    email: string | undefined;
 }
 
 export class RegisterUserDto implements IRegisterUserDto {
-  userName!: string;
-  password!: string;
+    userName!: string;
+    password!: string;
 
-  constructor(data?: IRegisterUserDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (this as any)[property] = (data as any)[property];
-      }
+    constructor(data?: IRegisterUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.userName = _data['userName'];
-      this.password = _data['password'];
+    init(_data?: any) {
+        if (_data) {
+            this.userName = _data["userName"];
+            this.password = _data["password"];
+        }
     }
-  }
 
-  static fromJS(data: any): RegisterUserDto {
-    data = typeof data === 'object' ? data : {};
-    let result = new RegisterUserDto();
-    result.init(data);
-    return result;
-  }
+    static fromJS(data: any): RegisterUserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterUserDto();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data['userName'] = this.userName;
-    data['password'] = this.password;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName;
+        data["password"] = this.password;
+        return data;
+    }
 }
 
 export interface IRegisterUserDto {
-  userName: string;
-  password: string;
+    userName: string;
+    password: string;
 }
 
-export class ApiResponseMessageOfUserLoginDto
-  implements IApiResponseMessageOfUserLoginDto
-{
-  data!: UserLoginDto;
-  isSuccess!: boolean;
-  errorMessage!: string;
+export class ApiResponseMessageOfUserLoginDto implements IApiResponseMessageOfUserLoginDto {
+    data!: UserLoginDto;
+    isSuccess!: boolean;
+    errorMessage!: string;
 
-  constructor(data?: IApiResponseMessageOfUserLoginDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (this as any)[property] = (data as any)[property];
-      }
+    constructor(data?: IApiResponseMessageOfUserLoginDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = new UserLoginDto();
+        }
     }
-    if (!data) {
-      this.data = new UserLoginDto();
+
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"] ? UserLoginDto.fromJS(_data["data"]) : new UserLoginDto();
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.data = _data['data']
-        ? UserLoginDto.fromJS(_data['data'])
-        : new UserLoginDto();
-      this.isSuccess = _data['isSuccess'];
-      this.errorMessage = _data['errorMessage'];
+    static fromJS(data: any): ApiResponseMessageOfUserLoginDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfUserLoginDto();
+        result.init(data);
+        return result;
     }
-  }
 
-  static fromJS(data: any): ApiResponseMessageOfUserLoginDto {
-    data = typeof data === 'object' ? data : {};
-    let result = new ApiResponseMessageOfUserLoginDto();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data['data'] = this.data ? this.data.toJSON() : (undefined as any);
-    data['isSuccess'] = this.isSuccess;
-    data['errorMessage'] = this.errorMessage;
-    return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
 }
 
 export interface IApiResponseMessageOfUserLoginDto {
-  data: UserLoginDto;
-  isSuccess: boolean;
-  errorMessage: string;
+    data: UserLoginDto;
+    isSuccess: boolean;
+    errorMessage: string;
 }
 
 export class UserLoginDto implements IUserLoginDto {
-  userID!: string;
-  userName!: string;
-  userToken!: string;
-  newRefreshToken!: string;
-  userRole!: string[];
+    userID!: string;
+    userName!: string;
+    userToken!: string;
+    newRefreshToken!: string;
+    userRole!: string[];
 
-  constructor(data?: IUserLoginDto) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (this as any)[property] = (data as any)[property];
-      }
+    constructor(data?: IUserLoginDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
     }
-  }
 
-  init(_data?: any) {
-    if (_data) {
-      this.userID = _data['userID'];
-      this.userName = _data['userName'];
-      this.userToken = _data['userToken'];
-      this.newRefreshToken = _data['newRefreshToken'];
-      if (Array.isArray(_data['userRole'])) {
-        this.userRole = [] as any;
-        for (let item of _data['userRole']) this.userRole!.push(item);
-      }
+    init(_data?: any) {
+        if (_data) {
+            this.userID = _data["userID"];
+            this.userName = _data["userName"];
+            this.userToken = _data["userToken"];
+            this.newRefreshToken = _data["newRefreshToken"];
+            if (Array.isArray(_data["userRole"])) {
+                this.userRole = [] as any;
+                for (let item of _data["userRole"])
+                    this.userRole!.push(item);
+            }
+        }
     }
-  }
 
-  static fromJS(data: any): UserLoginDto {
-    data = typeof data === 'object' ? data : {};
-    let result = new UserLoginDto();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data['userID'] = this.userID;
-    data['userName'] = this.userName;
-    data['userToken'] = this.userToken;
-    data['newRefreshToken'] = this.newRefreshToken;
-    if (Array.isArray(this.userRole)) {
-      data['userRole'] = [];
-      for (let item of this.userRole) data['userRole'].push(item);
+    static fromJS(data: any): UserLoginDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserLoginDto();
+        result.init(data);
+        return result;
     }
-    return data;
-  }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userID"] = this.userID;
+        data["userName"] = this.userName;
+        data["userToken"] = this.userToken;
+        data["newRefreshToken"] = this.newRefreshToken;
+        if (Array.isArray(this.userRole)) {
+            data["userRole"] = [];
+            for (let item of this.userRole)
+                data["userRole"].push(item);
+        }
+        return data;
+    }
 }
 
 export interface IUserLoginDto {
-  userID: string;
-  userName: string;
-  userToken: string;
-  newRefreshToken: string;
-  userRole: string[];
+    userID: string;
+    userName: string;
+    userToken: string;
+    newRefreshToken: string;
+    userRole: string[];
+}
+
+export class ApiResponseMessageOfBoolean implements IApiResponseMessageOfBoolean {
+    data!: boolean;
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfBoolean) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"];
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfBoolean {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfBoolean();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data;
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfBoolean {
+    data: boolean;
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class ApiResponseMessageOfgetUserProfileDetailsDto implements IApiResponseMessageOfgetUserProfileDetailsDto {
+    data!: GetUserProfileDetailsDto;
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfgetUserProfileDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = new GetUserProfileDetailsDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"] ? GetUserProfileDetailsDto.fromJS(_data["data"]) : new GetUserProfileDetailsDto();
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfgetUserProfileDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfgetUserProfileDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfgetUserProfileDetailsDto {
+    data: GetUserProfileDetailsDto;
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class GetUserProfileDetailsDto implements IGetUserProfileDetailsDto {
+    firstName!: string;
+    lastName!: string;
+    contactNo!: string;
+    emailAddress!: string;
+    dateOfBirth!: Date | undefined;
+    hr201GenderId!: string;
+    hr201CivilStatus!: string;
+    address!: string;
+    region!: string;
+    province!: string;
+    city!: string;
+    barangay!: string;
+    aboutMe!: string;
+    streetDetails!: string;
+
+    constructor(data?: IGetUserProfileDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.contactNo = _data["contactNo"];
+            this.emailAddress = _data["emailAddress"];
+            this.dateOfBirth = _data["dateOfBirth"] ? new Date(_data["dateOfBirth"].toString()) : undefined as any;
+            this.hr201GenderId = _data["hr201GenderId"];
+            this.hr201CivilStatus = _data["hr201CivilStatus"];
+            this.address = _data["address"];
+            this.region = _data["region"];
+            this.province = _data["province"];
+            this.city = _data["city"];
+            this.barangay = _data["barangay"];
+            this.aboutMe = _data["aboutMe"];
+            this.streetDetails = _data["streetDetails"];
+        }
+    }
+
+    static fromJS(data: any): GetUserProfileDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetUserProfileDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["contactNo"] = this.contactNo;
+        data["emailAddress"] = this.emailAddress;
+        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : undefined as any;
+        data["hr201GenderId"] = this.hr201GenderId;
+        data["hr201CivilStatus"] = this.hr201CivilStatus;
+        data["address"] = this.address;
+        data["region"] = this.region;
+        data["province"] = this.province;
+        data["city"] = this.city;
+        data["barangay"] = this.barangay;
+        data["aboutMe"] = this.aboutMe;
+        data["streetDetails"] = this.streetDetails;
+        return data;
+    }
+}
+
+export interface IGetUserProfileDetailsDto {
+    firstName: string;
+    lastName: string;
+    contactNo: string;
+    emailAddress: string;
+    dateOfBirth: Date | undefined;
+    hr201GenderId: string;
+    hr201CivilStatus: string;
+    address: string;
+    region: string;
+    province: string;
+    city: string;
+    barangay: string;
+    aboutMe: string;
+    streetDetails: string;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class ApiException extends Error {
-  override message: string;
-  status: number;
-  response: string;
-  headers: { [key: string]: any };
-  result: any;
+    override message: string;
+    status: number;
+    response: string;
+    headers: { [key: string]: any; };
+    result: any;
 
-  constructor(
-    message: string,
-    status: number,
-    response: string,
-    headers: { [key: string]: any },
-    result: any
-  ) {
-    super();
+    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
+        super();
 
-    this.message = message;
-    this.status = status;
-    this.response = response;
-    this.headers = headers;
-    this.result = result;
-  }
+        this.message = message;
+        this.status = status;
+        this.response = response;
+        this.headers = headers;
+        this.result = result;
+    }
 
-  protected isApiException = true;
+    protected isApiException = true;
 
-  static isApiException(obj: any): obj is ApiException {
-    return obj.isApiException === true;
-  }
+    static isApiException(obj: any): obj is ApiException {
+        return obj.isApiException === true;
+    }
 }
 
-function throwException(
-  message: string,
-  status: number,
-  response: string,
-  headers: { [key: string]: any },
-  result?: any
-): Observable<any> {
-  return _observableThrow(
-    new ApiException(message, status, response, headers, result)
-  );
+function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): Observable<any> {
+    return _observableThrow(new ApiException(message, status, response, headers, result));
 }
 
 function blobToText(blob: any): Observable<string> {
-  return new Observable<string>((observer: any) => {
-    if (!blob) {
-      observer.next('');
-      observer.complete();
-    } else {
-      let reader = new FileReader();
-      reader.onload = (event) => {
-        observer.next((event.target as any).result);
-        observer.complete();
-      };
-      reader.readAsText(blob);
-    }
-  });
+    return new Observable<string>((observer: any) => {
+        if (!blob) {
+            observer.next("");
+            observer.complete();
+        } else {
+            let reader = new FileReader();
+            reader.onload = event => {
+                observer.next((event.target as any).result);
+                observer.complete();
+            };
+            reader.readAsText(blob);
+        }
+    });
 }

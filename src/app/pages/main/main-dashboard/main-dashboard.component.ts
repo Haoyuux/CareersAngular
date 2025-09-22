@@ -13,7 +13,7 @@ import {
 } from 'src/app/services/nswag/service-proxie';
 import { FormsModule } from '@angular/forms';
 import { authService } from 'src/app/services/auth-services/auth-services';
-import { loadingService } from 'src/app/services/auth-services/LoadingService';
+import { LoadingService } from 'src/app/services/auth-services/loading-services';
 
 interface JobPosting {
   id: number;
@@ -53,7 +53,7 @@ export class MainDashboardComponent implements OnInit, AfterViewInit {
     private _hrmsService: HrmsServices,
     public authservice: authService,
     private cdr: ChangeDetectorRef,
-    private loadingService: loadingService
+    private loadingService: LoadingService
   ) {}
   ngAfterViewInit(): void {
     // throw new Error('Method not implemented.');

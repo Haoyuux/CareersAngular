@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { loadingService } from './LoadingService';
+import { LoadingService } from './loading-services';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ import { loadingService } from './LoadingService';
   // styleUrl: './ngx-toastr-message.component.scss',
 })
 export class authService {
-  constructor(private router: Router, public loadingService: loadingService) {}
+  constructor(private router: Router, public loadingService: LoadingService) {}
 
   saving: boolean = false;
   token: string | null = null;

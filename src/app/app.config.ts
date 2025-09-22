@@ -4,6 +4,7 @@ import {
   importProvidersFrom,
 } from '@angular/core';
 import {
+  HTTP_INTERCEPTORS,
   HttpClient,
   provideHttpClient,
   withInterceptorsFromDi,
@@ -35,13 +36,13 @@ import { environment } from './environments/environment';
 import { provideToastr } from 'ngx-toastr';
 import { NgxToastrMessageComponent } from './services/ngx-toastr-message/ngx-toastr-message.component';
 import { authService } from './services/auth-services/auth-services';
+import { AuthInterceptor } from './services/Interceptor/auth-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     HrmsServices,
     UserServices,
     NgxToastrMessageComponent,
-    authService,
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
       routes,
@@ -65,6 +66,11 @@ export const appConfig: ApplicationConfig = {
     {
       provide: API_BASE_URL,
       useValue: environment.apiUrl,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
     },
   ],
 };
