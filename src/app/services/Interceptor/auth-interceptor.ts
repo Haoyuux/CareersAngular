@@ -1,4 +1,4 @@
-// nswag-auth.interceptor.ts
+// auth-interceptor.ts
 import { Injectable } from '@angular/core';
 import {
   HttpInterceptor,
@@ -6,44 +6,51 @@ import {
   HttpHandler,
   HttpEvent,
   HttpErrorResponse,
-  HttpClient,
-  HttpBackend,
-  HttpHeaders,
 } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { catchError, switchMap, filter, take, finalize } from 'rxjs/operators';
+import {
+  catchError,
+  switchMap,
+  filter,
+  take,
+  finalize,
+  tap,
+} from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { TokenService } from '../token-service/token-service';
+import { UserServices } from 'src/app/services/nswag/service-proxie';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private refreshInProgress = false;
   private refreshSubject = new BehaviorSubject<string | null>(null);
-  private httpBare: HttpClient;
 
   constructor(
-    httpBackend: HttpBackend,
     private router: Router,
-    private TokenStorage: TokenService
-  ) {
-    this.httpBare = new HttpClient(httpBackend);
-  }
+    private tokenService: TokenService,
+    private userService: UserServices // ⬅️ NSwag client
+  ) {}
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    debugger;
-    if (this.isAuthEndpoint(req.url)) {
-      return next.handle(req);
-    }
+    const isAuth = this.isAuthEndpoint(req.url);
+    const tok = this.tokenService.getAccessToken();
+    const finalReq = isAuth ? req : this.addAuth(req);
 
-    const authed = this.addAuth(req);
+    console.log('%c[HTTP->]', 'color:#3aa', {
+      url: finalReq.url,
+      isAuth,
+      withCreds: finalReq.withCredentials,
+    });
 
-    return next.handle(authed).pipe(
+    return next.handle(finalReq).pipe(
       catchError((err: HttpErrorResponse) => {
-        if (err.status === 401 && !this.isAuthEndpoint(req.url)) {
-          return this.handle401(authed, next);
+        console.warn('[HTTP x]', { url: finalReq.url, status: err.status });
+        if (err.status === 401 && !this.isAuthEndpoint(finalReq.url)) {
+          console.warn('[AUTH] 401 → refresh');
+          return this.handle401(finalReq, next);
         }
         return throwError(() => err);
       })
@@ -51,19 +58,32 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private isAuthEndpoint(url: string): boolean {
-    const u = url.toLowerCase();
-    return (
-      u.includes('/auth/login') ||
-      u.includes('/auth/refresh-token') ||
-      u.includes('/auth/logout')
-    );
+    const path = (() => {
+      try {
+        return new URL(url, window.location.origin).pathname.toLowerCase();
+      } catch {
+        return url.toLowerCase();
+      }
+    })();
+    const match = [
+      '/api/user/login',
+      '/api/user/refresh-token',
+      '/api/user/logout',
+    ].some((p) => path.endsWith(p));
+    if (match) console.log('[AUTH] matched auth endpoint:', path);
+    return match;
   }
 
   private addAuth(req: HttpRequest<any>): HttpRequest<any> {
-    const token = this.TokenStorage.getAccessToken();
-    return token
-      ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
-      : req;
+    const token = this.tokenService.getAccessToken();
+    if (!token) {
+      console.log(
+        '[AUTH] no access token; sending without Authorization:',
+        req.url
+      );
+      return req;
+    }
+    return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
   }
 
   private handle401(
@@ -71,58 +91,53 @@ export class AuthInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (this.refreshInProgress) {
+      console.log('[AUTH] refresh in progress; queueing');
       return this.refreshSubject.pipe(
         filter((t) => t !== null),
         take(1),
         switchMap(() => next.handle(this.addAuth(req)))
       );
     }
-
     this.refreshInProgress = true;
     this.refreshSubject.next(null);
+    console.time('[AUTH] refresh');
 
-    const rt = this.TokenStorage.refreshToken();
-    if (!rt) {
-      this.kickToLogin();
-      return throwError(() => new Error('No refresh token'));
-    }
-
-    return this.httpBare
-      .post<any>(
-        '/api/auth/refresh-token',
-        { refreshToken: rt },
-        { headers: new HttpHeaders({ 'x-skip-interceptor': 'true' }) }
-      )
-      .pipe(
-        switchMap((res) => {
-          if (!res?.isSuccess || !res?.data?.userToken) {
-            this.kickToLogin();
-            return throwError(() => new Error('Refresh failed'));
-          }
-
-          this.TokenStorage.setAuthData({
-            userToken: res.data.userToken,
-            newRefreshToken: res.data.newRefreshToken,
-            userID: res.data.userID,
-            userName: res.data.userName,
-            userRole: res.data.userRole,
-          });
-
-          this.refreshSubject.next(res.data.userToken);
-          return next.handle(this.addAuth(req));
-        }),
-        catchError((e) => {
+    // 🔑 NSwag call → correct URL: /api/User/refresh-token
+    // Your CredentialsInterceptor will add withCredentials=true automatically.
+    return this.userService.refreshToken().pipe(
+      tap({ next: () => console.log('[AUTH] refresh HTTP done') }),
+      switchMap((res: any) => {
+        console.log('[AUTH] refresh response:', res);
+        if (!res?.isSuccess || !res?.data?.userToken) {
+          console.error('[AUTH] refresh failed');
           this.kickToLogin();
-          return throwError(() => e);
-        }),
-        finalize(() => {
-          this.refreshInProgress = false;
-        })
-      );
+          return throwError(() => new Error('Refresh failed'));
+        }
+        this.tokenService.setAuthData({
+          userToken: res.data.userToken,
+          newRefreshToken: res.data.newRefreshToken,
+          userID: res.data.userID,
+          userName: res.data.userName,
+          userRole: res.data.userRole,
+        });
+        this.refreshSubject.next(res.data.userToken);
+        console.log('[AUTH] retrying original:', req.url);
+        return next.handle(this.addAuth(req));
+      }),
+      catchError((e) => {
+        console.error('[AUTH] refresh error → login', e);
+        this.kickToLogin();
+        return throwError(() => e);
+      }),
+      finalize(() => {
+        this.refreshInProgress = false;
+        console.timeEnd('[AUTH] refresh');
+      })
+    );
   }
 
   private kickToLogin() {
-    // this.TokenStorage.clear();
+    console.warn('[AUTH] redirect → /login');
     this.router.navigate(['/login']);
   }
 }

@@ -1,8 +1,7 @@
-// token.service.ts
+// token-service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { environment } from 'src/app/environments/environment';
 
 export interface User {
@@ -13,52 +12,51 @@ export interface User {
 
 export interface LoginResponse {
   isSuccess: boolean;
-  errorMessage: string;
+  errorMessage: string | null;
   data: {
     userID: string;
-    userToken: string;
-    newRefreshToken: string | null;
+    userToken: string; // access token (JWT)
+    newRefreshToken: string | null; // cookie is set server-side; body may be null
     userName: string;
-    userRole: string[];
-  };
+    userRole: string[]; // roles array
+  } | null;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class TokenService {
-  private readonly apiUrl = environment.apiUrl; // Your API URL
+  private readonly apiUrl = environment.apiUrl; // e.g. https://localhost:5001/api
 
-  // Memory storage for access token
+  // In-memory access token + helpers
   private accessToken: string | null = null;
-  private tokenExpiry: Date | null = null;
+  private tokenExpiry: Date | null = null; // from JWT exp when available
   private refreshTimer: any = null;
   private isRefreshing = false;
 
-  // BehaviorSubjects for state management
+  // App-wide state
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   private isInitializedSubject = new BehaviorSubject<boolean>(false);
 
-  // Public observables
   public currentUser$ = this.currentUserSubject.asObservable();
   public isInitialized$ = this.isInitializedSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    this.initializeAuth();
+    // APP_INITIALIZER will call initializeAuth(); don't run it here.
   }
 
-  // Initialize authentication on app start
-  private async initializeAuth(): Promise<void> {
+  /** Called at app bootstrap via APP_INITIALIZER. Exchanges cookie -> access token. */
+  async initializeAuth(): Promise<void> {
     try {
-      await this.tryRefreshToken();
-    } catch (error) {
-      console.log('No valid refresh token found');
+      await this.tryRefreshToken(); // sends cookie with withCredentials
+      console.log('[Auth] Session restored from cookie');
+    } catch {
+      console.log('[Auth] No valid refresh token — starting unauthenticated');
+      this.clearAuthData();
     } finally {
       this.isInitializedSubject.next(true);
     }
   }
 
-  // Get access token for NSwag
+  /** Getter used by interceptors */
   getAccessToken(): string | null {
     if (this.accessToken && this.tokenExpiry && new Date() < this.tokenExpiry) {
       return this.accessToken;
@@ -66,62 +64,52 @@ export class TokenService {
     return null;
   }
 
-  // Check if user is authenticated
   isAuthenticated(): boolean {
     return this.getAccessToken() !== null;
   }
 
-  // Get current user
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
-  // Login method (call your NSwag generated client here)
+  /** Optional direct login (you use NSwag in your component; this is here for completeness) */
   async login(userName: string, password: string): Promise<LoginResponse> {
-    try {
-      const response = await this.http
-        .post<LoginResponse>(
-          `${this.apiUrl}/user/login`,
-          { userName, password },
-          { withCredentials: true }
-        )
-        .toPromise();
+    const res = await firstValueFrom(
+      this.http.post<LoginResponse>(
+        `${this.apiUrl}/user/login`,
+        { userName, password },
+        { withCredentials: true } // receive/set refresh cookie from API origin
+      )
+    );
 
-      if (response?.isSuccess && response.data) {
-        this.setAuthData(response.data);
-      }
-
-      return response!;
-    } catch (error) {
-      throw error;
+    if (res?.isSuccess && res.data) {
+      this.setAuthData(res.data);
     }
+    return res!;
   }
 
-  // Refresh token method
+  /** Called by initializer / interceptor to rotate access token using refresh cookie */
   async refreshToken(): Promise<boolean> {
-    if (this.isRefreshing) {
-      return false;
-    }
-
+    if (this.isRefreshing) return false; // prevent parallel refreshes
     this.isRefreshing = true;
 
     try {
-      const response = await this.http
-        .post<LoginResponse>(
-          `${this.apiUrl}/user/refresh-token`,
+      const res = await firstValueFrom(
+        this.http.post<LoginResponse>(
+          `${this.apiUrl}/api/User/refresh-token`,
           {},
-          { withCredentials: true }
+          { withCredentials: true } // send HttpOnly refresh cookie
         )
-        .toPromise();
+      );
 
-      if (response?.isSuccess && response.data) {
-        this.setAuthData(response.data);
+      if (res?.isSuccess && res.data) {
+        this.setAuthData(res.data);
         return true;
       }
 
       this.clearAuthData();
       return false;
-    } catch (error) {
+    } catch {
       this.clearAuthData();
       return false;
     } finally {
@@ -129,32 +117,39 @@ export class TokenService {
     }
   }
 
-  // Try refresh token (used internally)
   private async tryRefreshToken(): Promise<void> {
-    const success = await this.refreshToken();
-    if (!success) {
-      throw new Error('Refresh failed');
-    }
+    const ok = await this.refreshToken();
+    if (!ok) throw new Error('Refresh failed');
   }
 
-  // Logout
   async logout(): Promise<void> {
     try {
-      await this.http
-        .post(`${this.apiUrl}/user/logout`, {}, { withCredentials: true })
-        .toPromise();
-    } catch (error) {
-      // Even if logout fails on server, clear local data
-      console.error('Logout error:', error);
+      await firstValueFrom(
+        this.http.post(
+          `${this.apiUrl}/api/User/logout`,
+          {},
+          { withCredentials: true }
+        )
+      );
+    } catch (e) {
+      console.warn(
+        '[Auth] Logout call failed, clearing local state anyway.',
+        e
+      );
     } finally {
       this.clearAuthData();
     }
   }
 
-  // Set authentication data
-  public setAuthData(data: LoginResponse['data']): void {
+  /** Store new access token + user details in memory and schedule auto-refresh */
+  public setAuthData(data: NonNullable<LoginResponse['data']>): void {
     this.accessToken = data.userToken;
-    this.tokenExpiry = new Date(Date.now() + 8 * 60 * 60 * 1000); // 8 hours
+
+    // Prefer JWT exp if present; fallback to 8h to match your server
+    const exp = this.getJwtExp(data.userToken);
+    this.tokenExpiry = exp
+      ? new Date(exp * 1000)
+      : new Date(Date.now() + 8 * 60 * 60 * 1000);
 
     const user: User = {
       id: data.userID,
@@ -166,7 +161,6 @@ export class TokenService {
     this.scheduleTokenRefresh();
   }
 
-  // Clear authentication data
   private clearAuthData(): void {
     this.accessToken = null;
     this.tokenExpiry = null;
@@ -178,38 +172,48 @@ export class TokenService {
     }
   }
 
-  // Schedule automatic token refresh
+  /** Proactively refresh 5 minutes before expiry (or 30s if exp is short) */
   private scheduleTokenRefresh(): void {
-    if (this.refreshTimer) {
-      clearTimeout(this.refreshTimer);
-    }
-
+    if (this.refreshTimer) clearTimeout(this.refreshTimer);
     if (!this.tokenExpiry) return;
 
-    const refreshTime = this.tokenExpiry.getTime() - Date.now() - 5 * 60 * 1000;
+    const bufferMs = 5 * 60 * 1000;
+    let msUntilRefresh = this.tokenExpiry.getTime() - Date.now() - bufferMs;
+    if (msUntilRefresh < 30_000) msUntilRefresh = 30_000; // avoid hammering
 
-    if (refreshTime > 0) {
-      this.refreshTimer = setTimeout(() => {
-        if (this.isAuthenticated()) {
-          this.tryRefreshToken().catch(() => this.clearAuthData());
-        }
-      }, refreshTime);
-    }
+    this.refreshTimer = setTimeout(() => {
+      if (this.isAuthenticated()) {
+        this.tryRefreshToken().catch(() => this.clearAuthData());
+      }
+    }, msUntilRefresh);
   }
 
-  // Check roles
   hasRole(role: string): boolean {
-    const user = this.getCurrentUser();
-    return user?.roles?.includes(role) ?? false;
+    const u = this.getCurrentUser();
+    return u?.roles?.includes(role) ?? false;
   }
 
   hasAnyRole(roles: string[]): boolean {
-    const user = this.getCurrentUser();
-    return roles.some((role) => user?.roles?.includes(role)) ?? false;
+    const u = this.getCurrentUser();
+    return roles.some((r) => u?.roles?.includes(r)) ?? false;
   }
 
-  // Get refreshing status
   get isCurrentlyRefreshing(): boolean {
     return this.isRefreshing;
+  }
+
+  // ---- helpers ----
+  /** Extract 'exp' (epoch seconds) from a JWT without verifying it */
+  private getJwtExp(token: string): number | null {
+    try {
+      const payload = token.split('.')[1];
+      if (!payload) return null;
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const json = atob(base64);
+      const obj = JSON.parse(json);
+      return typeof obj.exp === 'number' ? obj.exp : null;
+    } catch {
+      return null;
+    }
   }
 }

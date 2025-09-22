@@ -48,6 +48,7 @@ export class UserLoginComponent {
   data: RegisterUserDto = new RegisterUserDto();
 
   async onLogin() {
+    // debugger;
     if (!this.data.userName || !this.data.password) {
       this.ngxToastrMessage.showtoastrInfo('Info', 'Please fill in all fields');
       return;
@@ -63,15 +64,17 @@ export class UserLoginComponent {
       });
 
       if (res.isSuccess && res.data) {
-        TokenStorage.setAuthData({
+        // Use TokenService instead of TokenStorage
+        this.tokenService.setAuthData({
+          userID: res.data.userID,
           userToken: res.data.userToken,
           newRefreshToken: res.data.newRefreshToken,
-          userID: res.data.userID,
           userName: res.data.userName,
           userRole: res.data.userRole,
         });
 
-        const user = TokenStorage.getUser();
+        // Get user from TokenService
+        const user = this.tokenService.getCurrentUser();
         const roles = user?.roles || [];
 
         if (roles.includes('Admin')) {
@@ -99,63 +102,5 @@ export class UserLoginComponent {
     } finally {
       this.isLoading = false;
     }
-  }
-
-  // Alternative method if you prefer to keep using NSwag directly
-  onLoginWithNSwag() {
-    if (!this.data.userName || !this.data.password) {
-      this.ngxToastrMessage.showtoastrInfo('Info', 'Please fill in all fields');
-      return;
-    }
-
-    this.isLoading = true;
-
-    this.userService.login(this.data).subscribe({
-      next: (res) => {
-        if (res.isSuccess && res.data) {
-          // Instead of localStorage, use TokenService to handle tokens securely
-          // this.tokenService.setAuthData(res.data);
-
-          TokenStorage.setAuthData({
-            userToken: res.data.userToken,
-            newRefreshToken: res.data.newRefreshToken, // ✅ must be set
-            userID: res.data.userID,
-            userName: res.data.userName,
-            userRole: res.data.userRole,
-          });
-
-          const user = this.tokenService.getCurrentUser();
-
-          if (user?.roles) {
-            if (user.roles.includes('Admin')) {
-              this.router.navigate(['/admin/admin-dashboard']);
-            } else if (user.roles.includes('User')) {
-              this.router.navigate(['/main/main-dashboard']);
-            } else {
-              this.router.navigate(['/main/main-dashboard']);
-            }
-          } else {
-            this.router.navigate(['/main/main-dashboard']);
-          }
-
-          this.ngxToastrMessage.showtoastr(
-            'Success',
-            'Welcome ' + res.data.userName
-          );
-        } else {
-          this.ngxToastrMessage.showtoastrInfo('Info', res.errorMessage);
-        }
-      },
-      error: (error) => {
-        console.error('Login error:', error);
-        this.ngxToastrMessage.showtoastrInfo(
-          'Error',
-          'Login failed. Please try again.'
-        );
-      },
-      complete: () => {
-        this.isLoading = false;
-      },
-    });
   }
 }
