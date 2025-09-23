@@ -1,0 +1,149 @@
+:host {
+  --g: 16px;
+  --edu-card: #ffffff;
+  --edu-card-2: #ffffff;
+  --work-accent: #10b981;
+  --work-text: #201e1e;
+  --work-muted: #9fb0c3;
+  --work-danger: #ff6b6b;
+  --work-border: #d1d5db;
+  --work-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  --radius: 14px;
+}
+
+/* Toolbar */
+.work-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.work-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+/* Add button */
+.work-add-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--work-accent);
+  background: var(--work-accent);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+.work-add-btn:hover {
+  opacity: 0.9;
+}
+
+/* Row of cards */
+.work-row-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Card */
+.work-card {
+  flex: 1 1 calc((100% - (4 * var(--g))) / 5);
+  min-width: 240px;
+  background: linear-gradient(180deg, var(--work-card), var(--work-card-2));
+  border: 1px solid var(--work-border);
+  border-radius: var(--radius);
+  box-shadow: var(--work-shadow);
+  color: var(--work-text);
+  padding: 16px;
+  padding-top: 40px; /* space for delete */
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+.work-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--work-accent);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.1), var(--work-shadow);
+}
+
+/* Delete */
+.work-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--work-text);
+  font-size: 18px;
+  line-height: 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.work-delete:hover {
+  background: rgba(255, 107, 107, 0.2);
+  color: var(--work-danger);
+}
+
+/* Head + body */
+.work-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding-right: 44px;
+  margin-bottom: 10px;
+}
+.work-role {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+.work-years {
+  font-size: 0.85rem;
+  color: var(--work-accent);
+}
+.work-body {
+  display: grid;
+  gap: 8px;
+}
+.work-row {
+  display: flex;
+  gap: 6px;
+}
+.work-label {
+  font-size: 0.78rem;
+  color: var(--work-muted);
+  min-width: 70px;
+  text-transform: uppercase;
+}
+.work-value {
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .work-card {
+    flex-basis: calc((100% - (3 * var(--g))) / 4);
+  }
+}
+@media (max-width: 980px) {
+  .work-card {
+    flex-basis: calc((100% - (2 * var(--g))) / 3);
+  }
+}
+@media (max-width: 720px) {
+  .work-card {
+    flex-basis: calc((100% - var(--g)) / 2);
+  }
+}
+@media (max-width: 480px) {
+  .work-card {
+    flex-basis: 100%;
+  }
+}

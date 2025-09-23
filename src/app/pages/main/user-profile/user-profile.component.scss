@@ -159,6 +159,9 @@ body {
   transition: all 0.2s ease;
   white-space: nowrap;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .btn:hover {
@@ -191,6 +194,25 @@ body {
 
 .btn.ghost:hover {
   background: var(--accent);
+}
+
+.edit-profile-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(248, 250, 252, 0.95)
+  );
+  border: 1px solid var(--border);
+  color: var(--text);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-profile-btn:hover {
+  background: linear-gradient(135deg, var(--card), var(--accent));
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+  transform: translateY(-1px);
 }
 
 .stats {
@@ -538,11 +560,6 @@ body {
   .btn:active {
     transform: none;
   }
-}
-
-/* Dark mode preference support */
-@media (prefers-color-scheme: light) {
-  /* Keep dark theme as default, but could add light theme variables here */
 }
 
 /* Print styles */

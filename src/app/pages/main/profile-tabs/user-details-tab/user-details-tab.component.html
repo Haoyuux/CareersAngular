@@ -1,0 +1,247 @@
+<div class="edit-profile-modal">
+  <div class="modal-content">
+    <!-- Avatar Section -->
+    <div class="avatar-section">
+      <img
+        src="https://i.pravatar.cc/200?img=12"
+        alt="Profile Avatar"
+        class="avatar-preview"
+      />
+      <div class="avatar-controls">
+        <h4>Profile Picture</h4>
+        <p>Upload a new profile picture. Recommended size: 200x200px</p>
+        <div class="avatar-buttons">
+          <button class="btn">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17,8 12,3 7,8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Upload New
+          </button>
+          <button class="btn danger">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="3,6 5,6 21,6"></polyline>
+              <path
+                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+              ></path>
+            </svg>
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <!-- Personal Information -->
+      <div class="form-group col-6">
+        <label class="form-label">
+          First Name <span class="required">*</span>
+        </label>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="Enter your first name"
+          value="Jordan"
+        />
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label">
+          Last Name <span class="required">*</span>
+        </label>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="Enter your last name"
+          value="Reyes"
+        />
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label">
+          Email Address <span class="required">*</span>
+        </label>
+        <input
+          type="email"
+          class="form-input"
+          placeholder="your.email@example.com"
+          value="jordan@example.com"
+        />
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label"> Contact Number </label>
+        <input
+          type="tel"
+          class="form-input"
+          placeholder="+63 xxx xxx xxxx"
+          value="+63 912 345 6789"
+        />
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label"> Date of Birth </label>
+        <input type="date" class="form-input" value="1995-06-15" />
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label"> Gender </label>
+        <select class="form-input form-select">
+          <option value="">Select Gender</option>
+          <option value="male" selected>Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+          <option value="prefer-not-to-say">Prefer not to say</option>
+        </select>
+      </div>
+
+      <!-- Professional Information -->
+      <div class="form-group col-12">
+        <label class="form-label">
+          Professional Title <span class="required">*</span>
+        </label>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="e.g. Senior Frontend Developer"
+          value="Frontend Engineer • Angular / TypeScript"
+        />
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label"> Location </label>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="City, Country"
+          value="Pasig, Metro Manila"
+        />
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label"> Work Status </label>
+        <select class="form-input form-select">
+          <option value="open-to-work" selected>Open to work</option>
+          <option value="employed">Currently employed</option>
+          <option value="freelancing">Freelancing</option>
+          <option value="not-looking">Not looking</option>
+        </select>
+      </div>
+
+      <div class="form-group col-12">
+        <app-education-tab></app-education-tab>
+      </div>
+
+      <div class="form-group col-12">
+        <app-work-experience-tab></app-work-experience-tab>
+      </div>
+
+      <div class="form-group col-12">
+        <app-certificate-tab></app-certificate-tab>
+      </div>
+
+      <!-- <div class="form-group col-12">
+        <label class="form-label"> Website/Portfolio </label>
+        <input
+          type="url"
+          class="form-input"
+          placeholder="https://yourwebsite.com"
+          value="jordan.reyesexample.com"
+        />
+      </div> -->
+
+      <!-- Skills Section -->
+      <!-- <div class="form-group col-12">
+        <label class="form-label"> Skills & Technologies </label>
+        <div class="form-input skills-input">
+          <div class="skill-chip">
+            Angular
+            <button class="skill-remove">×</button>
+          </div>
+          <div class="skill-chip">
+            TypeScript
+            <button class="skill-remove">×</button>
+          </div>
+          <div class="skill-chip">
+            RxJS
+            <button class="skill-remove">×</button>
+          </div>
+          <div class="skill-chip">
+            SCSS
+            <button class="skill-remove">×</button>
+          </div>
+          <input type="text" class="skill-input" placeholder="Add a skill..." />
+        </div>
+      </div> -->
+
+      <!-- About Section -->
+      <div class="form-group col-12">
+        <label class="form-label"> About Me </label>
+        <textarea
+          class="form-input textarea"
+          placeholder="Tell us about yourself, your experience, and what you're passionate about..."
+        >
+Frontend engineer with a knack for clean UX and component design. Loves Angular, RxJS, and crafting pixel-perfect interfaces.</textarea
+        >
+      </div>
+
+      <!-- Social Links -->
+      <!-- <div class="form-group col-6">
+        <label class="form-label"> GitHub Profile </label>
+        <input
+          type="url"
+          class="form-input"
+          placeholder="https://github.com/username"
+          value="github.com/jreyes"
+        />
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label"> LinkedIn Profile </label>
+        <input
+          type="url"
+          class="form-input"
+          placeholder="https://linkedin.com/in/username"
+          value="linkedin.com/in/jordan-reyes"
+        />
+      </div> -->
+    </div>
+
+    <!-- Modal Actions -->
+    <div class="modal-actions">
+      <button class="btn">Cancel</button>
+      <button class="btn primary">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M19 21H5a2 2 0 0 1-2 2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+          ></path>
+          <polyline points="17,21 17,13 7,13 7,21"></polyline>
+          <polyline points="7,3 7,8 15,8"></polyline>
+        </svg>
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>

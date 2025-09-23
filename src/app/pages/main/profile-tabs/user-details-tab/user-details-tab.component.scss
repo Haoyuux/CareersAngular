@@ -1,0 +1,338 @@
+.edit-profile-modal {
+  --bg: #ffffff;
+  --card: #ffffff;
+  --card-2: #f8fafc;
+  --text: #1e293b;
+  --muted: #64748b;
+  --primary: #6366f1;
+  --ring: #e2e8f0;
+  --border: #e2e8f0;
+  --accent: #f1f5f9;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-content {
+  padding: 24px;
+  background: linear-gradient(135deg, var(--card) 0%, var(--card-2) 100%);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(1fr, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.col-6 {
+  //   grid-column: span 1;
+  max-width: 100%;
+}
+
+.col-12 {
+  grid-column: span 2;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.form-input {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(248, 250, 252, 0.95)
+  );
+  color: var(--text);
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1),
+    0 4px 12px rgba(99, 102, 241, 0.15);
+  background: var(--card);
+}
+
+.form-input::placeholder {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+  object-fit: cover;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+  flex-shrink: 0;
+}
+
+.avatar-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.avatar-controls h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.avatar-controls p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.avatar-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(248, 250, 252, 0.95)
+  );
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn:hover {
+  border-color: var(--primary);
+  background: var(--accent);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  transform: translateY(-1px);
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-color: #6366f1;
+  color: white;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+}
+
+.btn.primary:hover {
+  background: linear-gradient(135deg, #5b21b6, #7c3aed);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+}
+
+.btn.danger {
+  color: #ef4444;
+  border-color: #fecaca;
+}
+
+.btn.danger:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--border);
+  margin-top: 24px;
+}
+
+.skills-input {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 44px;
+  align-items: center;
+  padding: 8px 12px;
+}
+
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  color: white;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.skill-remove {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  opacity: 0.7;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skill-remove:hover {
+  opacity: 1;
+}
+
+.skill-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  min-width: 100px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.skill-input::placeholder {
+  color: var(--muted);
+}
+
+/* Custom scrollbar */
+.edit-profile-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.edit-profile-modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.edit-profile-modal::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+.edit-profile-modal::-webkit-scrollbar-thumb:hover {
+  background: #5b21b6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .col-6,
+  .col-12 {
+    grid-column: span 1;
+  }
+
+  .avatar-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .modal-content {
+    padding: 16px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .avatar-buttons {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .avatar-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .edit-profile-modal {
+    max-height: 90vh;
+  }
+
+  .modal-content {
+    padding: 12px;
+  }
+}
