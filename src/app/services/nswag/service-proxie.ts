@@ -124,6 +124,102 @@ export class HrmsServices {
         }
         return _observableOf(null as any);
     }
+
+    getAllGender(): Observable<ApiResponseMessageOfIListOfGetAllGenderDto> {
+        let url_ = this.baseUrl + "/api/Hrms/GetAllGender";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllGender(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllGender(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfGetAllGenderDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfGetAllGenderDto>;
+        }));
+    }
+
+    protected processGetAllGender(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfGetAllGenderDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfGetAllGenderDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getAllCivilStatus(): Observable<ApiResponseMessageOfIListOfGetAllCivilStatusDto> {
+        let url_ = this.baseUrl + "/api/Hrms/GetAllCivilStatus";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllCivilStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllCivilStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfGetAllCivilStatusDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfGetAllCivilStatusDto>;
+        }));
+    }
+
+    protected processGetAllCivilStatus(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfGetAllCivilStatusDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfGetAllCivilStatusDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -389,7 +485,7 @@ export class UserServices {
         return _observableOf(null as any);
     }
 
-    getUserProfileDetails(): Observable<ApiResponseMessageOfgetUserProfileDetailsDto> {
+    getUserProfileDetails(): Observable<ApiResponseMessageOfUserDto> {
         let url_ = this.baseUrl + "/api/User/getUserProfileDetails";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -408,14 +504,14 @@ export class UserServices {
                 try {
                     return this.processGetUserProfileDetails(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfgetUserProfileDetailsDto>;
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfUserDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfgetUserProfileDetailsDto>;
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfUserDto>;
         }));
     }
 
-    protected processGetUserProfileDetails(response: HttpResponseBase): Observable<ApiResponseMessageOfgetUserProfileDetailsDto> {
+    protected processGetUserProfileDetails(response: HttpResponseBase): Observable<ApiResponseMessageOfUserDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -426,7 +522,59 @@ export class UserServices {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ApiResponseMessageOfgetUserProfileDetailsDto.fromJS(resultData200);
+            result200 = ApiResponseMessageOfUserDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    insertOrUpdateUserProfile(input: InsertOrUpdateUserProfileDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/InsertOrUpdateUserProfile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processInsertOrUpdateUserProfile(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processInsertOrUpdateUserProfile(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processInsertOrUpdateUserProfile(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -609,6 +757,196 @@ export interface IGetAllJobPostsDto {
     logoInitial: string | undefined;
 }
 
+export class ApiResponseMessageOfIListOfGetAllGenderDto implements IApiResponseMessageOfIListOfGetAllGenderDto {
+    data!: GetAllGenderDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfIListOfGetAllGenderDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(GetAllGenderDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfIListOfGetAllGenderDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfGetAllGenderDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfIListOfGetAllGenderDto {
+    data: GetAllGenderDto[];
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class GetAllGenderDto implements IGetAllGenderDto {
+    id!: string;
+    name!: string;
+
+    constructor(data?: IGetAllGenderDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): GetAllGenderDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAllGenderDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IGetAllGenderDto {
+    id: string;
+    name: string;
+}
+
+export class ApiResponseMessageOfIListOfGetAllCivilStatusDto implements IApiResponseMessageOfIListOfGetAllCivilStatusDto {
+    data!: GetAllCivilStatusDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfIListOfGetAllCivilStatusDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(GetAllCivilStatusDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfIListOfGetAllCivilStatusDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfGetAllCivilStatusDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfIListOfGetAllCivilStatusDto {
+    data: GetAllCivilStatusDto[];
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class GetAllCivilStatusDto implements IGetAllCivilStatusDto {
+    id!: string;
+    name!: string;
+
+    constructor(data?: IGetAllCivilStatusDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): GetAllCivilStatusDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAllCivilStatusDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IGetAllCivilStatusDto {
+    id: string;
+    name: string;
+}
+
 export class ApiResponseMessageOfString implements IApiResponseMessageOfString {
     data!: string;
     isSuccess!: boolean;
@@ -656,10 +994,19 @@ export interface IApiResponseMessageOfString {
 export class UserDto implements IUserDto {
     id!: string;
     firstName!: string | undefined;
-    lastname!: string | undefined;
+    lastName!: string | undefined;
+    middleName!: string | undefined;
+    contactNo!: string | undefined;
     userName!: string | undefined;
     password!: string | undefined;
     email!: string | undefined;
+    dateOfBirth!: Date | undefined;
+    hr201GenderId!: string | undefined;
+    hr201CivilStatus!: string | undefined;
+    address!: string | undefined;
+    aboutMe!: string | undefined;
+    streetDetails!: string | undefined;
+    userProfileByte!: string;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -674,10 +1021,19 @@ export class UserDto implements IUserDto {
         if (_data) {
             this.id = _data["id"];
             this.firstName = _data["firstName"];
-            this.lastname = _data["lastname"];
+            this.lastName = _data["lastName"];
+            this.middleName = _data["middleName"];
+            this.contactNo = _data["contactNo"];
             this.userName = _data["userName"];
             this.password = _data["password"];
             this.email = _data["email"];
+            this.dateOfBirth = _data["dateOfBirth"] ? new Date(_data["dateOfBirth"].toString()) : undefined as any;
+            this.hr201GenderId = _data["hr201GenderId"];
+            this.hr201CivilStatus = _data["hr201CivilStatus"];
+            this.address = _data["address"];
+            this.aboutMe = _data["aboutMe"];
+            this.streetDetails = _data["streetDetails"];
+            this.userProfileByte = _data["userProfileByte"];
         }
     }
 
@@ -692,10 +1048,19 @@ export class UserDto implements IUserDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["firstName"] = this.firstName;
-        data["lastname"] = this.lastname;
+        data["lastName"] = this.lastName;
+        data["middleName"] = this.middleName;
+        data["contactNo"] = this.contactNo;
         data["userName"] = this.userName;
         data["password"] = this.password;
         data["email"] = this.email;
+        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : undefined as any;
+        data["hr201GenderId"] = this.hr201GenderId;
+        data["hr201CivilStatus"] = this.hr201CivilStatus;
+        data["address"] = this.address;
+        data["aboutMe"] = this.aboutMe;
+        data["streetDetails"] = this.streetDetails;
+        data["userProfileByte"] = this.userProfileByte;
         return data;
     }
 }
@@ -703,10 +1068,19 @@ export class UserDto implements IUserDto {
 export interface IUserDto {
     id: string;
     firstName: string | undefined;
-    lastname: string | undefined;
+    lastName: string | undefined;
+    middleName: string | undefined;
+    contactNo: string | undefined;
     userName: string | undefined;
     password: string | undefined;
     email: string | undefined;
+    dateOfBirth: Date | undefined;
+    hr201GenderId: string | undefined;
+    hr201CivilStatus: string | undefined;
+    address: string | undefined;
+    aboutMe: string | undefined;
+    streetDetails: string | undefined;
+    userProfileByte: string;
 }
 
 export class RegisterUserDto implements IRegisterUserDto {
@@ -900,12 +1274,12 @@ export interface IApiResponseMessageOfBoolean {
     errorMessage: string;
 }
 
-export class ApiResponseMessageOfgetUserProfileDetailsDto implements IApiResponseMessageOfgetUserProfileDetailsDto {
-    data!: GetUserProfileDetailsDto;
+export class ApiResponseMessageOfUserDto implements IApiResponseMessageOfUserDto {
+    data!: UserDto;
     isSuccess!: boolean;
     errorMessage!: string;
 
-    constructor(data?: IApiResponseMessageOfgetUserProfileDetailsDto) {
+    constructor(data?: IApiResponseMessageOfUserDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -913,21 +1287,21 @@ export class ApiResponseMessageOfgetUserProfileDetailsDto implements IApiRespons
             }
         }
         if (!data) {
-            this.data = new GetUserProfileDetailsDto();
+            this.data = new UserDto();
         }
     }
 
     init(_data?: any) {
         if (_data) {
-            this.data = _data["data"] ? GetUserProfileDetailsDto.fromJS(_data["data"]) : new GetUserProfileDetailsDto();
+            this.data = _data["data"] ? UserDto.fromJS(_data["data"]) : new UserDto();
             this.isSuccess = _data["isSuccess"];
             this.errorMessage = _data["errorMessage"];
         }
     }
 
-    static fromJS(data: any): ApiResponseMessageOfgetUserProfileDetailsDto {
+    static fromJS(data: any): ApiResponseMessageOfUserDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ApiResponseMessageOfgetUserProfileDetailsDto();
+        let result = new ApiResponseMessageOfUserDto();
         result.init(data);
         return result;
     }
@@ -941,29 +1315,19 @@ export class ApiResponseMessageOfgetUserProfileDetailsDto implements IApiRespons
     }
 }
 
-export interface IApiResponseMessageOfgetUserProfileDetailsDto {
-    data: GetUserProfileDetailsDto;
+export interface IApiResponseMessageOfUserDto {
+    data: UserDto;
     isSuccess: boolean;
     errorMessage: string;
 }
 
-export class GetUserProfileDetailsDto implements IGetUserProfileDetailsDto {
-    firstName!: string;
-    lastName!: string;
-    contactNo!: string;
-    emailAddress!: string;
-    dateOfBirth!: Date | undefined;
-    hr201GenderId!: string;
-    hr201CivilStatus!: string;
-    address!: string;
-    region!: string;
-    province!: string;
-    city!: string;
-    barangay!: string;
-    aboutMe!: string;
-    streetDetails!: string;
+export class InsertOrUpdateUserProfileDto implements IInsertOrUpdateUserProfileDto {
+    profileImageBase64!: string;
+    profileImageFileName!: string;
+    profileImageContentType!: string;
+    removeProfileImage!: boolean;
 
-    constructor(data?: IGetUserProfileDetailsDto) {
+    constructor(data?: IInsertOrUpdateUserProfileDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -974,65 +1338,35 @@ export class GetUserProfileDetailsDto implements IGetUserProfileDetailsDto {
 
     init(_data?: any) {
         if (_data) {
-            this.firstName = _data["firstName"];
-            this.lastName = _data["lastName"];
-            this.contactNo = _data["contactNo"];
-            this.emailAddress = _data["emailAddress"];
-            this.dateOfBirth = _data["dateOfBirth"] ? new Date(_data["dateOfBirth"].toString()) : undefined as any;
-            this.hr201GenderId = _data["hr201GenderId"];
-            this.hr201CivilStatus = _data["hr201CivilStatus"];
-            this.address = _data["address"];
-            this.region = _data["region"];
-            this.province = _data["province"];
-            this.city = _data["city"];
-            this.barangay = _data["barangay"];
-            this.aboutMe = _data["aboutMe"];
-            this.streetDetails = _data["streetDetails"];
+            this.profileImageBase64 = _data["profileImageBase64"];
+            this.profileImageFileName = _data["profileImageFileName"];
+            this.profileImageContentType = _data["profileImageContentType"];
+            this.removeProfileImage = _data["removeProfileImage"];
         }
     }
 
-    static fromJS(data: any): GetUserProfileDetailsDto {
+    static fromJS(data: any): InsertOrUpdateUserProfileDto {
         data = typeof data === 'object' ? data : {};
-        let result = new GetUserProfileDetailsDto();
+        let result = new InsertOrUpdateUserProfileDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["firstName"] = this.firstName;
-        data["lastName"] = this.lastName;
-        data["contactNo"] = this.contactNo;
-        data["emailAddress"] = this.emailAddress;
-        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : undefined as any;
-        data["hr201GenderId"] = this.hr201GenderId;
-        data["hr201CivilStatus"] = this.hr201CivilStatus;
-        data["address"] = this.address;
-        data["region"] = this.region;
-        data["province"] = this.province;
-        data["city"] = this.city;
-        data["barangay"] = this.barangay;
-        data["aboutMe"] = this.aboutMe;
-        data["streetDetails"] = this.streetDetails;
+        data["profileImageBase64"] = this.profileImageBase64;
+        data["profileImageFileName"] = this.profileImageFileName;
+        data["profileImageContentType"] = this.profileImageContentType;
+        data["removeProfileImage"] = this.removeProfileImage;
         return data;
     }
 }
 
-export interface IGetUserProfileDetailsDto {
-    firstName: string;
-    lastName: string;
-    contactNo: string;
-    emailAddress: string;
-    dateOfBirth: Date | undefined;
-    hr201GenderId: string;
-    hr201CivilStatus: string;
-    address: string;
-    region: string;
-    province: string;
-    city: string;
-    barangay: string;
-    aboutMe: string;
-    streetDetails: string;
+export interface IInsertOrUpdateUserProfileDto {
+    profileImageBase64: string;
+    profileImageFileName: string;
+    profileImageContentType: string;
+    removeProfileImage: boolean;
 }
 
 export interface FileResponse {

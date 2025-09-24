@@ -7,6 +7,11 @@
   [draggable]="false"
   [resizable]="false"
   [appendTo]="'body'"
+  [maximizable]="true"
 >
-  <app-user-details-tab></app-user-details-tab>
+  <app-user-details-tab
+    (closeDialog)="closeDialog()"
+    (profileUpdated)="onProfileUpdated()"
+  >
+  </app-user-details-tab>
 </p-dialog>

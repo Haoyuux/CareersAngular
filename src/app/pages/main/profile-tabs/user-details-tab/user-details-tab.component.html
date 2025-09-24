@@ -3,7 +3,7 @@
     <!-- Avatar Section -->
     <div class="avatar-section">
       <img
-        src="https://i.pravatar.cc/200?img=12"
+        [src]="getUserProfileImage()"
         alt="Profile Avatar"
         class="avatar-preview"
       />
@@ -11,7 +11,17 @@
         <h4>Profile Picture</h4>
         <p>Upload a new profile picture. Recommended size: 200x200px</p>
         <div class="avatar-buttons">
-          <button class="btn">
+          <!-- Hidden file input -->
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            style="display: none"
+          />
+
+          <!-- Button that triggers the file input -->
+          <button type="button" class="btn" (click)="fileInput.click()">
             <svg
               width="16"
               height="16"
@@ -26,7 +36,8 @@
             </svg>
             Upload New
           </button>
-          <button class="btn danger">
+
+          <button class="btn danger" (click)="onRemoveUserProfile()">
             <svg
               width="16"
               height="16"
@@ -56,7 +67,21 @@
           type="text"
           class="form-input"
           placeholder="Enter your first name"
-          value="Jordan"
+          [(ngModel)]="userData.firstName"
+          name="firstName"
+        />
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label">
+          Middle Name <span class="optional">(optional)</span>
+        </label>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="Enter your middle name (optional)"
+          [(ngModel)]="userData.middleName"
+          name="middleName"
         />
       </div>
 
@@ -68,7 +93,8 @@
           type="text"
           class="form-input"
           placeholder="Enter your last name"
-          value="Reyes"
+          [(ngModel)]="userData.lastName"
+          name="lastName"
         />
       </div>
 
@@ -80,7 +106,9 @@
           type="email"
           class="form-input"
           placeholder="your.email@example.com"
-          value="jordan@example.com"
+          [(ngModel)]="userData.email"
+          name="emailAddress"
+          disabled
         />
       </div>
 
@@ -91,6 +119,8 @@
           class="form-input"
           placeholder="+63 xxx xxx xxxx"
           value="+63 912 345 6789"
+          [(ngModel)]="userData.contactNo"
+          name="contactNo"
         />
       </div>
 
@@ -107,6 +137,17 @@
           <option value="female">Female</option>
           <option value="other">Other</option>
           <option value="prefer-not-to-say">Prefer not to say</option>
+        </select>
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label"> Civil Status </label>
+        <select class="form-input form-select">
+          <option value="single" selected>Single</option>
+          <option value="married">Married</option>
+          <option value="separated">Separated</option>
+          <option value="divorced">Divorced</option>
+          <option value="widowed">Widowed</option>
         </select>
       </div>
 
@@ -225,7 +266,7 @@ Frontend engineer with a knack for clean UX and component design. Loves Angular,
     <!-- Modal Actions -->
     <div class="modal-actions">
       <button class="btn">Cancel</button>
-      <button class="btn primary">
+      <button class="btn primary" (click)="onUpdateUserDetails()">
         <svg
           width="16"
           height="16"

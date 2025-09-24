@@ -29,7 +29,6 @@ import { TokenStorage } from '../../../services/token-service/token-store';
     ReactiveFormsModule,
     MatButtonModule,
     CommonModule,
-    NgxToastrMessageComponent,
   ],
   templateUrl: './user-login.component.html',
   styleUrl: './user-login.component.scss',
