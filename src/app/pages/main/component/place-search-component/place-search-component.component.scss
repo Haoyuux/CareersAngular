@@ -1,0 +1,92 @@
+.place-search {
+  position: relative;
+  max-width: 640px;
+}
+
+.ac-wrapper {
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15),
+    0 2px 8px rgba(99, 102, 241, 0.1);
+}
+
+.spinner {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ac-panel {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  margin-top: 6px;
+  background: #111827; /* dark mode friendly */
+  color: #e5e7eb;
+  border: 1px solid #374151;
+  border-radius: 12px;
+  max-height: 280px;
+  overflow: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.ac-item {
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.ac-item + .ac-item {
+  border-top: 1px solid #1f2937;
+}
+
+.ac-item:hover,
+.ac-item.active {
+  background: #1f2937;
+}
+
+.ac-title {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.ac-sub {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.error {
+  margin-top: 8px;
+  color: #ef4444;
+}
+
+.picked pre {
+  background: #0b1220;
+  color: #e5e7eb;
+  padding: 8px 10px;
+  border-radius: 8px;
+  overflow: auto;
+}

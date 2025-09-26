@@ -14,16 +14,19 @@
   color: var(--text);
   max-height: 80vh;
   overflow-y: auto;
+  // background: violet;
 }
 
 .modal-content {
   padding: 24px;
   background: linear-gradient(135deg, var(--card) 0%, var(--card-2) 100%);
+  // background: yellow;
+  width: 100%;
 }
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(1fr, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   margin-bottom: 24px;
 }
@@ -336,6 +339,19 @@
     padding: 12px;
   }
 }
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 100% !important;
+    // background: red;
+  }
+}
+
+// @media (max-width: 315px) {
+//   .form-grid {
+//     grid-template-columns: 1fr;
+//   }
+// }
 .form-input:disabled {
   background-color: #5a5a5a;
   color: #757575;

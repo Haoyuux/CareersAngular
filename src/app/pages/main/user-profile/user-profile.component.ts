@@ -9,10 +9,16 @@ import {
 } from 'src/app/services/nswag/service-proxie';
 import { CommonModule } from '@angular/common';
 import { EditProfileComponent } from '../edit-profile/edit-profile.component';
+import { PlaceSearchComponentComponent } from '../component/place-search-component/place-search-component.component';
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [MaterialModule, CommonModule, EditProfileComponent],
+  imports: [
+    MaterialModule,
+    CommonModule,
+    EditProfileComponent,
+    PlaceSearchComponentComponent,
+  ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss',
 })

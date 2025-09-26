@@ -1,0 +1,40 @@
+<div class="ac-wrapper">
+  <input
+    type="text"
+    class="form-input"
+    placeholder="Type a city, barangay, address..."
+    autocomplete="off"
+    [(ngModel)]="place"
+    (input)="onInput()"
+    (keydown)="onKeyDown($event)"
+    role="combobox"
+    aria-autocomplete="list"
+    [attr.aria-expanded]="(suggestions?.length ?? 0) > 0 ? 'true' : 'false'"
+    [attr.aria-controls]="(suggestions?.length ?? 0) > 0 ? 'ac-listbox' : null"
+    [attr.aria-activedescendant]="
+      activeIndex >= 0 ? 'ac-opt-' + activeIndex : null
+    "
+  />
+
+  <div class="spinner" *ngIf="isLoading"></div>
+
+  <div
+    class="ac-panel"
+    *ngIf="suggestions?.length"
+    id="ac-listbox"
+    role="listbox"
+  >
+    <div
+      class="ac-item"
+      *ngFor="let s of suggestions; let i = index"
+      [class.active]="i === activeIndex"
+      (click)="selectSuggestion(s)"
+      role="option"
+      [id]="'ac-opt-' + i"
+      [attr.aria-selected]="i === activeIndex ? 'true' : 'false'"
+    >
+      <div class="ac-title">{{ s.name }}</div>
+      <div class="ac-sub">{{ s.formattedAddress }}</div>
+    </div>
+  </div>
+</div>

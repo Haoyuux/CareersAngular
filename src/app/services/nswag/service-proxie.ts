@@ -25,7 +25,7 @@ export class HrmsServices {
         this.baseUrl = baseUrl ?? "";
     }
 
-    getAllJobPosts(): Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto> {
+    getAllJobPosts(): Observable<ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto> {
         let url_ = this.baseUrl + "/api/Hrms/GetAllJobPosts";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -44,14 +44,14 @@ export class HrmsServices {
                 try {
                     return this.processGetAllJobPosts(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto>;
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto>;
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto>;
         }));
     }
 
-    protected processGetAllJobPosts(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfGetAllJobPostsDto> {
+    protected processGetAllJobPosts(response: HttpResponseBase): Observable<ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -62,7 +62,7 @@ export class HrmsServices {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ApiResponseMessageOfIListOfGetAllJobPostsDto.fromJS(resultData200);
+            result200 = ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -125,7 +125,7 @@ export class HrmsServices {
         return _observableOf(null as any);
     }
 
-    getAllGender(): Observable<ApiResponseMessageOfIListOfGetAllGenderDto> {
+    getAllGender(): Observable<ApiResponseMessageHrmsOfIListOfGetAllGenderDto> {
         let url_ = this.baseUrl + "/api/Hrms/GetAllGender";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -144,14 +144,14 @@ export class HrmsServices {
                 try {
                     return this.processGetAllGender(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfGetAllGenderDto>;
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageHrmsOfIListOfGetAllGenderDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfGetAllGenderDto>;
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageHrmsOfIListOfGetAllGenderDto>;
         }));
     }
 
-    protected processGetAllGender(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfGetAllGenderDto> {
+    protected processGetAllGender(response: HttpResponseBase): Observable<ApiResponseMessageHrmsOfIListOfGetAllGenderDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -162,7 +162,7 @@ export class HrmsServices {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ApiResponseMessageOfIListOfGetAllGenderDto.fromJS(resultData200);
+            result200 = ApiResponseMessageHrmsOfIListOfGetAllGenderDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -173,7 +173,7 @@ export class HrmsServices {
         return _observableOf(null as any);
     }
 
-    getAllCivilStatus(): Observable<ApiResponseMessageOfIListOfGetAllCivilStatusDto> {
+    getAllCivilStatus(): Observable<ApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto> {
         let url_ = this.baseUrl + "/api/Hrms/GetAllCivilStatus";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -192,14 +192,14 @@ export class HrmsServices {
                 try {
                     return this.processGetAllCivilStatus(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfGetAllCivilStatusDto>;
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfGetAllCivilStatusDto>;
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto>;
         }));
     }
 
-    protected processGetAllCivilStatus(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfGetAllCivilStatusDto> {
+    protected processGetAllCivilStatus(response: HttpResponseBase): Observable<ApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -210,7 +210,7 @@ export class HrmsServices {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ApiResponseMessageOfIListOfGetAllCivilStatusDto.fromJS(resultData200);
+            result200 = ApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -584,14 +584,73 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    search(q: string | undefined): Observable<NominatimResult[]> {
+        let url_ = this.baseUrl + "/api/User/search?";
+        if (q === null)
+            throw new globalThis.Error("The parameter 'q' cannot be null.");
+        else if (q !== undefined)
+            url_ += "q=" + encodeURIComponent("" + q) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSearch(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSearch(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<NominatimResult[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<NominatimResult[]>;
+        }));
+    }
+
+    protected processSearch(response: HttpResponseBase): Observable<NominatimResult[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(NominatimResult.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
-export class ApiResponseMessageOfIListOfGetAllJobPostsDto implements IApiResponseMessageOfIListOfGetAllJobPostsDto {
+export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
     data!: GetAllJobPostsDto[];
     isSuccess!: boolean;
     errorMessage!: string;
 
-    constructor(data?: IApiResponseMessageOfIListOfGetAllJobPostsDto) {
+    constructor(data?: IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -615,9 +674,9 @@ export class ApiResponseMessageOfIListOfGetAllJobPostsDto implements IApiRespons
         }
     }
 
-    static fromJS(data: any): ApiResponseMessageOfIListOfGetAllJobPostsDto {
+    static fromJS(data: any): ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ApiResponseMessageOfIListOfGetAllJobPostsDto();
+        let result = new ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto();
         result.init(data);
         return result;
     }
@@ -635,7 +694,7 @@ export class ApiResponseMessageOfIListOfGetAllJobPostsDto implements IApiRespons
     }
 }
 
-export interface IApiResponseMessageOfIListOfGetAllJobPostsDto {
+export interface IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
     data: GetAllJobPostsDto[];
     isSuccess: boolean;
     errorMessage: string;
@@ -757,12 +816,12 @@ export interface IGetAllJobPostsDto {
     logoInitial: string | undefined;
 }
 
-export class ApiResponseMessageOfIListOfGetAllGenderDto implements IApiResponseMessageOfIListOfGetAllGenderDto {
+export class ApiResponseMessageHrmsOfIListOfGetAllGenderDto implements IApiResponseMessageHrmsOfIListOfGetAllGenderDto {
     data!: GetAllGenderDto[];
     isSuccess!: boolean;
     errorMessage!: string;
 
-    constructor(data?: IApiResponseMessageOfIListOfGetAllGenderDto) {
+    constructor(data?: IApiResponseMessageHrmsOfIListOfGetAllGenderDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -786,9 +845,9 @@ export class ApiResponseMessageOfIListOfGetAllGenderDto implements IApiResponseM
         }
     }
 
-    static fromJS(data: any): ApiResponseMessageOfIListOfGetAllGenderDto {
+    static fromJS(data: any): ApiResponseMessageHrmsOfIListOfGetAllGenderDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ApiResponseMessageOfIListOfGetAllGenderDto();
+        let result = new ApiResponseMessageHrmsOfIListOfGetAllGenderDto();
         result.init(data);
         return result;
     }
@@ -806,7 +865,7 @@ export class ApiResponseMessageOfIListOfGetAllGenderDto implements IApiResponseM
     }
 }
 
-export interface IApiResponseMessageOfIListOfGetAllGenderDto {
+export interface IApiResponseMessageHrmsOfIListOfGetAllGenderDto {
     data: GetAllGenderDto[];
     isSuccess: boolean;
     errorMessage: string;
@@ -852,12 +911,12 @@ export interface IGetAllGenderDto {
     name: string;
 }
 
-export class ApiResponseMessageOfIListOfGetAllCivilStatusDto implements IApiResponseMessageOfIListOfGetAllCivilStatusDto {
+export class ApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto implements IApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto {
     data!: GetAllCivilStatusDto[];
     isSuccess!: boolean;
     errorMessage!: string;
 
-    constructor(data?: IApiResponseMessageOfIListOfGetAllCivilStatusDto) {
+    constructor(data?: IApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -881,9 +940,9 @@ export class ApiResponseMessageOfIListOfGetAllCivilStatusDto implements IApiResp
         }
     }
 
-    static fromJS(data: any): ApiResponseMessageOfIListOfGetAllCivilStatusDto {
+    static fromJS(data: any): ApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ApiResponseMessageOfIListOfGetAllCivilStatusDto();
+        let result = new ApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto();
         result.init(data);
         return result;
     }
@@ -901,7 +960,7 @@ export class ApiResponseMessageOfIListOfGetAllCivilStatusDto implements IApiResp
     }
 }
 
-export interface IApiResponseMessageOfIListOfGetAllCivilStatusDto {
+export interface IApiResponseMessageHrmsOfIListOfGetAllCivilStatusDto {
     data: GetAllCivilStatusDto[];
     isSuccess: boolean;
     errorMessage: string;
@@ -1002,7 +1061,9 @@ export class UserDto implements IUserDto {
     email!: string | undefined;
     dateOfBirth!: Date | undefined;
     hr201GenderId!: string | undefined;
-    hr201CivilStatus!: string | undefined;
+    hr201CivilStatusId!: string | undefined;
+    gender!: string;
+    civilStatus!: string;
     address!: string | undefined;
     aboutMe!: string | undefined;
     streetDetails!: string | undefined;
@@ -1029,7 +1090,9 @@ export class UserDto implements IUserDto {
             this.email = _data["email"];
             this.dateOfBirth = _data["dateOfBirth"] ? new Date(_data["dateOfBirth"].toString()) : undefined as any;
             this.hr201GenderId = _data["hr201GenderId"];
-            this.hr201CivilStatus = _data["hr201CivilStatus"];
+            this.hr201CivilStatusId = _data["hr201CivilStatusId"];
+            this.gender = _data["gender"];
+            this.civilStatus = _data["civilStatus"];
             this.address = _data["address"];
             this.aboutMe = _data["aboutMe"];
             this.streetDetails = _data["streetDetails"];
@@ -1056,7 +1119,9 @@ export class UserDto implements IUserDto {
         data["email"] = this.email;
         data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : undefined as any;
         data["hr201GenderId"] = this.hr201GenderId;
-        data["hr201CivilStatus"] = this.hr201CivilStatus;
+        data["hr201CivilStatusId"] = this.hr201CivilStatusId;
+        data["gender"] = this.gender;
+        data["civilStatus"] = this.civilStatus;
         data["address"] = this.address;
         data["aboutMe"] = this.aboutMe;
         data["streetDetails"] = this.streetDetails;
@@ -1076,7 +1141,9 @@ export interface IUserDto {
     email: string | undefined;
     dateOfBirth: Date | undefined;
     hr201GenderId: string | undefined;
-    hr201CivilStatus: string | undefined;
+    hr201CivilStatusId: string | undefined;
+    gender: string;
+    civilStatus: string;
     address: string | undefined;
     aboutMe: string | undefined;
     streetDetails: string | undefined;
@@ -1367,6 +1434,70 @@ export interface IInsertOrUpdateUserProfileDto {
     profileImageFileName: string;
     profileImageContentType: string;
     removeProfileImage: boolean;
+}
+
+export class NominatimResult implements INominatimResult {
+    place_id!: number;
+    display_name!: string;
+    lat!: string;
+    lon!: string;
+    address!: { [key: string]: string; } | undefined;
+
+    constructor(data?: INominatimResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.place_id = _data["place_id"];
+            this.display_name = _data["display_name"];
+            this.lat = _data["lat"];
+            this.lon = _data["lon"];
+            if (_data["address"]) {
+                this.address = {} as any;
+                for (let key in _data["address"]) {
+                    if (_data["address"].hasOwnProperty(key))
+                        (this.address as any)![key] = _data["address"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): NominatimResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new NominatimResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["place_id"] = this.place_id;
+        data["display_name"] = this.display_name;
+        data["lat"] = this.lat;
+        data["lon"] = this.lon;
+        if (this.address) {
+            data["address"] = {};
+            for (let key in this.address) {
+                if (this.address.hasOwnProperty(key))
+                    (data["address"] as any)[key] = (this.address as any)[key];
+            }
+        }
+        return data;
+    }
+}
+
+export interface INominatimResult {
+    place_id: number;
+    display_name: string;
+    lat: string;
+    lon: string;
+    address: { [key: string]: string; } | undefined;
 }
 
 export interface FileResponse {

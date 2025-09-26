@@ -2,6 +2,33 @@
 // @import "ngx-toastr/toastr";
 @import "ngx-toastr/toastr";
 
+gmpx-place-autocomplete,
+gmp-place-autocomplete {
+  color-scheme: light !important;
+  border-radius: 12px;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important; /* allow shrink */
+  box-sizing: border-box !important;
+  border-color: 1px solid white;
+  border: 1px solid #e2e8f0;
+}
+
+.modal,
+.modal *[class*="row"],
+.modal *[class*="col"],
+.modal .modal-body,
+.form-row,
+.form-group {
+  min-width: 0; /* allow children to shrink */
+}
+
+.modal,
+.modal .modal-body {
+  overflow-x: hidden; /* safety net for any stray overflow */
+}
+
 html,
 body {
   height: 100%;
@@ -9,4 +36,7 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+:host {
+  color-scheme: normal;
 }

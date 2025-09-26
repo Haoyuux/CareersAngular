@@ -126,28 +126,70 @@
 
       <div class="form-group col-6">
         <label class="form-label"> Date of Birth </label>
-        <input type="date" class="form-input" value="1995-06-15" />
+        <input
+          type="date"
+          class="form-input"
+          name="dateofbirth"
+          [ngModel]="userData.dateOfBirth | date : 'yyyy-MM-dd'"
+          (ngModelChange)="onDobChange($event)"
+        />
       </div>
 
       <div class="form-group col-6">
         <label class="form-label"> Gender </label>
-        <select class="form-input form-select">
-          <option value="">Select Gender</option>
-          <option value="male" selected>Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-          <option value="prefer-not-to-say">Prefer not to say</option>
+        <select
+          class="form-input form-select"
+          name="hr201GenderId"
+          [(ngModel)]="userData.hr201GenderId"
+        >
+          <option disabled>Select Gender</option>
+          <option *ngFor="let xgender of dataGender" [ngValue]="xgender.id">
+            {{ xgender.name }}
+          </option>
         </select>
       </div>
 
       <div class="form-group col-6">
         <label class="form-label"> Civil Status </label>
+        <select
+          class="form-input form-select"
+          name="hr201CivilStatus"
+          [(ngModel)]="userData.hr201CivilStatusId"
+        >
+          <option disabled>Select Civil Status</option>
+          <option *ngFor="let xcivil of dataCivilStatus" [ngValue]="xcivil.id">
+            {{ xcivil.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group col-12">
+        <label class="form-label"> Location </label>
+        <app-place-search-component-v1
+          #placeSearch
+          (filtersChanged)="userData.address = $event.address"
+        >
+        </app-place-search-component-v1>
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label">Street Details</label>
+        <input
+          type="text"
+          class="form-input form-control"
+          placeholder="Enter street details"
+          name="streetDetails"
+          [(ngModel)]="userData.streetDetails"
+        />
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label"> Work Status </label>
         <select class="form-input form-select">
-          <option value="single" selected>Single</option>
-          <option value="married">Married</option>
-          <option value="separated">Separated</option>
-          <option value="divorced">Divorced</option>
-          <option value="widowed">Widowed</option>
+          <option value="open-to-work" selected>Open to work</option>
+          <option value="employed">Currently employed</option>
+          <option value="freelancing">Freelancing</option>
+          <option value="not-looking">Not looking</option>
         </select>
       </div>
 
@@ -162,26 +204,6 @@
           placeholder="e.g. Senior Frontend Developer"
           value="Frontend Engineer • Angular / TypeScript"
         />
-      </div>
-
-      <div class="form-group col-6">
-        <label class="form-label"> Location </label>
-        <input
-          type="text"
-          class="form-input"
-          placeholder="City, Country"
-          value="Pasig, Metro Manila"
-        />
-      </div>
-
-      <div class="form-group col-6">
-        <label class="form-label"> Work Status </label>
-        <select class="form-input form-select">
-          <option value="open-to-work" selected>Open to work</option>
-          <option value="employed">Currently employed</option>
-          <option value="freelancing">Freelancing</option>
-          <option value="not-looking">Not looking</option>
-        </select>
       </div>
 
       <div class="form-group col-12">
@@ -236,6 +258,8 @@
         <textarea
           class="form-input textarea"
           placeholder="Tell us about yourself, your experience, and what you're passionate about..."
+          name="aboutMe"
+          [(ngModel)]="userData.aboutMe"
         >
 Frontend engineer with a knack for clean UX and component design. Loves Angular, RxJS, and crafting pixel-perfect interfaces.</textarea
         >

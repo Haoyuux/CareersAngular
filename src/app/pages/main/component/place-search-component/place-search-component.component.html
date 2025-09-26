@@ -1,0 +1,31 @@
+<input
+  #autocompleteInput
+  type="text"
+  class="form-input"
+  placeholder="Search for places..."
+  autocomplete="off"
+  [(ngModel)]="query"
+  (input)="onInput()"
+  (keydown)="onKeyDown($event)"
+/>
+
+<div class="spinner" *ngIf="isLoading"></div>
+
+<div class="ac-panel" *ngIf="suggestions.length">
+  <div
+    class="ac-item"
+    *ngFor="let s of suggestions; let i = index"
+    [class.active]="i === activeIndex"
+    (click)="selectSuggestion(s)"
+  >
+    <div class="ac-title">{{ s.displayName }}</div>
+    <div class="ac-sub">{{ s.formattedAddress }}</div>
+  </div>
+</div>
+
+<p class="error" *ngIf="showError">{{ errorMessage }}</p>
+
+<!-- <div class="picked" *ngIf="places.length">
+    <h4>Picked</h4>
+    <pre>{{ places[0] | json }}</pre>
+  </div> -->

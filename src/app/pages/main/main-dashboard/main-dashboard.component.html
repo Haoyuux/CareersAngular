@@ -14,7 +14,7 @@
       />
     </div>
     <div
-      *ngFor="let job of jobPostData?.data"
+      *ngFor="let job of jobPostData"
       class="job-card"
       [class.selected]="job.jobPostingId === selectedJobId"
       (click)="selectJob(job.jobPostingId)"

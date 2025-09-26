@@ -7,7 +7,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material.module';
 import {
-  ApiResponseMessageOfIListOfGetAllJobPostsDto,
   GetAllJobPostsDto,
   HrmsServices,
 } from 'src/app/services/nswag/service-proxie';
@@ -64,16 +63,17 @@ export class MainDashboardComponent implements OnInit, AfterViewInit {
     // this.testSpinner();
   }
 
-  jobPostData: ApiResponseMessageOfIListOfGetAllJobPostsDto =
-    new ApiResponseMessageOfIListOfGetAllJobPostsDto();
+  // jobPostData: ApiResponseMessageOfIListOfGetAllJobPostsDto =
+  //   new ApiResponseMessageOfIListOfGetAllJobPostsDto();
 
+  jobPostData: GetAllJobPostsDto[] = [];
   onGetJobPosting() {
     this.loadingService.show(); // or this.loadingService.loading = true;
 
     this._hrmsService.getAllJobPosts().subscribe({
       next: (res) => {
-        this.jobPostData = res;
-        this.loadingService.hide(); // or this.loadingService.loading = false;
+        this.jobPostData = res.data;
+        this.loadingService.hide();
       },
       error: (err) => {
         this.loadingService.hide();
@@ -454,14 +454,13 @@ export class MainDashboardComponent implements OnInit, AfterViewInit {
   ];
 
   get selectedJob(): GetAllJobPostsDto | undefined {
-    if (!this.jobPostData?.data || this.jobPostData.data.length === 0) {
+    if (!this.jobPostData || this.jobPostData.length === 0) {
       return undefined;
     }
 
     return (
-      this.jobPostData.data.find(
-        (job) => job.jobPostingId === this.selectedJobId
-      ) || this.jobPostData.data[0]
+      this.jobPostData.find((job) => job.jobPostingId === this.selectedJobId) ||
+      this.jobPostData[0]
     );
   }
 

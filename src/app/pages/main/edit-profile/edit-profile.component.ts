@@ -3,11 +3,18 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { TabViewModule } from 'primeng/tabview';
 import { UserDetailsTabComponent } from '../profile-tabs/user-details-tab/user-details-tab.component';
+import { PlaceSearchComponentComponent } from '../component/place-search-component/place-search-component.component';
 
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [DialogModule, CommonModule, TabViewModule, UserDetailsTabComponent],
+  imports: [
+    DialogModule,
+    CommonModule,
+    TabViewModule,
+    UserDetailsTabComponent,
+    PlaceSearchComponentComponent,
+  ],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.scss',
 })

@@ -9,6 +9,8 @@ import { EducationTabComponent } from '../education-tab/education-tab.component'
 import { WorkExperienceTabComponent } from '../work-experience-tab/work-experience-tab.component';
 import { CertificateTabComponent } from '../certificate-tab/certificate-tab.component';
 import {
+  GetAllCivilStatusDto,
+  GetAllGenderDto,
   HrmsServices,
   InsertOrUpdateUserProfileDto,
   UserDto,
@@ -19,6 +21,7 @@ import { FormsModule } from '@angular/forms';
 import { EditProfileComponent } from '../../edit-profile/edit-profile.component';
 import { UserProfileComponent } from '../../user-profile/user-profile.component';
 import { NgxToastrMessageComponent } from 'src/app/services/ngx-toastr-message/ngx-toastr-message.component';
+import { PlaceSearchComponentV1Component } from '../../component/place-search-component-v1/place-search-component-v1.component';
 
 @Component({
   selector: 'app-user-details-tab',
@@ -29,6 +32,7 @@ import { NgxToastrMessageComponent } from 'src/app/services/ngx-toastr-message/n
     CertificateTabComponent,
     CommonModule,
     FormsModule,
+    PlaceSearchComponentV1Component,
   ],
   templateUrl: './user-details-tab.component.html',
   styleUrl: './user-details-tab.component.scss',
@@ -37,13 +41,19 @@ export class UserDetailsTabComponent implements OnInit {
   @Output() profileUpdated = new EventEmitter<void>();
   @Output() closeDialog = new EventEmitter<boolean>();
 
+  @ViewChild('placeSearch', { static: false })
+  placeSearch?: PlaceSearchComponentV1Component;
+
   constructor(
     private _userService: UserServices,
     private _hrmsService: HrmsServices,
     private ngxToastrMessage: NgxToastrMessageComponent
   ) {}
+
   ngOnInit(): void {
     this.onGetDetails();
+    this.onGetAllGender();
+    this.onGetAllCivilStatus();
   }
 
   userData: UserDto = new UserDto();
@@ -64,7 +74,36 @@ export class UserDetailsTabComponent implements OnInit {
     return 'assets/images/profile/user-5.jpg';
   }
 
+  dataGender: GetAllGenderDto[] = [];
+  onGetAllGender() {
+    this._hrmsService.getAllGender().subscribe({
+      next: (res) => {
+        this.dataGender = res.data;
+      },
+    });
+  }
+
+  dataCivilStatus: GetAllCivilStatusDto[] = [];
+  onGetAllCivilStatus() {
+    this._hrmsService.getAllCivilStatus().subscribe({
+      next: (res) => {
+        this.dataCivilStatus = res.data;
+      },
+    });
+  }
+
   onUpdateUserDetails() {
+    const address = (this.userData.address ?? '').trim();
+
+    this.userData.address = address;
+
+    if (!address) {
+      this.ngxToastrMessage.showtoastrInfo(
+        'Please select or type a location.',
+        'Validation'
+      );
+      return;
+    }
     this._userService.registerUser(this.userData).subscribe({
       next: (res) => {
         if (res.isSuccess) {
@@ -78,6 +117,10 @@ export class UserDetailsTabComponent implements OnInit {
         this.ngxToastrMessage.showtoastrInfo(err.message, 'Error');
       },
     });
+  }
+
+  onDobChange(event: any) {
+    this.userData.dateOfBirth = event ? new Date(event) : undefined;
   }
 
   onFileSelected(event: Event) {
