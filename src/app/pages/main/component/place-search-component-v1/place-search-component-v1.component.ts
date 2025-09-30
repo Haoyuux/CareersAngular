@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -13,9 +13,9 @@ export interface PlaceLite {
 }
 
 export interface NominatimResultDto {
-  placeId: number; // long on backend -> number here
+  placeId: number;
   displayName: string;
-  lat: number | string; // we’ll coerce to number in component
+  lat: number | string;
   lon: number | string;
   address?: { [k: string]: string };
 }
@@ -27,7 +27,7 @@ export interface NominatimResultDto {
   templateUrl: './place-search-component-v1.component.html',
   styleUrl: './place-search-component-v1.component.scss',
 })
-export class PlaceSearchComponentV1Component {
+export class PlaceSearchComponentV1Component implements OnInit {
   @Output() filtersChanged = new EventEmitter<{ address: string }>();
 
   place = '';
@@ -42,6 +42,17 @@ export class PlaceSearchComponentV1Component {
   private debounceHandle: any;
 
   constructor(private http: HttpClient, private _userService: UserServices) {}
+  ngOnInit(): void {
+    this.onGetUserAddress();
+  }
+
+  onGetUserAddress() {
+    this._userService.getUserProfileDetails().subscribe({
+      next: (res) => {
+        this.place = res.data.address ?? '';
+      },
+    });
+  }
 
   get address(): string {
     return this.place;

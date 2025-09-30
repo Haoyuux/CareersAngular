@@ -643,6 +643,106 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    createOrEditEducation(input: CreateOrEditEducationDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/CreateOrEditEducation";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEditEducation(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEditEducation(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processCreateOrEditEducation(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getUserEducation(): Observable<ApiResponseMessageOfIListOfCreateOrEditEducationDto> {
+        let url_ = this.baseUrl + "/api/User/CreateOrEditEducation";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserEducation(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserEducation(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfCreateOrEditEducationDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfCreateOrEditEducationDto>;
+        }));
+    }
+
+    protected processGetUserEducation(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfCreateOrEditEducationDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfCreateOrEditEducationDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
@@ -1062,12 +1162,12 @@ export class UserDto implements IUserDto {
     dateOfBirth!: Date | undefined;
     hr201GenderId!: string | undefined;
     hr201CivilStatusId!: string | undefined;
-    gender!: string;
-    civilStatus!: string;
+    gender!: string | undefined;
+    civilStatus!: string | undefined;
     address!: string | undefined;
     aboutMe!: string | undefined;
     streetDetails!: string | undefined;
-    userProfileByte!: string;
+    userProfileByte!: string | undefined;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -1142,12 +1242,12 @@ export interface IUserDto {
     dateOfBirth: Date | undefined;
     hr201GenderId: string | undefined;
     hr201CivilStatusId: string | undefined;
-    gender: string;
-    civilStatus: string;
+    gender: string | undefined;
+    civilStatus: string | undefined;
     address: string | undefined;
     aboutMe: string | undefined;
     streetDetails: string | undefined;
-    userProfileByte: string;
+    userProfileByte: string | undefined;
 }
 
 export class RegisterUserDto implements IRegisterUserDto {
@@ -1498,6 +1598,117 @@ export interface INominatimResult {
     lat: string;
     lon: string;
     address: { [key: string]: string; } | undefined;
+}
+
+export class CreateOrEditEducationDto implements ICreateOrEditEducationDto {
+    id!: string;
+    schoolName!: string;
+    educationLevel!: string;
+    course!: string;
+    startDate!: Date;
+    endDate!: Date;
+
+    constructor(data?: ICreateOrEditEducationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.schoolName = _data["schoolName"];
+            this.educationLevel = _data["educationLevel"];
+            this.course = _data["course"];
+            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : undefined as any;
+            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditEducationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditEducationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["schoolName"] = this.schoolName;
+        data["educationLevel"] = this.educationLevel;
+        data["course"] = this.course;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : undefined as any;
+        data["endDate"] = this.endDate ? this.endDate.toISOString() : undefined as any;
+        return data;
+    }
+}
+
+export interface ICreateOrEditEducationDto {
+    id: string;
+    schoolName: string;
+    educationLevel: string;
+    course: string;
+    startDate: Date;
+    endDate: Date;
+}
+
+export class ApiResponseMessageOfIListOfCreateOrEditEducationDto implements IApiResponseMessageOfIListOfCreateOrEditEducationDto {
+    data!: CreateOrEditEducationDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfIListOfCreateOrEditEducationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(CreateOrEditEducationDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfIListOfCreateOrEditEducationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfCreateOrEditEducationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfIListOfCreateOrEditEducationDto {
+    data: CreateOrEditEducationDto[];
+    isSuccess: boolean;
+    errorMessage: string;
 }
 
 export interface FileResponse {

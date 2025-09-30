@@ -2,7 +2,9 @@
 <!-- Header + right-aligned Add button -->
 <div class="edu-toolbar">
   <h2 class="edu-title">Education</h2>
-  <button class="edu-add-btn" type="button">+ Add Education</button>
+  <button class="edu-add-btn" type="button" (click)="visible = true">
+    + Add Education
+  </button>
 </div>
 
 <!-- Row of cards -->
@@ -133,3 +135,123 @@
   </article>
 </div>
 <!-- </div> -->
+
+<p-dialog
+  header="Add Education"
+  [(visible)]="visible"
+  [modal]="true"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+>
+  <div class="add-edu-modal">
+    <div class="modal-content">
+      <form class="edu-form">
+        <!-- School Name -->
+        <div class="form-group">
+          <label for="schoolName" class="form-label">School Name</label>
+          <input
+            type="text"
+            id="schoolName"
+            name="schoolName"
+            [(ngModel)]="dataEduc.schoolName"
+            class="form-input"
+            placeholder="e.g., University of the Philippines"
+          />
+        </div>
+
+        <!-- Education Level -->
+        <div class="form-group">
+          <div class="form-group">
+            <label for="educationLevel" class="form-label"
+              >Education Level</label
+            >
+            <select
+              id="educationLevel"
+              name="educationLevel"
+              class="form-input"
+              [(ngModel)]="dataEduc.educationLevel"
+            >
+              <option value="" disabled selected>Select education level</option>
+              <option value="High School">High School</option>
+              <option value="Undergraduate">Undergraduate</option>
+              <option value="Postgraduate">Postgraduate</option>
+            </select>
+          </div>
+
+          <!-- Course -->
+          <div class="form-group">
+            <label for="course" class="form-label"
+              >Course / Field of Study</label
+            >
+            <input
+              type="text"
+              id="course"
+              name="course"
+              [(ngModel)]="dataEduc.course"
+              class="form-input"
+              placeholder="e.g., Computer Science"
+            />
+          </div>
+
+          <!-- Date Range -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="startDate" class="form-label">Start Date</label>
+              <p-calendar
+                id="startDate"
+                name="startDate"
+                [(ngModel)]="dataEduc.startDate"
+                [showIcon]="true"
+                dateFormat="mm/yy"
+                view="month"
+                [yearNavigator]="true"
+                [yearRange]="'1980:2030'"
+                placeholder="MM/YYYY"
+                [styleClass]="'form-calendar'"
+                [appendTo]="'body'"
+              ></p-calendar>
+            </div>
+
+            <div class="form-group">
+              <label for="endDate" class="form-label">End Date</label>
+              <p-calendar
+                id="endDate"
+                name="endDate"
+                [(ngModel)]="dataEduc.endDate"
+                [showIcon]="true"
+                dateFormat="mm/yy"
+                view="month"
+                [yearNavigator]="true"
+                [yearRange]="'1980:2030'"
+                placeholder="MM/YYYY"
+                [styleClass]="'form-calendar'"
+                [appendTo]="'body'"
+              ></p-calendar>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-cancel"
+              (click)="visible = false"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn btn-submit"
+              (click)="onSaveEducation()"
+            >
+              Add Education
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</p-dialog>

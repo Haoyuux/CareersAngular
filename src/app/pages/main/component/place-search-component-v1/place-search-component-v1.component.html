@@ -9,8 +9,8 @@
     (keydown)="onKeyDown($event)"
     role="combobox"
     aria-autocomplete="list"
-    [attr.aria-expanded]="(suggestions?.length ?? 0) > 0 ? 'true' : 'false'"
-    [attr.aria-controls]="(suggestions?.length ?? 0) > 0 ? 'ac-listbox' : null"
+    [attr.aria-expanded]="suggestions.length > 0 ? 'true' : 'false'"
+    [attr.aria-controls]="suggestions.length > 0 ? 'ac-listbox' : null"
     [attr.aria-activedescendant]="
       activeIndex >= 0 ? 'ac-opt-' + activeIndex : null
     "
