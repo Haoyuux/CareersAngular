@@ -109,25 +109,27 @@
     <main class="col-right">
       <article class="card">
         <h2 class="card-title">Experience</h2>
-        <div class="timeline">
+        <div class="timeline" *ngFor="let item of getWorkExpData">
           <div class="item">
-            <div class="when">2023 — Present</div>
+            <div class="when">
+              {{ item.startDate | date : "yyyy" }} —
+              {{ item.endDate ? (item.endDate | date : "yyyy") : "Present" }}
+            </div>
             <div class="what">
-              <h3>Senior Frontend Engineer · Pipely</h3>
+              <h3>{{ item.jobTitle }} · {{ item.companyName }}</h3>
               <p>
-                Leads the component library and design system. Built reusable
-                Angular primitives and accessibility patterns across apps.
+                {{ item.jobDescription }}
               </p>
-              <ul>
+              <!-- <ul>
                 <li>Drove Lighthouse score from 72 → 96.</li>
                 <li>Auth & state with NgRx + interceptors.</li>
                 <li>
                   Cut bundle size by ~28% with route-level code splitting.
                 </li>
-              </ul>
+              </ul> -->
             </div>
           </div>
-          <div class="item">
+          <!-- <div class="item">
             <div class="when">2021 — 2023</div>
             <div class="what">
               <h3>Frontend Engineer · Brigada Tech</h3>
@@ -136,17 +138,20 @@
                 with design and backend to deliver on tight timelines.
               </p>
             </div>
-          </div>
+          </div> -->
         </div>
       </article>
 
       <article class="card">
         <h2 class="card-title">Education</h2>
-        <div class="edu">
+        <div class="edu" *ngFor="let item of getEduc">
           <div>
-            <h3>BS Information Technology</h3>
-            <p>Polytechnic University of the Philippines</p>
-            <span class="muted">2017 — 2021</span>
+            <h3>{{ item.course }}</h3>
+            <p>{{ item.schoolName }}</p>
+            <span class="muted">
+              {{ item.startDate | date : "yyyy" }} —
+              {{ item.endDate | date : "yyyy" }}</span
+            >
           </div>
         </div>
       </article>

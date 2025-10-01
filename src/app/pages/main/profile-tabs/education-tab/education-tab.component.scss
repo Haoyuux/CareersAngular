@@ -40,7 +40,7 @@
   border-radius: 999px;
   border: 1px solid var(--edu-accent);
   background: var(--edu-accent);
-  color: #fff;
+  color: white;
   font-weight: 600;
   cursor: pointer;
 }
@@ -376,7 +376,7 @@
 }
 
 /* Reuse existing button styling */
-.edu-card-empty .edu-add-btn {
+.edu-card-empty {
   margin-top: 10px;
   align-self: center;
 }

@@ -12,10 +12,8 @@
   </button>
 </div>
 
-<!-- Row of cards -->
 <div class="edu-row-cards">
   <ng-container *ngIf="getEduc.length > 0; else noEducation">
-    <!-- Card 1 -->
     <article class="edu-card" *ngFor="let item of getEduc">
       <button
         class="edu-delete"
@@ -44,21 +42,21 @@
       </div>
     </article>
   </ng-container>
-
-  <ng-template #noEducation>
-    <article class="edu-card edu-card-empty">
-      <div class="edu-empty-content">
-        <h3 class="edu-empty-title">No Education Records Found</h3>
-        <p class="edu-empty-text">
-          Please add your educational background to complete your profile.
-        </p>
-        <button type="button" class="edu-add-btn" (click)="visible = true">
-          Add Education
-        </button>
-      </div>
-    </article>
-  </ng-template>
 </div>
+
+<ng-template #noEducation>
+  <article class="edu-card edu-card-empty">
+    <div class="edu-empty-content">
+      <h3 class="edu-empty-title">No Education Records Found</h3>
+      <p class="edu-empty-text">
+        Please add your educational background to complete your profile.
+      </p>
+      <button type="button" class="edu-add-btn" (click)="visible = true">
+        Add Education
+      </button>
+    </div>
+  </article>
+</ng-template>
 
 <!-- </div> -->
 
@@ -89,103 +87,98 @@
         </div>
 
         <!-- Education Level -->
+
         <div class="form-group">
+          <label for="educationLevel" class="form-label">Education Level</label>
+          <select
+            id="educationLevel"
+            name="educationLevel"
+            class="form-input"
+            [(ngModel)]="dataEduc.educationLevel"
+          >
+            <option value="" disabled selected>Select education level</option>
+            <option value="Primary education">Primary education</option>
+            <option value="Secondary education">
+              Secondary education or high school
+            </option>
+            <option value="General Educational Development">
+              General Educational Development(GED)
+            </option>
+            <option value="Vocational qualification">
+              Vocational qualification
+            </option>
+            <option value="Bachelor's degree">Bachelor's degree</option>
+            <option value="Master's degree">Master's degree</option>
+            <option value="Doctorate or higher">Doctorate or higher</option>
+          </select>
+        </div>
+
+        <!-- Course -->
+        <div class="form-group">
+          <label for="course" class="form-label">Course / Field of Study</label>
+          <input
+            type="text"
+            id="course"
+            name="course"
+            [(ngModel)]="dataEduc.course"
+            class="form-input"
+            placeholder="e.g., Bachelor of Science Computer Science"
+          />
+        </div>
+
+        <!-- Date Range -->
+        <div class="form-row">
           <div class="form-group">
-            <label for="educationLevel" class="form-label"
-              >Education Level</label
-            >
-            <select
-              id="educationLevel"
-              name="educationLevel"
-              class="form-input"
-              [(ngModel)]="dataEduc.educationLevel"
-            >
-              <option value="" disabled selected>Select education level</option>
-              <option value="Primary education">Primary education</option>
-              <option value="Secondary education">
-                Secondary education or high school
-              </option>
-              <option value="General Educational Development">
-                General Educational Development(GED)
-              </option>
-              <option value="Vocational qualification">
-                Vocational qualification
-              </option>
-              <option value="Bachelor's degree">Bachelor's degree</option>
-              <option value="Master's degree">Master's degree</option>
-              <option value="Doctorate or higher">Doctorate or higher</option>
-            </select>
+            <label for="startDate" class="form-label">Start Date</label>
+            <p-calendar
+              id="startDate"
+              name="startDate"
+              [(ngModel)]="dataEduc.startDate"
+              [showIcon]="true"
+              dateFormat="mm/yy"
+              view="month"
+              [yearNavigator]="true"
+              [yearRange]="'1980:2030'"
+              placeholder="MM/YYYY"
+              [styleClass]="'form-calendar'"
+              [appendTo]="'body'"
+            ></p-calendar>
           </div>
 
-          <!-- Course -->
           <div class="form-group">
-            <label for="course" class="form-label"
-              >Course / Field of Study</label
-            >
-            <input
-              type="text"
-              id="course"
-              name="course"
-              [(ngModel)]="dataEduc.course"
-              class="form-input"
-              placeholder="e.g., Bachelor of Science Computer Science"
-            />
+            <label for="endDate" class="form-label">End Date</label>
+            <p-calendar
+              id="endDate"
+              name="endDate"
+              [(ngModel)]="dataEduc.endDate"
+              [showIcon]="true"
+              dateFormat="mm/yy"
+              view="month"
+              [yearNavigator]="true"
+              [yearRange]="'1980:2030'"
+              placeholder="MM/YYYY"
+              [styleClass]="'form-calendar'"
+              [appendTo]="'body'"
+            ></p-calendar>
           </div>
+        </div>
 
-          <!-- Date Range -->
-          <div class="form-row">
-            <div class="form-group">
-              <label for="startDate" class="form-label">Start Date</label>
-              <p-calendar
-                id="startDate"
-                name="startDate"
-                [(ngModel)]="dataEduc.startDate"
-                [showIcon]="true"
-                dateFormat="mm/yy"
-                view="month"
-                [yearNavigator]="true"
-                [yearRange]="'1980:2030'"
-                placeholder="MM/YYYY"
-                [styleClass]="'form-calendar'"
-                [appendTo]="'body'"
-              ></p-calendar>
-            </div>
-
-            <div class="form-group">
-              <label for="endDate" class="form-label">End Date</label>
-              <p-calendar
-                id="endDate"
-                name="endDate"
-                [(ngModel)]="dataEduc.endDate"
-                [showIcon]="true"
-                dateFormat="mm/yy"
-                view="month"
-                [yearNavigator]="true"
-                [yearRange]="'1980:2030'"
-                placeholder="MM/YYYY"
-                [styleClass]="'form-calendar'"
-                [appendTo]="'body'"
-              ></p-calendar>
-            </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="form-actions">
-            <button
-              type="button"
-              class="btn btn-cancel"
-              (click)="visible = false"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="btn btn-submit"
-              (click)="onSaveEducation()"
-            >
-              Add Education
-            </button>
-          </div>
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-cancel"
+            (click)="visible = false"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-submit"
+            (click)="onSaveEducation()"
+          >
+            Add Education
+          </button>
         </div>
       </form>
     </div>

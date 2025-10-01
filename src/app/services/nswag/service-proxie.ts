@@ -795,6 +795,158 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    createOrEditWorkExperience(input: CreateOrEditWorkExperienceDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/CreateOrEditWorkExperience";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEditWorkExperience(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEditWorkExperience(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processCreateOrEditWorkExperience(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getUserWorkExperience(): Observable<ApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto> {
+        let url_ = this.baseUrl + "/api/User/GetUserWorkExperience";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserWorkExperience(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserWorkExperience(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto>;
+        }));
+    }
+
+    protected processGetUserWorkExperience(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    deleteUserWorkExperience(workexperienceId: string | undefined): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/DeleteUserWorkExperience?";
+        if (workexperienceId === null)
+            throw new globalThis.Error("The parameter 'workexperienceId' cannot be null.");
+        else if (workexperienceId !== undefined)
+            url_ += "workexperienceId=" + encodeURIComponent("" + workexperienceId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteUserWorkExperience(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteUserWorkExperience(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processDeleteUserWorkExperience(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
@@ -1759,6 +1911,121 @@ export class ApiResponseMessageOfIListOfCreateOrEditEducationDto implements IApi
 
 export interface IApiResponseMessageOfIListOfCreateOrEditEducationDto {
     data: CreateOrEditEducationDto[];
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class CreateOrEditWorkExperienceDto implements ICreateOrEditWorkExperienceDto {
+    id!: string;
+    companyName!: string;
+    companyAddress!: string;
+    jobTitle!: string;
+    jobDescription!: string;
+    startDate!: Date;
+    endDate!: Date | undefined;
+
+    constructor(data?: ICreateOrEditWorkExperienceDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.companyName = _data["companyName"];
+            this.companyAddress = _data["companyAddress"];
+            this.jobTitle = _data["jobTitle"];
+            this.jobDescription = _data["jobDescription"];
+            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : undefined as any;
+            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditWorkExperienceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditWorkExperienceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["companyName"] = this.companyName;
+        data["companyAddress"] = this.companyAddress;
+        data["jobTitle"] = this.jobTitle;
+        data["jobDescription"] = this.jobDescription;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : undefined as any;
+        data["endDate"] = this.endDate ? this.endDate.toISOString() : undefined as any;
+        return data;
+    }
+}
+
+export interface ICreateOrEditWorkExperienceDto {
+    id: string;
+    companyName: string;
+    companyAddress: string;
+    jobTitle: string;
+    jobDescription: string;
+    startDate: Date;
+    endDate: Date | undefined;
+}
+
+export class ApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto implements IApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto {
+    data!: CreateOrEditWorkExperienceDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(CreateOrEditWorkExperienceDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto {
+    data: CreateOrEditWorkExperienceDto[];
     isSuccess: boolean;
     errorMessage: string;
 }

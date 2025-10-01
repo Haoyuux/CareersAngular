@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Input,
   OnInit,
   Output,
   ViewChild,
@@ -40,6 +41,7 @@ import { PlaceSearchComponentV1Component } from '../../component/place-search-co
 export class UserDetailsTabComponent implements OnInit {
   @Output() profileUpdated = new EventEmitter<void>();
   @Output() closeDialog = new EventEmitter<boolean>();
+  @Input() skipUserAddress = true;
 
   @ViewChild('placeSearch', { static: false })
   placeSearch?: PlaceSearchComponentV1Component;

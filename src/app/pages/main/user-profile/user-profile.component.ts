@@ -3,6 +3,8 @@ import { MaterialModule } from 'src/app/material.module';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import {
+  CreateOrEditEducationDto,
+  CreateOrEditWorkExperienceDto,
   HrmsServices,
   UserDto,
   UserServices,
@@ -31,10 +33,29 @@ export class UserProfileComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.onGetDetails();
+    this.onGetUserEducation();
+    this.onGetWorkExp();
+  }
+
+  getEduc: CreateOrEditEducationDto[] = [];
+  onGetUserEducation() {
+    this.userService.getUserEducation().subscribe({
+      next: (res) => {
+        this.getEduc = res.data;
+      },
+    });
+  }
+
+  getWorkExpData: CreateOrEditWorkExperienceDto[] = [];
+  onGetWorkExp() {
+    this.userService.getUserWorkExperience().subscribe({
+      next: (res) => {
+        this.getWorkExpData = res.data;
+      },
+    });
   }
 
   userData: UserDto = new UserDto();
-
   onGetDetails() {
     this.userService.getUserProfileDetails().subscribe({
       next: (res) => {

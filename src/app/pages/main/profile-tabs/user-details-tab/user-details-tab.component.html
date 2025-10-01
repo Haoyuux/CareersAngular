@@ -167,6 +167,7 @@
         <label class="form-label"> Location </label>
         <app-place-search-component-v1
           #placeSearch
+          [skipUserAddress]="false"
           (filtersChanged)="userData.address = $event.address"
         >
         </app-place-search-component-v1>

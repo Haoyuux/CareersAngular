@@ -1,85 +1,189 @@
 <!-- Toolbar -->
 <div class="work-toolbar">
   <h2 class="work-title">Work Experience</h2>
-  <button class="work-add-btn" type="button">+ Add Experience</button>
+  <button
+    class="work-add-btn"
+    type="button"
+    (click)="visible = true"
+    *ngIf="getWorkExpData.length > 0"
+  >
+    + Add Experience
+  </button>
 </div>
 
-<!-- Row of cards -->
 <div class="work-row-cards">
-  <!-- Card 1 -->
-  <article class="work-card">
-    <button class="work-delete" type="button" aria-label="Delete work">
-      ×
-    </button>
-    <header class="work-head">
-      <h3 class="work-role">Software Engineer</h3>
-      <span class="work-years">2021 — Present</span>
-    </header>
-    <div class="work-body">
-      <div class="work-row">
-        <span class="work-label">Company</span>
-        <span class="work-value">Brigada Tech Solutions</span>
-      </div>
-      <div class="work-row">
-        <span class="work-label">Location</span>
-        <span class="work-value">Manila, PH</span>
-      </div>
-      <div class="work-row">
+  <ng-container *ngIf="getWorkExpData.length > 0; else noWorkExp">
+    <article class="work-card" *ngFor="let item of getWorkExpData">
+      <button
+        class="work-delete"
+        type="button"
+        aria-label="Delete work"
+        (click)="onDeleteWorkExp(item.id)"
+      >
+        ×
+      </button>
+      <header class="work-head">
+        <h3 class="work-role">{{ item.jobTitle }}</h3>
+        <span class="work-years">
+          {{ item.startDate | date : "yyyy" }} —
+          {{ item.endDate ? (item.endDate | date : "yyyy") : "Present" }}
+        </span>
+      </header>
+      <div class="work-body">
+        <div class="work-row">
+          <span class="work-label">Company</span>
+          <span class="work-value">{{ item.companyName }}</span>
+        </div>
+        <div class="work-row">
+          <span class="work-label">Location</span>
+          <span class="work-value">{{ item.companyAddress }}</span>
+        </div>
+        <div class="work-row">
+          <span class="work-label">Job Description</span>
+          <span class="work-value">{{ item.jobDescription }}</span>
+        </div>
+        <!-- <div class="work-row">
         <span class="work-label">Highlights</span>
         <span class="work-value">Built Careers Portal</span>
+      </div> -->
       </div>
-    </div>
-  </article>
-
-  <!-- Card 2 -->
-  <article class="work-card">
-    <button class="work-delete" type="button" aria-label="Delete work">
-      ×
-    </button>
-    <header class="work-head">
-      <h3 class="work-role">Frontend Developer</h3>
-      <span class="work-years">2019 — 2021</span>
-    </header>
-    <div class="work-body">
-      <div class="work-row">
-        <span class="work-label">Company</span>
-        <span class="work-value">Design Forward</span>
-      </div>
-      <div class="work-row">
-        <span class="work-label">Location</span>
-        <span class="work-value">Remote</span>
-      </div>
-      <div class="work-row">
-        <span class="work-label">Highlights</span>
-        <span class="work-value">Delivered UI/UX projects</span>
-      </div>
-    </div>
-  </article>
-
-  <!-- Card 3 -->
-  <article class="work-card">
-    <button class="work-delete" type="button" aria-label="Delete work">
-      ×
-    </button>
-    <header class="work-head">
-      <h3 class="work-role">Intern</h3>
-      <span class="work-years">2018 — 2019</span>
-    </header>
-    <div class="work-body">
-      <div class="work-row">
-        <span class="work-label">Company</span>
-        <span class="work-value">University of Brigada IT Dept</span>
-      </div>
-      <div class="work-row">
-        <span class="work-label">Location</span>
-        <span class="work-value">Cebu, PH</span>
-      </div>
-      <div class="work-row">
-        <span class="work-label">Highlights</span>
-        <span class="work-value">Assisted with database migration</span>
-      </div>
-    </div>
-  </article>
-
-  <!-- Add more cards as needed -->
+    </article>
+    <!-- Add more cards as needed -->
+  </ng-container>
 </div>
+
+<ng-template #noWorkExp>
+  <article class="work-card workexp-card-empty">
+    <div class="workexp-empty-content">
+      <h3 class="workexp-empty-title">No Working Experience Records Found</h3>
+      <p class="workexp-empty-text">
+        Please add your Work Experience to complete your profile.
+      </p>
+      <button type="button" class="work-add-btn" (click)="visible = true">
+        Add Work Experience
+      </button>
+    </div>
+  </article>
+</ng-template>
+
+<p-dialog
+  header="Add Work Experience"
+  [(visible)]="visible"
+  [modal]="true"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+>
+  <div class="add-workexp-modal">
+    <div class="modal-content">
+      <form class="workexp-form" ngNativeValidate (ngSubmit)="onSaveWorkExp()">
+        <!-- Job Title -->
+        <div class="form-group">
+          <label class="form-label" for="jobTitle">Job Title</label>
+          <input
+            type="text"
+            id="jobTitle"
+            class="form-input"
+            placeholder="e.g. Software Engineer"
+            name="jobTitle"
+            [(ngModel)]="dataWorkExp.jobTitle"
+            required
+          />
+        </div>
+
+        <!-- Company Name -->
+        <div class="form-group">
+          <label class="form-label" for="companyName">Company Name</label>
+          <input
+            type="text"
+            id="companyName"
+            class="form-input"
+            placeholder="e.g. Brigada Tech Solutions"
+            name="companyName"
+            [(ngModel)]="dataWorkExp.companyName"
+            required
+          />
+        </div>
+
+        <!-- Company Address -->
+        <div class="form-group">
+          <label class="form-label" for="companyAddress">Company Address</label>
+          <!-- <input
+            type="text"
+            id="companyAddress"
+            class="form-input"
+            placeholder="e.g. Manila, Philippines"
+          /> -->
+          <app-place-search-component-v1
+            #placeSearch
+            [skipUserAddress]="true"
+            (filtersChanged)="dataWorkExp.companyAddress = $event.address"
+            required
+          >
+          </app-place-search-component-v1>
+        </div>
+
+        <!-- Date Range -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="startDate">Start Date</label>
+            <p-calendar
+              inputId="startDate"
+              dateFormat="mm/yy"
+              view="month"
+              [showIcon]="true"
+              placeholder="Select start date"
+              styleClass="form-calendar"
+              [appendTo]="'body'"
+              [(ngModel)]="dataWorkExp.startDate"
+              name="startDate"
+              required
+            ></p-calendar>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="endDate">End Date</label>
+            <p-calendar
+              inputId="endDate"
+              dateFormat="mm/yy"
+              view="month"
+              [showIcon]="true"
+              placeholder="Select end date or leave blank if current"
+              styleClass="form-calendar"
+              [appendTo]="'body'"
+              [(ngModel)]="dataWorkExp.endDate"
+              name="endDate"
+            ></p-calendar>
+          </div>
+        </div>
+
+        <!-- Job Description -->
+        <div class="form-group">
+          <label class="form-label" for="jobDescription">Job Description</label>
+          <textarea
+            id="jobDescription"
+            class="form-input"
+            rows="4"
+            placeholder="Describe your responsibilities and achievements..."
+            name="jobDescription"
+            [(ngModel)]="dataWorkExp.jobDescription"
+            required
+          ></textarea>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-cancel"
+            (click)="visible = false"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-submit">Add Experience</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</p-dialog>

@@ -73,11 +73,8 @@ export class EducationTabComponent implements OnInit {
               this.ngxToastrMessage.showtoastr('Something went wrong', 'Error');
             }
           },
-          error: () => {
-            this.ngxToastrMessage.showtoastr(
-              'Failed to delete record',
-              'Error'
-            );
+          error: (err) => {
+            this.ngxToastrMessage.showtoastr('Failed to delete record', err);
           },
         });
       },

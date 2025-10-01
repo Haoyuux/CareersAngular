@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -29,6 +29,7 @@ export interface NominatimResultDto {
 })
 export class PlaceSearchComponentV1Component implements OnInit {
   @Output() filtersChanged = new EventEmitter<{ address: string }>();
+  @Input() skipUserAddress = false;
 
   place = '';
   suggestions: PlaceLite[] = [];
@@ -43,7 +44,9 @@ export class PlaceSearchComponentV1Component implements OnInit {
 
   constructor(private http: HttpClient, private _userService: UserServices) {}
   ngOnInit(): void {
-    this.onGetUserAddress();
+    if (!this.skipUserAddress) {
+      this.onGetUserAddress();
+    }
   }
 
   onGetUserAddress() {
