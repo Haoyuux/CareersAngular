@@ -336,3 +336,47 @@
     width: 100%;
   }
 }
+
+/* Empty state card (full width) */
+.edu-card-empty {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  background: linear-gradient(180deg, var(--edu-card), var(--edu-card-2));
+  border: 1px solid var(--edu-border);
+  box-shadow: none; /* clean, minimal */
+}
+
+/* Inner content */
+.edu-empty-content {
+  max-width: 500px;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Title */
+.edu-empty-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--edu-text);
+}
+
+/* Description */
+.edu-empty-text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--edu-muted);
+  line-height: 1.5;
+}
+
+/* Reuse existing button styling */
+.edu-card-empty .edu-add-btn {
+  margin-top: 10px;
+  align-self: center;
+}

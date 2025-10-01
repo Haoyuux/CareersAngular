@@ -1,1 +1,62 @@
-<!-- <p>ngx-toastr-message works!</p> -->
+<style>
+  :host ::ng-deep .p-confirm-dialog {
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3),
+      0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    background-color: #ffffff !important;
+  }
+
+  :host ::ng-deep .p-dialog-content {
+    background-color: #ffffff !important;
+    padding: 0 !important; /* ✅ No internal padding */
+    margin: 0 !important; /* ✅ Remove margin */
+  }
+
+  :host ::ng-deep .p-dialog-header {
+    background-color: #ffffff !important;
+    border-bottom: none !important;
+    padding: 1.5rem 1.5rem 1rem 1.5rem !important;
+  }
+
+  .dialog-message {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 15px;
+    color: #374151;
+    line-height: 1.6;
+    margin: 0 1.5rem 1rem 1.5rem; /* ✅ Handles spacing manually */
+  }
+</style>
+
+<p-confirmDialog
+  #cd
+  [style]="{ width: '450px' }"
+  [closable]="false"
+  [dismissableMask]="true"
+>
+  <ng-template pTemplate="message" let-message>
+    <div class="dialog-message">
+      <div>{{ message.message || message }}</div>
+      <small>This action cannot be undone.</small>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      label="No"
+      icon="pi pi-times"
+      class="p-button-secondary"
+      (click)="cd.reject()"
+    ></button>
+    <button
+      pButton
+      label="Yes, Delete"
+      icon="pi pi-check"
+      class="p-button-danger"
+      (click)="cd.accept()"
+    ></button>
+  </ng-template>
+</p-confirmDialog>

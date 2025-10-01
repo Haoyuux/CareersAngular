@@ -2,138 +2,64 @@
 <!-- Header + right-aligned Add button -->
 <div class="edu-toolbar">
   <h2 class="edu-title">Education</h2>
-  <button class="edu-add-btn" type="button" (click)="visible = true">
+  <button
+    class="edu-add-btn"
+    type="button"
+    (click)="visible = true"
+    *ngIf="getEduc.length > 0"
+  >
     + Add Education
   </button>
 </div>
 
 <!-- Row of cards -->
 <div class="edu-row-cards">
-  <!-- Card 1 -->
-  <article class="edu-card">
-    <button class="edu-delete" type="button" aria-label="Delete education">
-      ×
-    </button>
-    <header class="edu-head">
-      <h3 class="edu-degree">BS Computer Science</h3>
-      <span class="edu-years">2017 — 2021</span>
-    </header>
-    <div class="edu-body">
-      <div class="edu-row">
-        <span class="edu-label">Institution</span
-        ><span class="edu-value">University of Brigada</span>
+  <ng-container *ngIf="getEduc.length > 0; else noEducation">
+    <!-- Card 1 -->
+    <article class="edu-card" *ngFor="let item of getEduc">
+      <button
+        class="edu-delete"
+        type="button"
+        aria-label="Delete education"
+        (click)="onDeleteEducation(item.id)"
+      >
+        ×
+      </button>
+      <header class="edu-head">
+        <h3 class="edu-degree">{{ item.course }}</h3>
+        <span class="edu-years">
+          {{ item.startDate | date : "yyyy" }} —
+          {{ item.endDate | date : "yyyy" }}
+        </span>
+      </header>
+      <div class="edu-body">
+        <div class="edu-row">
+          <span class="edu-label">Institution</span>
+          <span class="edu-value">{{ item.schoolName }}</span>
+        </div>
+        <div class="edu-row">
+          <span class="edu-label">Education Level</span>
+          <span class="edu-value">{{ item.educationLevel }}</span>
+        </div>
       </div>
-      <div class="edu-row">
-        <span class="edu-label">Field</span
-        ><span class="edu-value">Software Engineering</span>
-      </div>
-      <div class="edu-row">
-        <span class="edu-label">Highlights</span
-        ><span class="edu-value">Dean’s Lister</span>
-      </div>
-    </div>
-  </article>
+    </article>
+  </ng-container>
 
-  <!-- Card 2 -->
-  <article class="edu-card">
-    <button class="edu-delete" type="button" aria-label="Delete education">
-      ×
-    </button>
-    <header class="edu-head">
-      <h3 class="edu-degree">Diploma in Web Development</h3>
-      <span class="edu-years">2022</span>
-    </header>
-    <div class="edu-body">
-      <div class="edu-row">
-        <span class="edu-label">Institution</span
-        ><span class="edu-value">Brigada Tech Institute</span>
+  <ng-template #noEducation>
+    <article class="edu-card edu-card-empty">
+      <div class="edu-empty-content">
+        <h3 class="edu-empty-title">No Education Records Found</h3>
+        <p class="edu-empty-text">
+          Please add your educational background to complete your profile.
+        </p>
+        <button type="button" class="edu-add-btn" (click)="visible = true">
+          Add Education
+        </button>
       </div>
-      <div class="edu-row">
-        <span class="edu-label">Focus</span
-        ><span class="edu-value">Angular, ASP.NET Core</span>
-      </div>
-      <div class="edu-row">
-        <span class="edu-label">Highlights</span
-        ><span class="edu-value">Career-ready portfolio</span>
-      </div>
-    </div>
-  </article>
-
-  <!-- Card 3 -->
-  <article class="edu-card">
-    <button class="edu-delete" type="button" aria-label="Delete education">
-      ×
-    </button>
-    <header class="edu-head">
-      <h3 class="edu-degree">Short Course: Databases</h3>
-      <span class="edu-years">2023</span>
-    </header>
-    <div class="edu-body">
-      <div class="edu-row">
-        <span class="edu-label">Institution</span
-        ><span class="edu-value">SQL Academy</span>
-      </div>
-      <div class="edu-row">
-        <span class="edu-label">Focus</span
-        ><span class="edu-value">SQL Server, ERD</span>
-      </div>
-      <div class="edu-row">
-        <span class="edu-label">Highlights</span
-        ><span class="edu-value">Designed HR schema</span>
-      </div>
-    </div>
-  </article>
-
-  <!-- Card 4 -->
-  <article class="edu-card">
-    <button class="edu-delete" type="button" aria-label="Delete education">
-      ×
-    </button>
-    <header class="edu-head">
-      <h3 class="edu-degree">Certificate: Cloud Fundamentals</h3>
-      <span class="edu-years">2024</span>
-    </header>
-    <div class="edu-body">
-      <div class="edu-row">
-        <span class="edu-label">Institution</span
-        ><span class="edu-value">AWS Learning Hub</span>
-      </div>
-      <div class="edu-row">
-        <span class="edu-label">Focus</span
-        ><span class="edu-value">EC2, Docker, CI/CD</span>
-      </div>
-      <div class="edu-row">
-        <span class="edu-label">Highlights</span
-        ><span class="edu-value">Deployed microservice</span>
-      </div>
-    </div>
-  </article>
-
-  <!-- Card 5 -->
-  <article class="edu-card">
-    <button class="edu-delete" type="button" aria-label="Delete education">
-      ×
-    </button>
-    <header class="edu-head">
-      <h3 class="edu-degree">Workshop: UI/UX for Careers</h3>
-      <span class="edu-years">2025</span>
-    </header>
-    <div class="edu-body">
-      <div class="edu-row">
-        <span class="edu-label">Institution</span
-        ><span class="edu-value">Design Forward</span>
-      </div>
-      <div class="edu-row">
-        <span class="edu-label">Focus</span
-        ><span class="edu-value">Responsive Cards</span>
-      </div>
-      <div class="edu-row">
-        <span class="edu-label">Highlights</span
-        ><span class="edu-value">Career-centric UI</span>
-      </div>
-    </div>
-  </article>
+    </article>
+  </ng-template>
 </div>
+
 <!-- </div> -->
 
 <p-dialog
@@ -175,9 +101,19 @@
               [(ngModel)]="dataEduc.educationLevel"
             >
               <option value="" disabled selected>Select education level</option>
-              <option value="High School">High School</option>
-              <option value="Undergraduate">Undergraduate</option>
-              <option value="Postgraduate">Postgraduate</option>
+              <option value="Primary education">Primary education</option>
+              <option value="Secondary education">
+                Secondary education or high school
+              </option>
+              <option value="General Educational Development">
+                General Educational Development(GED)
+              </option>
+              <option value="Vocational qualification">
+                Vocational qualification
+              </option>
+              <option value="Bachelor's degree">Bachelor's degree</option>
+              <option value="Master's degree">Master's degree</option>
+              <option value="Doctorate or higher">Doctorate or higher</option>
             </select>
           </div>
 
@@ -192,7 +128,7 @@
               name="course"
               [(ngModel)]="dataEduc.course"
               class="form-input"
-              placeholder="e.g., Computer Science"
+              placeholder="e.g., Bachelor of Science Computer Science"
             />
           </div>
 

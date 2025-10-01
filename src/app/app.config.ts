@@ -46,6 +46,7 @@ import { authService } from './services/auth-services/auth-services';
 import { AuthInterceptor } from './services/Interceptor/auth-interceptor';
 import { CredentialsInterceptor } from './services/auth-services/credential-interceptor';
 import { TokenService } from './services/token-service/token-service';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 // ---- APP INITIALIZER factory ----
 export function initAuth(tokenService: TokenService) {
@@ -60,7 +61,9 @@ export const appConfig: ApplicationConfig = {
     UserServices,
     NgxToastrMessageComponent,
     authService,
-
+    ConfirmationService,
+    MessageService,
+    ConfirmationService,
     // Core providers
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
