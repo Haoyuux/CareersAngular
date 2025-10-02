@@ -947,6 +947,158 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    createOrEditCertificate(input: CreateOrEditCertificateDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/CreateOrEditCertificate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEditCertificate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEditCertificate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processCreateOrEditCertificate(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getUserCertificate(): Observable<ApiResponseMessageOfIListOfGetUserCertificateDto> {
+        let url_ = this.baseUrl + "/api/User/GetUserCertificate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserCertificate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserCertificate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfGetUserCertificateDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfGetUserCertificateDto>;
+        }));
+    }
+
+    protected processGetUserCertificate(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfGetUserCertificateDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfGetUserCertificateDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    deleteUserCertificate(certificateId: string | undefined): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/DeleteUserCertificate?";
+        if (certificateId === null)
+            throw new globalThis.Error("The parameter 'certificateId' cannot be null.");
+        else if (certificateId !== undefined)
+            url_ += "certificateId=" + encodeURIComponent("" + certificateId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteUserCertificate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteUserCertificate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processDeleteUserCertificate(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
@@ -2028,6 +2180,199 @@ export interface IApiResponseMessageOfIListOfCreateOrEditWorkExperienceDto {
     data: CreateOrEditWorkExperienceDto[];
     isSuccess: boolean;
     errorMessage: string;
+}
+
+export class CreateOrEditCertificateDto implements ICreateOrEditCertificateDto {
+    id!: string;
+    name!: string;
+    issuer!: string;
+    highlights!: string;
+    dateAchieved!: Date;
+    certificateType!: number;
+    profileImageBase64!: string;
+    profileImageFileName!: string;
+    profileImageContentType!: string;
+
+    constructor(data?: ICreateOrEditCertificateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.issuer = _data["issuer"];
+            this.highlights = _data["highlights"];
+            this.dateAchieved = _data["dateAchieved"] ? new Date(_data["dateAchieved"].toString()) : undefined as any;
+            this.certificateType = _data["certificateType"];
+            this.profileImageBase64 = _data["profileImageBase64"];
+            this.profileImageFileName = _data["profileImageFileName"];
+            this.profileImageContentType = _data["profileImageContentType"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditCertificateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditCertificateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["issuer"] = this.issuer;
+        data["highlights"] = this.highlights;
+        data["dateAchieved"] = this.dateAchieved ? this.dateAchieved.toISOString() : undefined as any;
+        data["certificateType"] = this.certificateType;
+        data["profileImageBase64"] = this.profileImageBase64;
+        data["profileImageFileName"] = this.profileImageFileName;
+        data["profileImageContentType"] = this.profileImageContentType;
+        return data;
+    }
+}
+
+export interface ICreateOrEditCertificateDto {
+    id: string;
+    name: string;
+    issuer: string;
+    highlights: string;
+    dateAchieved: Date;
+    certificateType: number;
+    profileImageBase64: string;
+    profileImageFileName: string;
+    profileImageContentType: string;
+}
+
+export class ApiResponseMessageOfIListOfGetUserCertificateDto implements IApiResponseMessageOfIListOfGetUserCertificateDto {
+    data!: GetUserCertificateDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfIListOfGetUserCertificateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(GetUserCertificateDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfIListOfGetUserCertificateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfGetUserCertificateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfIListOfGetUserCertificateDto {
+    data: GetUserCertificateDto[];
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class GetUserCertificateDto implements IGetUserCertificateDto {
+    id!: string;
+    name!: string;
+    issuer!: string;
+    highlights!: string;
+    dateAchieved!: Date;
+    certificateType!: number;
+    uploadFile!: string;
+    type!: CertificateTypeEnum;
+
+    constructor(data?: IGetUserCertificateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.issuer = _data["issuer"];
+            this.highlights = _data["highlights"];
+            this.dateAchieved = _data["dateAchieved"] ? new Date(_data["dateAchieved"].toString()) : undefined as any;
+            this.certificateType = _data["certificateType"];
+            this.uploadFile = _data["uploadFile"];
+            this.type = _data["type"];
+        }
+    }
+
+    static fromJS(data: any): GetUserCertificateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetUserCertificateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["issuer"] = this.issuer;
+        data["highlights"] = this.highlights;
+        data["dateAchieved"] = this.dateAchieved ? this.dateAchieved.toISOString() : undefined as any;
+        data["certificateType"] = this.certificateType;
+        data["uploadFile"] = this.uploadFile;
+        data["type"] = this.type;
+        return data;
+    }
+}
+
+export interface IGetUserCertificateDto {
+    id: string;
+    name: string;
+    issuer: string;
+    highlights: string;
+    dateAchieved: Date;
+    certificateType: number;
+    uploadFile: string;
+    type: CertificateTypeEnum;
+}
+
+export enum CertificateTypeEnum {
+    Certificate = "Certificate",
+    Training = "Training",
+    Seminars = "Seminars",
 }
 
 export interface FileResponse {

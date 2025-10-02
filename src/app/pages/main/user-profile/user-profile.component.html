@@ -109,62 +109,130 @@
     <main class="col-right">
       <article class="card">
         <h2 class="card-title">Experience</h2>
-        <div class="timeline" *ngFor="let item of getWorkExpData">
-          <div class="item">
-            <div class="when">
-              {{ item.startDate | date : "yyyy" }} —
-              {{ item.endDate ? (item.endDate | date : "yyyy") : "Present" }}
-            </div>
-            <div class="what">
-              <h3>{{ item.jobTitle }} · {{ item.companyName }}</h3>
-              <p>
-                {{ item.jobDescription }}
-              </p>
-              <!-- <ul>
-                <li>Drove Lighthouse score from 72 → 96.</li>
-                <li>Auth & state with NgRx + interceptors.</li>
-                <li>
-                  Cut bundle size by ~28% with route-level code splitting.
-                </li>
-              </ul> -->
-            </div>
-          </div>
-          <!-- <div class="item">
-            <div class="when">2021 — 2023</div>
-            <div class="what">
-              <h3>Frontend Engineer · Brigada Tech</h3>
-              <p>
-                Shipped dashboards for HR & PMS products. Collaborated closely
-                with design and backend to deliver on tight timelines.
-              </p>
-            </div>
-          </div> -->
+
+        <div *ngIf="!getWorkExpData?.length" class="muted exp-empty">
+          No experience yet.
         </div>
+
+        <ul class="exp-list" *ngIf="getWorkExpData?.length">
+          <li class="exp-item" *ngFor="let item of getWorkExpData">
+            <div class="exp-head">
+              <h3 class="exp-role">
+                {{ item.jobTitle }}
+                <span class="exp-sep">·</span>
+                <span class="exp-company">{{ item.companyName }}</span>
+              </h3>
+
+              <!-- Optional seniority/type pill -->
+              <!-- <span class="exp-pill" *ngIf="item.employmentType">{{
+                item.employmentType
+              }}</span> -->
+            </div>
+
+            <div class="exp-meta">
+              <span class="muted">
+                {{ item.startDate | date : "MMM yyyy" }} —
+                {{
+                  item.endDate ? (item.endDate | date : "MMM yyyy") : "Present"
+                }}
+              </span>
+              <span class="dot">•</span>
+              <span class="muted" *ngIf="item.companyAddress">{{
+                item.companyAddress
+              }}</span>
+            </div>
+
+            <p class="exp-desc" *ngIf="item.jobDescription">
+              {{ item.jobDescription }}
+            </p>
+
+            <!-- Optional highlights list -->
+            <!-- <ul class="exp-bullets" *ngIf="item.highlights?.length">
+              <li *ngFor="let h of item.highlights">{{ h }}</li>
+            </ul> -->
+          </li>
+        </ul>
       </article>
 
+      <!-- EDUCATION -->
       <article class="card">
         <h2 class="card-title">Education</h2>
-        <div class="edu" *ngFor="let item of getEduc">
-          <div>
-            <h3>{{ item.course }}</h3>
-            <p>{{ item.schoolName }}</p>
-            <span class="muted">
-              {{ item.startDate | date : "yyyy" }} —
-              {{ item.endDate | date : "yyyy" }}</span
-            >
-          </div>
+
+        <div *ngIf="!getEduc?.length" class="muted edu-empty">
+          No education added yet.
         </div>
+
+        <ul class="edu-list" *ngIf="getEduc?.length">
+          <li class="edu-item" *ngFor="let item of getEduc">
+            <div class="edu-head">
+              <h3 class="edu-course">{{ item.course }}</h3>
+              <span class="edu-pill" *ngIf="item.educationLevel">{{
+                item.educationLevel
+              }}</span>
+            </div>
+
+            <p class="edu-school">{{ item.schoolName }}</p>
+
+            <div class="edu-meta">
+              <span class="muted">
+                {{ item.startDate | date : "MMM yyyy" }} —
+                {{
+                  item.endDate ? (item.endDate | date : "MMM yyyy") : "Present"
+                }}
+              </span>
+              <!-- <span class="dot" *ngIf="item.location">•</span>
+        <span class="muted" *ngIf="item.location">{{ item.location }}</span> -->
+            </div>
+          </li>
+        </ul>
       </article>
 
       <article class="card">
         <h2 class="card-title">Certificate</h2>
-        <div class="edu">
-          <div>
-            <h3>Java Development Training</h3>
-            <p>Polytechnic University of the Philippines</p>
-            <span class="muted">2017 — 2021</span>
-          </div>
+
+        <!-- empty state -->
+        <div *ngIf="!getCertificate?.length" class="cert-empty muted">
+          No certificates yet.
         </div>
+
+        <!-- list -->
+        <ul class="cert-list" *ngIf="getCertificate?.length">
+          <li class="cert-item" *ngFor="let item of getCertificate">
+            <div class="cert-head">
+              <h3 class="cert-name">{{ item.name }}</h3>
+
+              <!-- Optional type pill -->
+              <span class="cert-pill" *ngIf="item.certificateType">
+                {{ item.certificateType }}
+              </span>
+            </div>
+
+            <p class="cert-issuer" *ngIf="item.issuer">{{ item.issuer }}</p>
+
+            <div class="cert-meta">
+              <span class="muted">
+                Issue:
+                {{ item.dateAchieved | date : "MMM yyyy" }}
+              </span>
+
+              <!-- Optional attachment/link -->
+              <a
+                class="cert-link"
+                *ngIf="item.uploadFile"
+                (click)="openCertificate(item)"
+                style="cursor: pointer"
+              >
+                View Attachment
+              </a>
+            </div>
+            <!-- *ngIf="item.attachmentUrl"
+          [href]="item.attachmentUrl" -->
+
+            <p class="cert-highlights" *ngIf="item.highlights">
+              {{ item.highlights }}
+            </p>
+          </li>
+        </ul>
       </article>
 
       <article class="card">

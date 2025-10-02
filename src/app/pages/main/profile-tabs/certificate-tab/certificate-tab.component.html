@@ -1,60 +1,184 @@
 <!-- Toolbar -->
 <div class="cert-toolbar">
   <h2 class="cert-title">Certificates</h2>
-  <button class="cert-add-btn" type="button">+ Add Certificate</button>
+  <button class="cert-add-btn" type="button" (click)="visible = true">
+    Add Certificate
+  </button>
 </div>
 
 <!-- Row of cards -->
 <div class="cert-row-cards">
   <!-- Card 1 -->
-  <article class="cert-card">
-    <button class="cert-delete" type="button" aria-label="Delete certificate">
-      ×
-    </button>
-    <header class="cert-head">
-      <h3 class="cert-name">AWS Certified Solutions Architect</h3>
-      <span class="cert-year">Issued: 2024</span>
-    </header>
-    <div class="cert-body">
-      <div class="cert-row">
-        <span class="cert-label">Issuer</span>
-        <span class="cert-value">Amazon Web Services</span>
-      </div>
-      <div class="cert-row">
+  <ng-container *ngIf="getCertificate.length > 0; else noCertificate">
+    <article class="cert-card" *ngFor="let item of getCertificate">
+      <button
+        class="cert-delete"
+        type="button"
+        aria-label="Delete certificate"
+        (click)="onDeleteCertificate(item.id)"
+      >
+        ×
+      </button>
+      <header class="cert-head">
+        <h3 class="cert-name">{{ item.name }}</h3>
+        <span class="cert-year"
+          >Issued: {{ item.dateAchieved | date : "yyyy" }}
+        </span>
+      </header>
+      <div class="cert-body">
+        <div class="cert-row">
+          <span class="cert-label">Issuer</span>
+          <span class="cert-value">{{ item.issuer }}</span>
+        </div>
+        <!-- <div class="cert-row">
         <span class="cert-label">Credential ID</span>
         <span class="cert-value">ABC-1234</span>
+      </div> -->
+        <div class="cert-row">
+          <span class="cert-label">Highlights</span>
+          <span class="cert-value">{{ item.highlights }}</span>
+        </div>
       </div>
-      <div class="cert-row">
-        <span class="cert-label">Highlights</span>
-        <span class="cert-value">Cloud Architecture, Deployment</span>
-      </div>
-    </div>
-  </article>
-
-  <!-- Card 2 -->
-  <article class="cert-card">
-    <button class="cert-delete" type="button" aria-label="Delete certificate">
-      ×
-    </button>
-    <header class="cert-head">
-      <h3 class="cert-name">Certified Scrum Master</h3>
-      <span class="cert-year">Issued: 2023</span>
-    </header>
-    <div class="cert-body">
-      <div class="cert-row">
-        <span class="cert-label">Issuer</span>
-        <span class="cert-value">Scrum Alliance</span>
-      </div>
-      <div class="cert-row">
-        <span class="cert-label">Credential ID</span>
-        <span class="cert-value">CSM-5678</span>
-      </div>
-      <div class="cert-row">
-        <span class="cert-label">Highlights</span>
-        <span class="cert-value">Agile Project Management</span>
-      </div>
-    </div>
-  </article>
-
+    </article>
+  </ng-container>
   <!-- Add more cert-card as needed -->
 </div>
+
+<ng-template #noCertificate>
+  <article class="cert-card cert-card-empty">
+    <div class="cert-empty-content">
+      <h3 class="cert-empty-title">No Certificate Records Found</h3>
+      <p class="cert-empty-text">
+        Please add your Certificate Records to complete your profile.
+      </p>
+      <button type="button" class="cert-add-btn" (click)="visible = true">
+        Add Certificate
+      </button>
+    </div>
+  </article>
+</ng-template>
+
+<p-dialog
+  header="Add Certificate"
+  [(visible)]="visible"
+  [modal]="true"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+>
+  <div class="add-cert-modal">
+    <div class="modal-content">
+      <form class="cert-form" (submit)="onSaveCertificate()">
+        <!-- Name -->
+        <div class="form-group">
+          <label for="certName" class="form-label">Certificate Name</label>
+          <input
+            type="text"
+            id="certName"
+            name="name"
+            [(ngModel)]="dataCert.name"
+            class="form-input"
+            placeholder="e.g., AWS Certified Solutions Architect – Associate"
+            required
+          />
+        </div>
+
+        <!-- Issuer -->
+        <div class="form-group">
+          <label for="certIssuer" class="form-label">Issuer</label>
+          <input
+            type="text"
+            id="certIssuer"
+            name="issuer"
+            [(ngModel)]="dataCert.issuer"
+            class="form-input"
+            placeholder="e.g., Amazon Web Services (AWS)"
+            required
+          />
+        </div>
+
+        <!-- Highlights -->
+        <div class="form-group">
+          <label for="certDesc" class="form-label">Hightlights</label>
+          <textarea
+            id="hightlights"
+            name="hightlights"
+            [(ngModel)]="dataCert.highlights"
+            class="form-input"
+            rows="3"
+            placeholder="Highlights of the certificate, e.g. Agile Project Management, Cloud Architecture"
+          ></textarea>
+        </div>
+
+        <!-- Date + Type -->
+        <div class="form-row">
+          <!-- DateAchieved -->
+          <div class="form-group">
+            <label for="dateAchieved" class="form-label">Date Achieved</label>
+            <p-calendar
+              id="dateAchieved"
+              name="dateAchieved"
+              [(ngModel)]="dataCert.dateAchieved"
+              [showIcon]="true"
+              view="month"
+              dateFormat="mm/yy"
+              [yearNavigator]="true"
+              yearRange="1980:2035"
+              placeholder="MM/YYYY"
+              [appendTo]="'body'"
+              [styleClass]="'form-calendar'"
+              required
+            ></p-calendar>
+          </div>
+
+          <!-- CertificateType -->
+          <div class="form-group">
+            <label for="certType" class="form-label">Certificate Type</label>
+            <select
+              id="certType"
+              name="certificateType"
+              [(ngModel)]="dataCert.certificateType"
+              class="form-input"
+              required
+            >
+              <option value="" disabled selected>Select type</option>
+              <option value="0">Certificate</option>
+
+              <option value="1">Training</option>
+
+              <option value="2">Seminars</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Attachment -->
+        <div class="form-group">
+          <label class="form-label">Attachment (Image/PDF)</label>
+          <input
+            #fileInput
+            type="file"
+            id="attachFile"
+            name="attachFile"
+            class="form-input"
+            accept=".png,.jpg,.jpeg,.pdf"
+            (change)="onFileSelected($event)"
+          />
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-cancel"
+            (click)="visible = false"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-submit">Add Certificate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</p-dialog>
