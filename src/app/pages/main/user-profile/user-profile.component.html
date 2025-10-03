@@ -1,39 +1,35 @@
 <body>
   <section class="profile-hero">
-    <div class="cover"></div>
+    <!-- Cover -->
+    <div class="cover">
+      <!-- Use your uploaded cover image here -->
+      <img
+        class="cover-photo"
+        src="../../assets/images/profile/azi-cover.jpg"
+        alt="Cover Photo"
+      />
+    </div>
 
-    <div class="hero-content container">
-      <div class="avatar-wrap">
+    <!-- The bar below the cover -->
+    <div class="profile-bar container">
+      <div class="bar-avatar">
         <img class="avatar" [src]="getUserProfileImage()" alt="User Profile" />
       </div>
 
-      <div class="identity">
+      <div class="bar-identity">
         <h1 class="name">{{ userData.firstName }} {{ userData.lastName }}</h1>
         <p class="title">Frontend Engineer • Angular / TypeScript</p>
-
         <p class="meta">
           <span class="pill">Manila, PH</span>
           <span class="dot">•</span>
           <span>Open to work</span>
         </p>
+      </div>
 
-        <div class="actions">
-          <button class="btn edit-profile-btn" (click)="openEditDialog()">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"
-              />
-            </svg>
-            Edit Profile
-          </button>
-        </div>
+      <div class="bar-actions">
+        <button class="btn edit-profile-btn" (click)="openEditDialog()">
+          Edit Profile
+        </button>
       </div>
     </div>
   </section>
