@@ -13,6 +13,7 @@ import {
   GetAllCivilStatusDto,
   GetAllGenderDto,
   HrmsServices,
+  InsertOrUpdateUserCoverPhotoDto,
   InsertOrUpdateUserProfileDto,
   UserDto,
   UserServices,
@@ -69,11 +70,18 @@ export class UserDetailsTabComponent implements OnInit {
 
   getUserProfileImage(): string {
     if (this.userData && this.userData.userProfileByte) {
-      // Convert backend byte[] (base64 string) into data URL
       return `data:image/jpeg;base64,${this.userData.userProfileByte}`;
     }
-    // fallback image if no profile picture
+
     return 'assets/images/profile/user-5.jpg';
+  }
+
+  getUserCoverImage(): string {
+    if (this.userData && this.userData.userCoverPhotoByte) {
+      return `data:image/jpeg;base64,${this.userData.userCoverPhotoByte}`;
+    }
+
+    return 'assets/images/profile/careers-cover.jpg';
   }
 
   dataGender: GetAllGenderDto[] = [];
@@ -125,14 +133,20 @@ export class UserDetailsTabComponent implements OnInit {
     this.userData.dateOfBirth = event ? new Date(event) : undefined;
   }
 
-  onFileSelected(event: Event) {
+  onFileSelected(event: Event, clickedButton: number) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = () => {
         const base64 = reader.result as string;
-        this.onUploadUserProfile(base64, file.name, file.type);
+        if (clickedButton == 1) {
+          //uploadpicture
+          this.onUploadUserProfile(base64, file.name, file.type);
+        } else {
+          //cover
+          this.onUploadCoverPhoto(base64, file.name, file.type);
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -156,6 +170,58 @@ export class UserDetailsTabComponent implements OnInit {
           this.onGetDetails();
           this.profileUpdated.emit();
           this.ngxToastrMessage.showtoastr(res.data, 'Updated Successfully');
+        } else {
+          this.ngxToastrMessage.showtoastr(res.errorMessage, 'Error');
+        }
+      },
+      error: () => {
+        this.ngxToastrMessage.showtoastr('Something went wrong', 'Error');
+      },
+    });
+  }
+
+  onUploadCoverPhoto(
+    base64Image?: string,
+    fileName?: string,
+    contentType?: string
+  ) {
+    const payload = new InsertOrUpdateUserCoverPhotoDto({
+      coverImageBase64: base64Image ?? '',
+      coverImageFileName: fileName ?? '',
+      coverImageContentType: contentType ?? '',
+      removeCoverImage: false,
+    });
+
+    this._userService.insertOrUpdateUserCoverPhoto(payload).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.onGetDetails();
+          this.profileUpdated.emit();
+          this.ngxToastrMessage.showtoastr(res.data, 'Updated Successfully');
+        } else {
+          this.ngxToastrMessage.showtoastr(res.errorMessage, 'Error');
+        }
+      },
+      error: () => {
+        this.ngxToastrMessage.showtoastr('Something went wrong', 'Error');
+      },
+    });
+  }
+
+  onRemoveCoverPhoto() {
+    const payload = new InsertOrUpdateUserCoverPhotoDto({
+      coverImageBase64: '',
+      coverImageFileName: '',
+      coverImageContentType: '',
+      removeCoverImage: true,
+    });
+
+    this._userService.insertOrUpdateUserCoverPhoto(payload).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.onGetDetails();
+          this.profileUpdated.emit();
+          this.ngxToastrMessage.showtoastr(res.data, 'Removed Successfully');
         } else {
           this.ngxToastrMessage.showtoastr(res.errorMessage, 'Error');
         }

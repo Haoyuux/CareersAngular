@@ -585,6 +585,58 @@ export class UserServices {
         return _observableOf(null as any);
     }
 
+    insertOrUpdateUserCoverPhoto(input: InsertOrUpdateUserCoverPhotoDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/InsertOrUpdateUserCoverPhoto";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processInsertOrUpdateUserCoverPhoto(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processInsertOrUpdateUserCoverPhoto(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processInsertOrUpdateUserCoverPhoto(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     search(q: string | undefined): Observable<NominatimResult[]> {
         let url_ = this.baseUrl + "/api/User/search?";
         if (q === null)
@@ -1524,6 +1576,7 @@ export class UserDto implements IUserDto {
     aboutMe!: string | undefined;
     streetDetails!: string | undefined;
     userProfileByte!: string | undefined;
+    userCoverPhotoByte!: string | undefined;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -1553,6 +1606,7 @@ export class UserDto implements IUserDto {
             this.aboutMe = _data["aboutMe"];
             this.streetDetails = _data["streetDetails"];
             this.userProfileByte = _data["userProfileByte"];
+            this.userCoverPhotoByte = _data["userCoverPhotoByte"];
         }
     }
 
@@ -1582,6 +1636,7 @@ export class UserDto implements IUserDto {
         data["aboutMe"] = this.aboutMe;
         data["streetDetails"] = this.streetDetails;
         data["userProfileByte"] = this.userProfileByte;
+        data["userCoverPhotoByte"] = this.userCoverPhotoByte;
         return data;
     }
 }
@@ -1604,6 +1659,7 @@ export interface IUserDto {
     aboutMe: string | undefined;
     streetDetails: string | undefined;
     userProfileByte: string | undefined;
+    userCoverPhotoByte: string | undefined;
 }
 
 export class RegisterUserDto implements IRegisterUserDto {
@@ -1890,6 +1946,54 @@ export interface IInsertOrUpdateUserProfileDto {
     profileImageFileName: string;
     profileImageContentType: string;
     removeProfileImage: boolean;
+}
+
+export class InsertOrUpdateUserCoverPhotoDto implements IInsertOrUpdateUserCoverPhotoDto {
+    coverImageBase64!: string;
+    coverImageFileName!: string;
+    coverImageContentType!: string;
+    removeCoverImage!: boolean;
+
+    constructor(data?: IInsertOrUpdateUserCoverPhotoDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.coverImageBase64 = _data["coverImageBase64"];
+            this.coverImageFileName = _data["coverImageFileName"];
+            this.coverImageContentType = _data["coverImageContentType"];
+            this.removeCoverImage = _data["removeCoverImage"];
+        }
+    }
+
+    static fromJS(data: any): InsertOrUpdateUserCoverPhotoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new InsertOrUpdateUserCoverPhotoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["coverImageBase64"] = this.coverImageBase64;
+        data["coverImageFileName"] = this.coverImageFileName;
+        data["coverImageContentType"] = this.coverImageContentType;
+        data["removeCoverImage"] = this.removeCoverImage;
+        return data;
+    }
+}
+
+export interface IInsertOrUpdateUserCoverPhotoDto {
+    coverImageBase64: string;
+    coverImageFileName: string;
+    coverImageContentType: string;
+    removeCoverImage: boolean;
 }
 
 export class NominatimResult implements INominatimResult {

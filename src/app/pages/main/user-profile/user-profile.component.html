@@ -3,11 +3,7 @@
     <!-- Cover -->
     <div class="cover">
       <!-- Use your uploaded cover image here -->
-      <img
-        class="cover-photo"
-        src="../../assets/images/profile/azi-cover.jpg"
-        alt="Cover Photo"
-      />
+      <img class="cover-photo" [src]="getUserCoverImage()" alt="Cover Photo" />
     </div>
 
     <!-- The bar below the cover -->
@@ -55,11 +51,12 @@
           <li>
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
               <path
-                d="M12 12c2.2 0 4-1.8 4-4S14.2 4 12 4 8 5.8 8 8s1.8 4 4 4zm0 2c-3.3 0-8 1.7-8 5v1h16v-1c0-3.3-4.7-5-8-5z"
+                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V18h6v-1c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v1h6v-1.5c0-2.33-4.67-3.5-7-3.5H8z"
               />
             </svg>
             <span>{{ userData.civilStatus }}</span>
           </li>
+
           <li>
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
               <path

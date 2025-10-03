@@ -1,5 +1,61 @@
 <div class="edit-profile-modal">
   <div class="modal-content">
+    <!-- Cover Photo Section -->
+    <div class="cover-section">
+      <img
+        [src]="getUserCoverImage()"
+        alt="Cover Photo"
+        class="cover-preview"
+      />
+      <div class="cover-controls">
+        <h4>Cover Photo</h4>
+        <p>Upload a new cover photo. Recommended size: 1200x300px</p>
+        <div class="cover-buttons">
+          <!-- Hidden file input -->
+          <input
+            id="coverInput"
+            type="file"
+            accept="image/*"
+            style="display: none"
+            (change)="onFileSelected($event, 2)"
+          />
+
+          <!-- Button that triggers the file input -->
+          <label for="coverInput" class="btn">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17,8 12,3 7,8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Upload New
+          </label>
+
+          <button class="btn danger" (click)="onRemoveCoverPhoto()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="3,6 5,6 21,6"></polyline>
+              <path
+                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+              ></path>
+            </svg>
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
     <!-- Avatar Section -->
     <div class="avatar-section">
       <img
@@ -16,7 +72,7 @@
             #fileInput
             type="file"
             accept="image/*"
-            (change)="onFileSelected($event)"
+            (change)="onFileSelected($event, 1)"
             style="display: none"
           />
 

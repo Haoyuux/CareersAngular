@@ -131,6 +131,16 @@ export class UserProfileComponent implements OnInit {
     // fallback image if no profile picture
     return 'assets/images/profile/user-5.jpg';
   }
+
+  getUserCoverImage(): string {
+    if (this.userData && this.userData.userCoverPhotoByte) {
+      // Convert backend byte[] (base64 string) into data URL
+      return `data:image/jpeg;base64,${this.userData.userCoverPhotoByte}`;
+    }
+
+    // fallback image if no profile picture
+    return 'assets/images/profile/careers-cover.jpg';
+  }
   onProfileUpdated() {
     console.log('Profile updated, refreshing data...'); // Add this for debugging
     this.onGetDetails(); // Refresh the profile data

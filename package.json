@@ -30,6 +30,7 @@
     "apexcharts": "^3.52.0",
     "iconify": "^1.4.0",
     "ng-apexcharts": "^1.7.6",
+    "ngx-image-cropper": "^9.1.5",
     "ngx-scrollbar": "^11.0.0",
     "ngx-toastr": "^19.1.0",
     "primeicons": "^7.0.0",
