@@ -1151,6 +1151,158 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    createOrEditSkills(input: CreateOrEditSkillsDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/CreateOrEditSkills";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrEditSkills(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrEditSkills(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processCreateOrEditSkills(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getUserSkills(): Observable<ApiResponseMessageOfIListOfCreateOrEditSkillsDto> {
+        let url_ = this.baseUrl + "/api/User/GetUserSkills";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserSkills(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserSkills(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfCreateOrEditSkillsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfCreateOrEditSkillsDto>;
+        }));
+    }
+
+    protected processGetUserSkills(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfCreateOrEditSkillsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfCreateOrEditSkillsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    deleteUserSkills(skillId: string | undefined): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/DeleteUserSkills?";
+        if (skillId === null)
+            throw new globalThis.Error("The parameter 'skillId' cannot be null.");
+        else if (skillId !== undefined)
+            url_ += "skillId=" + encodeURIComponent("" + skillId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteUserSkills(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteUserSkills(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processDeleteUserSkills(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
@@ -2477,6 +2629,101 @@ export enum CertificateTypeEnum {
     Certificate = "Certificate",
     Training = "Training",
     Seminars = "Seminars",
+}
+
+export class CreateOrEditSkillsDto implements ICreateOrEditSkillsDto {
+    id!: string;
+    name!: string;
+
+    constructor(data?: ICreateOrEditSkillsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditSkillsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditSkillsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ICreateOrEditSkillsDto {
+    id: string;
+    name: string;
+}
+
+export class ApiResponseMessageOfIListOfCreateOrEditSkillsDto implements IApiResponseMessageOfIListOfCreateOrEditSkillsDto {
+    data!: CreateOrEditSkillsDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfIListOfCreateOrEditSkillsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(CreateOrEditSkillsDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfIListOfCreateOrEditSkillsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfCreateOrEditSkillsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfIListOfCreateOrEditSkillsDto {
+    data: CreateOrEditSkillsDto[];
+    isSuccess: boolean;
+    errorMessage: string;
 }
 
 export interface FileResponse {

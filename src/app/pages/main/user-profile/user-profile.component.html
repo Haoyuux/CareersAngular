@@ -77,14 +77,9 @@
       <article class="card">
         <h2 class="card-title">Skills</h2>
         <div class="chips">
-          <span class="chip">Angular</span>
-          <span class="chip">TypeScript</span>
-          <span class="chip">RxJS</span>
-          <span class="chip">SCSS</span>
-          <span class="chip">Tailwind</span>
-          <span class="chip">NgRx</span>
-          <span class="chip">REST</span>
-          <span class="chip">Jest</span>
+          <span class="chip" *ngFor="let item of getSkills">{{
+            item.name
+          }}</span>
         </div>
       </article>
 
@@ -94,6 +89,13 @@
           <li><a href="#">github.com/jreyes</a></li>
           <li><a href="#">linkedin.com/in/jordan-reyes</a></li>
           <li><a href="#">jordan.dev</a></li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2 class="card-title">R&eacute;sum&eacute;</h2>
+        <ul class="links">
+          <li><a href="#">github.com/jreyes</a></li>
         </ul>
       </article>
     </aside>

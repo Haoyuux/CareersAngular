@@ -4,6 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import {
   CreateOrEditEducationDto,
+  CreateOrEditSkillsDto,
   CreateOrEditWorkExperienceDto,
   GetUserCertificateDto,
   HrmsServices,
@@ -13,6 +14,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { EditProfileComponent } from '../edit-profile/edit-profile.component';
 import { PlaceSearchComponentComponent } from '../component/place-search-component/place-search-component.component';
+import { LoadingService } from 'src/app/services/auth-services/loading-services';
 @Component({
   selector: 'app-user-profile',
   standalone: true,
@@ -30,13 +32,30 @@ export class UserProfileComponent implements OnInit {
 
   constructor(
     private userService: UserServices,
-    private _hrmsService: HrmsServices
+    private _hrmsService: HrmsServices,
+    private loadingService: LoadingService
   ) {}
   ngOnInit(): void {
     this.onGetDetails();
     this.onGetUserEducation();
     this.onGetWorkExp();
     this.onGetUserCertificate();
+    this.onGetUserSkills();
+  }
+
+  isEmpty: boolean = true;
+  getSkills: CreateOrEditSkillsDto[] = [];
+  onGetUserSkills() {
+    this.userService.getUserSkills().subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.getSkills = res.data;
+          this.isEmpty = this.getSkills.length === 0;
+        }
+        // Focus input after data loads
+      },
+      error: (err) => {},
+    });
   }
 
   getCertificate: GetUserCertificateDto[] = [];
@@ -114,11 +133,11 @@ export class UserProfileComponent implements OnInit {
 
   userData: UserDto = new UserDto();
   onGetDetails() {
+    this.loadingService.show();
     this.userService.getUserProfileDetails().subscribe({
       next: (res) => {
         this.userData = res.data;
-
-        console.table(this.userData);
+        this.loadingService.hide();
       },
     });
   }

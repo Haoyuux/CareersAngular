@@ -1,0 +1,39 @@
+<div class="skills-container">
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading your skills...</p>
+  </div>
+
+  <!-- Skills Input with Chips -->
+  <div
+    class="form-input skills-input"
+    *ngIf="!isLoading"
+    (click)="focusInput()"
+  >
+    <div class="skill-chip" *ngFor="let skill of getSkills">
+      {{ skill.name }}
+      <button
+        class="skill-remove"
+        (click)="removeSkill(skill); $event.stopPropagation()"
+        type="button"
+      >
+        ×
+      </button>
+    </div>
+    <input
+      #skillInput
+      type="text"
+      class="skill-input-field"
+      placeholder="Add a skill..."
+      [(ngModel)]="currentSkill"
+      (keypress)="onSkillKeyPress($event)"
+      autofocus
+    />
+  </div>
+
+  <!-- Empty State Helper -->
+  <p class="helper-text" *ngIf="isEmpty && !isLoading" style="color: red">
+    Start building your skill set by typing and pressing Enter
+  </p>
+</div>

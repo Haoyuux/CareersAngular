@@ -81,31 +81,6 @@ export class MainDashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Test method to verify spinner works
-  testSpinner() {
-    console.log('=== TEST SPINNER START ===');
-    console.log('LoadingService instance:', this.loadingService);
-    console.log('Current loading state:', this.loadingService.loading);
-
-    console.log('Calling loadingService.show()...');
-    this.loadingService.show();
-
-    console.log('Loading state after show():', this.loadingService.loading);
-    console.log('Loading observable value:', this.loadingService.loading$);
-
-    // Subscribe to the observable to see if it's emitting
-    this.loadingService.loading$.subscribe((value) => {
-      console.log('Loading observable emitted:', value);
-    });
-
-    setTimeout(() => {
-      console.log('Hiding spinner after 3 seconds...');
-      this.loadingService.hide();
-      console.log('Loading state after hide():', this.loadingService.loading);
-      console.log('=== TEST SPINNER END ===');
-    }, 3000);
-  }
-
   jobPostings: JobPosting[] = [
     {
       id: 1,
