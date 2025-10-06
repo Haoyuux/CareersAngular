@@ -6,11 +6,7 @@
   </div>
 
   <!-- Skills Input with Chips -->
-  <div
-    class="form-input skills-input"
-    *ngIf="!isLoading"
-    (click)="focusInput()"
-  >
+  <div class="form-input skills-input" *ngIf="!isLoading">
     <div class="skill-chip" *ngFor="let skill of getSkills">
       {{ skill.name }}
       <button
@@ -28,7 +24,6 @@
       placeholder="Add a skill..."
       [(ngModel)]="currentSkill"
       (keypress)="onSkillKeyPress($event)"
-      autofocus
     />
   </div>
 

@@ -4,6 +4,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -33,7 +34,8 @@ export class SkillTabComponent implements OnInit, AfterViewInit {
   constructor(
     private _userService: UserServices,
     private ngxToastrMessage: NgxToastrMessageComponent,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -53,8 +55,9 @@ export class SkillTabComponent implements OnInit, AfterViewInit {
           this.getSkills = res.data;
           this.isEmpty = this.getSkills.length === 0;
         }
-        // Focus input after data loads
-        setTimeout(() => this.focusInput(), 100);
+        // Trigger change detection and focus
+        this.cdr.detectChanges();
+        setTimeout(() => this.focusInput(), 0);
       },
       error: (err) => {
         this.isLoading = false;
@@ -145,6 +148,7 @@ export class SkillTabComponent implements OnInit, AfterViewInit {
             'Skill added successfully',
             'Success'
           );
+
           this.dataSkills = new CreateOrEditSkillsDto();
           this.onGetUserSkills();
         }

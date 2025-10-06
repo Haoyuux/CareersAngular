@@ -1729,6 +1729,7 @@ export class UserDto implements IUserDto {
     streetDetails!: string | undefined;
     userProfileByte!: string | undefined;
     userCoverPhotoByte!: string | undefined;
+    userResumeByte!: string | undefined;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -1759,6 +1760,7 @@ export class UserDto implements IUserDto {
             this.streetDetails = _data["streetDetails"];
             this.userProfileByte = _data["userProfileByte"];
             this.userCoverPhotoByte = _data["userCoverPhotoByte"];
+            this.userResumeByte = _data["userResumeByte"];
         }
     }
 
@@ -1789,6 +1791,7 @@ export class UserDto implements IUserDto {
         data["streetDetails"] = this.streetDetails;
         data["userProfileByte"] = this.userProfileByte;
         data["userCoverPhotoByte"] = this.userCoverPhotoByte;
+        data["userResumeByte"] = this.userResumeByte;
         return data;
     }
 }
@@ -1812,6 +1815,7 @@ export interface IUserDto {
     streetDetails: string | undefined;
     userProfileByte: string | undefined;
     userCoverPhotoByte: string | undefined;
+    userResumeByte: string | undefined;
 }
 
 export class RegisterUserDto implements IRegisterUserDto {
