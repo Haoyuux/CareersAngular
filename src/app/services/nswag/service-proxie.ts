@@ -637,6 +637,58 @@ export class UserServices {
         return _observableOf(null as any);
     }
 
+    insertOrUpdateUserResume(input: InsertOrUpdateUserResumeDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/InsertOrUpdateUserResume";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processInsertOrUpdateUserResume(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processInsertOrUpdateUserResume(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processInsertOrUpdateUserResume(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     search(q: string | undefined): Observable<NominatimResult[]> {
         let url_ = this.baseUrl + "/api/User/search?";
         if (q === null)
@@ -2150,6 +2202,54 @@ export interface IInsertOrUpdateUserCoverPhotoDto {
     coverImageFileName: string;
     coverImageContentType: string;
     removeCoverImage: boolean;
+}
+
+export class InsertOrUpdateUserResumeDto implements IInsertOrUpdateUserResumeDto {
+    userResumeBase64!: string;
+    userResumeFileName!: string;
+    userResumeContentType!: string;
+    removeUserResume!: boolean;
+
+    constructor(data?: IInsertOrUpdateUserResumeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userResumeBase64 = _data["userResumeBase64"];
+            this.userResumeFileName = _data["userResumeFileName"];
+            this.userResumeContentType = _data["userResumeContentType"];
+            this.removeUserResume = _data["removeUserResume"];
+        }
+    }
+
+    static fromJS(data: any): InsertOrUpdateUserResumeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new InsertOrUpdateUserResumeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userResumeBase64"] = this.userResumeBase64;
+        data["userResumeFileName"] = this.userResumeFileName;
+        data["userResumeContentType"] = this.userResumeContentType;
+        data["removeUserResume"] = this.removeUserResume;
+        return data;
+    }
+}
+
+export interface IInsertOrUpdateUserResumeDto {
+    userResumeBase64: string;
+    userResumeFileName: string;
+    userResumeContentType: string;
+    removeUserResume: boolean;
 }
 
 export class NominatimResult implements INominatimResult {

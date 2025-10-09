@@ -25,6 +25,7 @@ import { UserProfileComponent } from '../../user-profile/user-profile.component'
 import { NgxToastrMessageComponent } from 'src/app/services/ngx-toastr-message/ngx-toastr-message.component';
 import { PlaceSearchComponentV1Component } from '../../component/place-search-component-v1/place-search-component-v1.component';
 import { SkillTabComponent } from '../skill-tab/skill-tab.component';
+import { ResumeTabComponent } from '../resume-tab/resume-tab.component';
 
 @Component({
   selector: 'app-user-details-tab',
@@ -37,6 +38,7 @@ import { SkillTabComponent } from '../skill-tab/skill-tab.component';
     FormsModule,
     PlaceSearchComponentV1Component,
     SkillTabComponent,
+    ResumeTabComponent,
   ],
   templateUrl: './user-details-tab.component.html',
   styleUrl: './user-details-tab.component.scss',

@@ -1,0 +1,107 @@
+.resume-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.resume-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  border: 3px solid var(--primary);
+  background: white;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.resume-preview svg {
+  width: 48px;
+  height: 48px;
+}
+
+.resume-filename {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  padding: 0 8px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resume-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.resume-controls h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.resume-controls p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.resume-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.resume-buttons .btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(248, 250, 252, 0.95)
+  );
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.resume-buttons .btn:hover {
+  border-color: var(--primary);
+  background: var(--accent);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  transform: translateY(-1px);
+}
+
+.resume-buttons .btn.danger {
+  color: #ef4444;
+  border-color: #fecaca;
+}
+
+.resume-buttons .btn.danger:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
