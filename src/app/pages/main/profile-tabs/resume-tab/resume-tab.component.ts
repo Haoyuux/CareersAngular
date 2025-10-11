@@ -43,7 +43,6 @@ export class ResumeTabComponent implements OnInit {
         this.loadingService.hide();
       },
       error: (err) => {
-        console.error('Error loading user data:', err);
         this.loadingService.hide();
       },
     });

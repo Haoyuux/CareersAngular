@@ -105,3 +105,69 @@
   background: #fef2f2;
   border-color: #ef4444;
 }
+
+@media (max-width: 480px) {
+  .avatar-buttons,
+  .cover-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .edit-profile-modal {
+    max-height: 90vh;
+  }
+
+  .modal-content {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .resume-section {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .resume-preview {
+    margin: 0 auto 12px;
+  }
+
+  .resume-controls {
+    align-items: center;
+  }
+
+  .resume-buttons {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .resume-section {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .resume-preview {
+    width: 100px;
+    height: 100px;
+  }
+
+  .resume-preview svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .resume-controls h4 {
+    font-size: 14px;
+  }
+
+  .resume-controls p {
+    font-size: 12px;
+  }
+
+  .resume-buttons .btn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}

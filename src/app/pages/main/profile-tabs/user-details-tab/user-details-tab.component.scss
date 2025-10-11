@@ -379,6 +379,10 @@
 }
 
 @media (max-width: 480px) {
+  .modal-content {
+    width: 100% !important;
+  }
+
   .avatar-buttons,
   .cover-buttons {
     flex-direction: column;
@@ -391,11 +395,5 @@
 
   .modal-content {
     padding: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .modal-content {
-    width: 100% !important;
   }
 }

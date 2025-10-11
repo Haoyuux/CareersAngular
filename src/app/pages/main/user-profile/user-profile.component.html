@@ -1,4 +1,4 @@
-<body>
+<body id="printableProfile">
   <section class="profile-hero">
     <!-- Cover -->
     <div class="cover">
@@ -83,19 +83,21 @@
         </div>
       </article>
 
-      <article class="card">
+      <!-- <article class="card">
         <h2 class="card-title">Links</h2>
         <ul class="links">
           <li><a href="#">github.com/jreyes</a></li>
           <li><a href="#">linkedin.com/in/jordan-reyes</a></li>
           <li><a href="#">jordan.dev</a></li>
         </ul>
-      </article>
+      </article> -->
 
       <article class="card">
         <h2 class="card-title">R&eacute;sum&eacute;</h2>
         <ul class="links">
-          <li><a href="#">github.com/jreyes</a></li>
+          <li>
+            <a href="javascript:void(0)" (click)="openResume()">View Résumé</a>
+          </li>
         </ul>
       </article>
     </aside>
@@ -230,7 +232,7 @@
         </ul>
       </article>
 
-      <article class="card">
+      <!-- <article class="card">
         <h2 class="card-title">Recent Activity</h2>
         <ul class="activity">
           <li>
@@ -249,10 +251,12 @@
             <span class="time">1w</span>
           </li>
         </ul>
-      </article>
+      </article> -->
     </main>
   </div>
 </body>
+
+<button class="btn print-btn" (click)="printProfile()">Print Profile</button>
 
 <app-edit-profile
   #edtProfileComp

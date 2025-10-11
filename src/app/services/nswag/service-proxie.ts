@@ -220,6 +220,54 @@ export class HrmsServices {
         }
         return _observableOf(null as any);
     }
+
+    getRequirements(): Observable<ApiResponseMessageHrmsOfIListOfGetRequirmentsDto> {
+        let url_ = this.baseUrl + "/api/Hrms/GetRequirements";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRequirements(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRequirements(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageHrmsOfIListOfGetRequirmentsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageHrmsOfIListOfGetRequirmentsDto>;
+        }));
+    }
+
+    protected processGetRequirements(response: HttpResponseBase): Observable<ApiResponseMessageHrmsOfIListOfGetRequirmentsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageHrmsOfIListOfGetRequirmentsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -1714,6 +1762,101 @@ export class GetAllCivilStatusDto implements IGetAllCivilStatusDto {
 }
 
 export interface IGetAllCivilStatusDto {
+    id: string;
+    name: string;
+}
+
+export class ApiResponseMessageHrmsOfIListOfGetRequirmentsDto implements IApiResponseMessageHrmsOfIListOfGetRequirmentsDto {
+    data!: GetRequirmentsDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageHrmsOfIListOfGetRequirmentsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(GetRequirmentsDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageHrmsOfIListOfGetRequirmentsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageHrmsOfIListOfGetRequirmentsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageHrmsOfIListOfGetRequirmentsDto {
+    data: GetRequirmentsDto[];
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class GetRequirmentsDto implements IGetRequirmentsDto {
+    id!: string;
+    name!: string;
+
+    constructor(data?: IGetRequirmentsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): GetRequirmentsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetRequirmentsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IGetRequirmentsDto {
     id: string;
     name: string;
 }

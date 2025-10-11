@@ -40,3 +40,56 @@ body {
 :host {
   color-scheme: normal;
 }
+
+@media print {
+  /* Hide everything else */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Show only the printable section */
+  #printableProfile,
+  #printableProfile * {
+    visibility: visible !important;
+  }
+
+  /* Perfectly center on page */
+  #printableProfile {
+    position: absolute !important;
+    inset: 0 !important; /* top, right, bottom, left = 0 */
+    margin: auto !important;
+    width: 190mm !important; /* centered width */
+    min-height: 277mm !important;
+    background: #fff !important;
+    padding: 10mm 15mm !important;
+    box-sizing: border-box;
+    overflow: hidden !important;
+
+    /* Remove weird right offset */
+    transform: none !important;
+
+    /* Optional “resume page” styling */
+    box-shadow: 0 0 6mm rgba(0, 0, 0, 0.05);
+    border-radius: 4mm;
+  }
+
+  /* Hide unwanted app elements */
+  app-sidebar,
+  app-topbar,
+  app-header,
+  .sidebar,
+  .navbar,
+  .layout,
+  .menu,
+  .overlay,
+  .edit-profile-btn,
+  .print-btn,
+  button {
+    display: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
