@@ -31,19 +31,35 @@
                 </svg>
               </div>
               <div class="doc-details">
-                <div class="doc-name">{{ hrmsreq.name }}</div>
+                <div class="doc-name">{{ hrmsreq.checkListName }}</div>
                 <div class="doc-subtitle">Required document</div>
               </div>
             </div>
           </div>
-          <div class="table-cell" data-label="File Name">nbi_clearance.pdf</div>
-          <div class="table-cell" data-label="Date Upload">Oct 5, 2025</div>
-          <div class="table-cell" data-label="Reason for not accepting">-</div>
+          <div class="table-cell" data-label="File Name">
+            {{ hrmsreq.fileName }}
+          </div>
+          <div class="table-cell" data-label="Date Upload">
+            {{ hrmsreq.dateUpload }}
+          </div>
+          <div class="table-cell" data-label="Reason for not accepting">
+            {{ hrmsreq.remarks }}
+          </div>
           <div class="table-cell" data-label="Status">
-            <span class="status-badge status-approved">Approved</span>
+            <span
+              *ngIf="hrmsreq.status"
+              class="status-badge"
+              [ngClass]="{
+                'status-approved': hrmsreq.status === 'Approved',
+                'status-pending': hrmsreq.status === 'Pending'
+              }"
+            >
+              {{ hrmsreq.status }}
+            </span>
           </div>
           <div class="table-cell" data-label="Action">
             <div class="action-buttons">
+              <!-- Preview button -->
               <button class="btn btn-preview">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -61,7 +77,13 @@
                 </svg>
                 Preview
               </button>
-              <button class="btn btn-upload">
+
+              <!-- Upload button (triggers hidden input) -->
+              <button
+                type="button"
+                class="btn btn-upload"
+                (click)="fileInput.click()"
+              >
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
@@ -72,6 +94,16 @@
                 </svg>
                 Upload
               </button>
+
+              <!-- Hidden file input -->
+              <input
+                #fileInput
+                type="file"
+                accept=".png,.jpg,.jpeg,.pdf"
+                (change)="onFileSelected($event, hrmsreq.id)"
+                class="file-hidden"
+                hidden
+              />
             </div>
           </div>
         </div>

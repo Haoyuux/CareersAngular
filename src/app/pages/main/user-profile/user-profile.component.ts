@@ -192,38 +192,4 @@ export class UserProfileComponent implements OnInit {
   openEditDialog() {
     this.edtProfileComp.editModal = true;
   }
-
-  printProfile() {
-    const el = document.getElementById('printableProfile');
-    if (!el) return;
-
-    // --- Measure and scale to fit exactly 297 mm height (A4) ---
-    const pxPerMM = document.body.clientHeight / (window.innerHeight / 297);
-    const contentHeightMM = el.scrollHeight / pxPerMM;
-    const scale = Math.min(1, 297 / contentHeightMM); // shrink only if too tall
-
-    // Apply scaling before print
-    el.style.width = '210mm';
-    el.style.margin = '0 auto';
-    el.style.padding = '10mm 15mm';
-    el.style.background = '#fff';
-    el.style.transform = `scale(${scale})`;
-    el.style.transformOrigin = 'top center';
-    el.style.boxSizing = 'border-box';
-
-    // Give the browser a moment to apply styles, then print
-    setTimeout(() => {
-      window.print();
-
-      // Reset after print
-      setTimeout(() => {
-        el.style.removeProperty('transform');
-        el.style.removeProperty('transform-origin');
-        el.style.removeProperty('width');
-        el.style.removeProperty('margin');
-        el.style.removeProperty('padding');
-        el.style.removeProperty('background');
-      }, 500);
-    }, 300);
-  }
 }

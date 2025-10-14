@@ -31,7 +31,8 @@ body {
   background: white;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .table-header {
@@ -42,19 +43,42 @@ body {
   font-size: 14px;
   font-weight: 600;
   color: #374151;
+  gap: 16px;
+  min-width: 1100px;
 }
 
 .table-header-cell {
-  flex: 1;
   min-width: 0;
 }
 
-.table-header-cell:first-child {
-  flex: 2;
+.table-header-cell:nth-child(1) {
+  flex: 0 0 200px;
+  min-width: 200px;
 }
 
-.table-header-cell:last-child {
-  flex: 1.5;
+.table-header-cell:nth-child(2) {
+  flex: 0 0 180px;
+  min-width: 180px;
+}
+
+.table-header-cell:nth-child(3) {
+  flex: 0 0 120px;
+  min-width: 120px;
+}
+
+.table-header-cell:nth-child(4) {
+  flex: 1 1 auto;
+  min-width: 150px;
+}
+
+.table-header-cell:nth-child(5) {
+  flex: 0 0 100px;
+  min-width: 100px;
+}
+
+.table-header-cell:nth-child(6) {
+  flex: 0 0 220px;
+  min-width: 220px;
 }
 
 .table-body {
@@ -68,6 +92,8 @@ body {
   padding: 16px 24px;
   transition: background-color 0.2s;
   align-items: center;
+  gap: 16px;
+  min-width: 1100px;
 }
 
 .table-row:hover {
@@ -75,18 +101,48 @@ body {
 }
 
 .table-cell {
-  flex: 1;
   min-width: 0;
   font-size: 14px;
   color: #6b7280;
+  overflow: hidden;
 }
 
-.table-cell:first-child {
-  flex: 2;
+.table-cell:nth-child(1) {
+  flex: 0 0 200px;
+  min-width: 200px;
+  overflow: hidden;
+  word-break: break-word; /* Break long words */
+  white-space: normal; /* Allow wrapping */
+  line-height: 1.4; /* Better readability */
 }
 
-.table-cell:last-child {
-  flex: 1.5;
+.table-cell:nth-child(2) {
+  flex: 0 0 180px;
+  min-width: 180px;
+  overflow: hidden;
+  word-break: break-word; /* Break long words */
+  white-space: normal; /* Allow wrapping */
+  line-height: 1.4; /* Better readability */
+}
+
+.table-cell:nth-child(3) {
+  flex: 0 0 120px;
+  min-width: 120px;
+}
+
+.table-cell:nth-child(4) {
+  flex: 1 1 auto;
+  min-width: 150px;
+}
+
+.table-cell:nth-child(5) {
+  flex: 0 0 100px;
+  min-width: 100px;
+}
+
+.table-cell:nth-child(6) {
+  flex: 0 0 220px;
+  min-width: 220px;
 }
 
 .doc-info {
@@ -113,6 +169,7 @@ body {
 
 .doc-details {
   margin-left: 16px;
+  overflow: hidden;
 }
 
 .doc-name {
@@ -120,6 +177,10 @@ body {
   font-weight: 500;
   color: #111827;
   margin-bottom: 4px;
+  overflow: hidden;
+  word-break: break-word; /* Add this */
+  white-space: normal; /* Change from nowrap to normal */
+  line-height: 1.4; /* Better readability */
 }
 
 .doc-subtitle {
@@ -315,6 +376,11 @@ body {
   .container {
     padding: 0px !important;
   }
+
+  .table-container {
+    overflow-x: visible;
+  }
+
   .table-header {
     display: none;
   }
@@ -324,11 +390,14 @@ body {
     align-items: stretch;
     padding: 16px;
     gap: 12px;
+    min-width: auto;
   }
 
   .table-cell {
-    flex: none;
+    flex: none !important;
     width: 100%;
+    min-width: auto !important;
+    white-space: normal !important;
   }
 
   .table-cell:before {

@@ -1403,6 +1403,106 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    createOrUpdateReqSubmission(input: CreateOrUpdateReqSubmissionDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/CreateOrUpdateReqSubmission";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrUpdateReqSubmission(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrUpdateReqSubmission(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processCreateOrUpdateReqSubmission(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getRequirementsV1(): Observable<ApiResponseMessageOfIListOfGetRequirmentsDto> {
+        let url_ = this.baseUrl + "/api/User/GetRequirementsV1";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRequirementsV1(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRequirementsV1(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfGetRequirmentsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfGetRequirmentsDto>;
+        }));
+    }
+
+    protected processGetRequirementsV1(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfGetRequirmentsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfGetRequirmentsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
@@ -1823,6 +1923,12 @@ export interface IApiResponseMessageHrmsOfIListOfGetRequirmentsDto {
 
 export class GetRequirmentsDto implements IGetRequirmentsDto {
     id!: string;
+    checkListName!: string;
+    fileName!: string;
+    remarks!: string;
+    dateUpload!: string;
+    status!: string;
+    filebyte!: string;
     name!: string;
 
     constructor(data?: IGetRequirmentsDto) {
@@ -1837,6 +1943,12 @@ export class GetRequirmentsDto implements IGetRequirmentsDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.checkListName = _data["checkListName"];
+            this.fileName = _data["fileName"];
+            this.remarks = _data["remarks"];
+            this.dateUpload = _data["dateUpload"];
+            this.status = _data["status"];
+            this.filebyte = _data["filebyte"];
             this.name = _data["name"];
         }
     }
@@ -1851,6 +1963,12 @@ export class GetRequirmentsDto implements IGetRequirmentsDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["checkListName"] = this.checkListName;
+        data["fileName"] = this.fileName;
+        data["remarks"] = this.remarks;
+        data["dateUpload"] = this.dateUpload;
+        data["status"] = this.status;
+        data["filebyte"] = this.filebyte;
         data["name"] = this.name;
         return data;
     }
@@ -1858,6 +1976,12 @@ export class GetRequirmentsDto implements IGetRequirmentsDto {
 
 export interface IGetRequirmentsDto {
     id: string;
+    checkListName: string;
+    fileName: string;
+    remarks: string;
+    dateUpload: string;
+    status: string;
+    filebyte: string;
     name: string;
 }
 
@@ -2969,6 +3093,113 @@ export class ApiResponseMessageOfIListOfCreateOrEditSkillsDto implements IApiRes
 
 export interface IApiResponseMessageOfIListOfCreateOrEditSkillsDto {
     data: CreateOrEditSkillsDto[];
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class CreateOrUpdateReqSubmissionDto implements ICreateOrUpdateReqSubmissionDto {
+    userReqFileBase64!: string;
+    userReqFileName!: string;
+    userReqFileContentType!: string;
+    removeUserReqFile!: boolean;
+    recrtmntRequirementCheckListId!: string;
+
+    constructor(data?: ICreateOrUpdateReqSubmissionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userReqFileBase64 = _data["userReqFileBase64"];
+            this.userReqFileName = _data["userReqFileName"];
+            this.userReqFileContentType = _data["userReqFileContentType"];
+            this.removeUserReqFile = _data["removeUserReqFile"];
+            this.recrtmntRequirementCheckListId = _data["recrtmntRequirementCheckListId"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrUpdateReqSubmissionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrUpdateReqSubmissionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userReqFileBase64"] = this.userReqFileBase64;
+        data["userReqFileName"] = this.userReqFileName;
+        data["userReqFileContentType"] = this.userReqFileContentType;
+        data["removeUserReqFile"] = this.removeUserReqFile;
+        data["recrtmntRequirementCheckListId"] = this.recrtmntRequirementCheckListId;
+        return data;
+    }
+}
+
+export interface ICreateOrUpdateReqSubmissionDto {
+    userReqFileBase64: string;
+    userReqFileName: string;
+    userReqFileContentType: string;
+    removeUserReqFile: boolean;
+    recrtmntRequirementCheckListId: string;
+}
+
+export class ApiResponseMessageOfIListOfGetRequirmentsDto implements IApiResponseMessageOfIListOfGetRequirmentsDto {
+    data!: GetRequirmentsDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfIListOfGetRequirmentsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(GetRequirmentsDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfIListOfGetRequirmentsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfGetRequirmentsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfIListOfGetRequirmentsDto {
+    data: GetRequirmentsDto[];
     isSuccess: boolean;
     errorMessage: string;
 }
