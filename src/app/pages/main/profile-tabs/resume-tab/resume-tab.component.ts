@@ -39,7 +39,7 @@ export class ResumeTabComponent implements OnInit {
       next: (res) => {
         this.userData = res.data;
         // Update hasResume value once
-        this.hasResumeValue = !!(this.userData && this.userData.userResumeByte);
+        // this.hasResumeValue = !!(this.userData && this.userData.userResumeByte);
         this.loadingService.hide();
       },
       error: (err) => {
@@ -48,21 +48,21 @@ export class ResumeTabComponent implements OnInit {
     });
   }
 
-  getUserResume(): string {
-    if (this.userData && this.userData.userResumeByte) {
-      return `data:application/pdf;base64,${this.userData.userResumeByte}`;
-    }
-    return '';
-  }
+  // getUserResume(): string {
+  //   if (this.userData && this.userData.userResumeByte) {
+  //     return `data:application/pdf;base64,${this.userData.userResumeByte}`;
+  //   }
+  //   return '';
+  // }
 
-  getResumeName(): string {
-    if (this.userData && this.userData.userResumeByte) {
-      return this.userData.firstName
-        ? `${this.userData.firstName}_Resume.pdf`
-        : 'Resume.pdf';
-    }
-    return 'No resume uploaded';
-  }
+  // getResumeName(): string {
+  //   if (this.userData && this.userData.userResumeByte) {
+  //     return this.userData.firstName
+  //       ? `${this.userData.firstName}_Resume.pdf`
+  //       : 'Resume.pdf';
+  //   }
+  //   return 'No resume uploaded';
+  // }
 
   hasResume(): boolean {
     return this.hasResumeValue;
@@ -82,22 +82,20 @@ export class ResumeTabComponent implements OnInit {
   }
 
   openResume(): void {
-    const b64 = this.userData?.userResumeByte;
-    if (!b64) return;
-
-    const blobUrl = this.base64ToBlobUrl(b64, 'application/pdf');
-    // Open in new tab/window; noopener for security
-    const win = window.open(blobUrl, '_blank', 'noopener');
-    // Revoke after a while to free memory
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
-
-    if (!win) {
-      // Popup blocked—fallback: prompt user to allow popups
-      this.ngxToastrMessage.showtoastr(
-        'Please allow pop-ups to view the PDF.',
-        'Notice'
-      );
-    }
+    // const b64 = this.userData?.userResumeByte;
+    // if (!b64) return;
+    // const blobUrl = this.base64ToBlobUrl(b64, 'application/pdf');
+    // // Open in new tab/window; noopener for security
+    // const win = window.open(blobUrl, '_blank', 'noopener');
+    // // Revoke after a while to free memory
+    // setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+    // if (!win) {
+    //   // Popup blocked—fallback: prompt user to allow popups
+    //   this.ngxToastrMessage.showtoastr(
+    //     'Please allow pop-ups to view the PDF.',
+    //     'Notice'
+    //   );
+    // }
   }
 
   onFileSelected(event: Event) {

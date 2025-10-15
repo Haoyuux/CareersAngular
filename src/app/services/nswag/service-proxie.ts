@@ -2046,9 +2046,9 @@ export class UserDto implements IUserDto {
     address!: string | undefined;
     aboutMe!: string | undefined;
     streetDetails!: string | undefined;
-    userProfileByte!: string | undefined;
-    userCoverPhotoByte!: string | undefined;
-    userResumeByte!: string | undefined;
+    userProfileImage!: string;
+    userCoverPhotoImage!: string;
+    userResumeFile!: string;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -2077,9 +2077,9 @@ export class UserDto implements IUserDto {
             this.address = _data["address"];
             this.aboutMe = _data["aboutMe"];
             this.streetDetails = _data["streetDetails"];
-            this.userProfileByte = _data["userProfileByte"];
-            this.userCoverPhotoByte = _data["userCoverPhotoByte"];
-            this.userResumeByte = _data["userResumeByte"];
+            this.userProfileImage = _data["userProfileImage"];
+            this.userCoverPhotoImage = _data["userCoverPhotoImage"];
+            this.userResumeFile = _data["userResumeFile"];
         }
     }
 
@@ -2108,9 +2108,9 @@ export class UserDto implements IUserDto {
         data["address"] = this.address;
         data["aboutMe"] = this.aboutMe;
         data["streetDetails"] = this.streetDetails;
-        data["userProfileByte"] = this.userProfileByte;
-        data["userCoverPhotoByte"] = this.userCoverPhotoByte;
-        data["userResumeByte"] = this.userResumeByte;
+        data["userProfileImage"] = this.userProfileImage;
+        data["userCoverPhotoImage"] = this.userCoverPhotoImage;
+        data["userResumeFile"] = this.userResumeFile;
         return data;
     }
 }
@@ -2132,9 +2132,9 @@ export interface IUserDto {
     address: string | undefined;
     aboutMe: string | undefined;
     streetDetails: string | undefined;
-    userProfileByte: string | undefined;
-    userCoverPhotoByte: string | undefined;
-    userResumeByte: string | undefined;
+    userProfileImage: string;
+    userCoverPhotoImage: string;
+    userResumeFile: string;
 }
 
 export class RegisterUserDto implements IRegisterUserDto {

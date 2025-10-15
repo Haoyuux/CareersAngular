@@ -26,6 +26,7 @@ import { NgxToastrMessageComponent } from 'src/app/services/ngx-toastr-message/n
 import { PlaceSearchComponentV1Component } from '../../component/place-search-component-v1/place-search-component-v1.component';
 import { SkillTabComponent } from '../skill-tab/skill-tab.component';
 import { ResumeTabComponent } from '../resume-tab/resume-tab.component';
+import { LoadingService } from 'src/app/services/auth-services/loading-services';
 
 @Component({
   selector: 'app-user-details-tab',
@@ -54,7 +55,8 @@ export class UserDetailsTabComponent implements OnInit {
   constructor(
     private _userService: UserServices,
     private _hrmsService: HrmsServices,
-    private ngxToastrMessage: NgxToastrMessageComponent
+    private ngxToastrMessage: NgxToastrMessageComponent,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit(): void {
@@ -72,21 +74,21 @@ export class UserDetailsTabComponent implements OnInit {
     });
   }
 
-  getUserProfileImage(): string {
-    if (this.userData && this.userData.userProfileByte) {
-      return `data:image/jpeg;base64,${this.userData.userProfileByte}`;
-    }
+  // getUserProfileImage(): string {
+  //   if (this.userData && this.userData.userProfileByte) {
+  //     return `data:image/jpeg;base64,${this.userData.userProfileByte}`;
+  //   }
 
-    return 'assets/images/profile/user-5.jpg';
-  }
+  //   return 'assets/images/profile/user-5.jpg';
+  // }
 
-  getUserCoverImage(): string {
-    if (this.userData && this.userData.userCoverPhotoByte) {
-      return `data:image/jpeg;base64,${this.userData.userCoverPhotoByte}`;
-    }
+  // getUserCoverImage(): string {
+  //   if (this.userData && this.userData.userCoverPhotoByte) {
+  //     return `data:image/jpeg;base64,${this.userData.userCoverPhotoByte}`;
+  //   }
 
-    return 'assets/images/profile/careers-cover.jpg';
-  }
+  //   return 'assets/images/profile/careers-cover.jpg';
+  // }
 
   dataGender: GetAllGenderDto[] = [];
   onGetAllGender() {
@@ -143,12 +145,11 @@ export class UserDetailsTabComponent implements OnInit {
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = () => {
-        const base64 = reader.result as string;
-        if (clickedButton == 1) {
-          //uploadpicture
+        const result = reader.result as string;
+        const base64 = result.split(',')[1];
+        if (clickedButton === 1) {
           this.onUploadUserProfile(base64, file.name, file.type);
         } else {
-          //cover
           this.onUploadCoverPhoto(base64, file.name, file.type);
         }
       };
@@ -196,14 +197,17 @@ export class UserDetailsTabComponent implements OnInit {
       removeCoverImage: false,
     });
 
+    this.loadingService.show();
     this._userService.insertOrUpdateUserCoverPhoto(payload).subscribe({
       next: (res) => {
         if (res.isSuccess) {
           this.onGetDetails();
           this.profileUpdated.emit();
           this.ngxToastrMessage.showtoastr(res.data, 'Updated Successfully');
+          this.loadingService.hide();
         } else {
           this.ngxToastrMessage.showtoastr(res.errorMessage, 'Error');
+          this.loadingService.hide();
         }
       },
       error: () => {

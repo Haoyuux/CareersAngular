@@ -3,13 +3,21 @@
     <!-- Cover -->
     <div class="cover">
       <!-- Use your uploaded cover image here -->
-      <img class="cover-photo" [src]="getUserCoverImage()" alt="Cover Photo" />
+      <img
+        class="cover-photo"
+        [src]="userData.userCoverPhotoImage"
+        alt="Cover Photo"
+      />
     </div>
 
     <!-- The bar below the cover -->
     <div class="profile-bar container">
       <div class="bar-avatar">
-        <img class="avatar" [src]="getUserProfileImage()" alt="User Profile" />
+        <img
+          class="avatar"
+          [src]="userData.userProfileImage"
+          alt="User Profile"
+        />
       </div>
 
       <div class="bar-identity">

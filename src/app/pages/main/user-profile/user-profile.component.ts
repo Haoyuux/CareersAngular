@@ -137,6 +137,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.getUserProfileDetails().subscribe({
       next: (res) => {
         this.userData = res.data;
+
         this.loadingService.hide();
       },
     });
@@ -156,36 +157,33 @@ export class UserProfileComponent implements OnInit {
   }
 
   openResume(): void {
-    const b64 = this.userData?.userResumeByte;
-    if (!b64) return;
-
-    const blobUrl = this.base64ToBlobUrl(b64, 'application/pdf');
-    const win = window.open(blobUrl, '_blank', 'noopener');
-
-    // cleanup after 1 minute
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+    // const b64 = this.userData?.userResumeByte;
+    // if (!b64) return;
+    // const blobUrl = this.base64ToBlobUrl(b64, 'application/pdf');
+    // const win = window.open(blobUrl, '_blank', 'noopener');
+    // // cleanup after 1 minute
+    // setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
   }
 
-  getUserProfileImage(): string {
-    if (this.userData && this.userData.userProfileByte) {
-      // Convert backend byte[] (base64 string) into data URL
-      return `data:image/jpeg;base64,${this.userData.userProfileByte}`;
-    }
-    // fallback image if no profile picture
-    return 'assets/images/profile/user-5.jpg';
-  }
+  // getUserProfileImage(): string {
+  //   if (this.userData && this.userData.userProfileByte) {
+  //     // Convert backend byte[] (base64 string) into data URL
+  //     return `data:image/jpeg;base64,${this.userData.userProfileByte}`;
+  //   }
+  //   // fallback image if no profile picture
+  //   return 'assets/images/profile/user-5.jpg';
+  // }
 
-  getUserCoverImage(): string {
-    if (this.userData && this.userData.userCoverPhotoByte) {
-      // Convert backend byte[] (base64 string) into data URL
-      return `data:image/jpeg;base64,${this.userData.userCoverPhotoByte}`;
-    }
+  // getUserCoverImage(): string {
+  //   if (this.userData && this.userData.userCoverPhotoByte) {
+  //     // Convert backend byte[] (base64 string) into data URL
+  //     return `data:image/jpeg;base64,${this.userData.userCoverPhotoByte}`;
+  //   }
 
-    // fallback image if no profile picture
-    return 'assets/images/profile/careers-cover.jpg';
-  }
+  //   // fallback image if no profile picture
+  //   return 'assets/images/profile/careers-cover.jpg';
+  // }
   onProfileUpdated() {
-    console.log('Profile updated, refreshing data...'); // Add this for debugging
     this.onGetDetails(); // Refresh the profile data
   }
 

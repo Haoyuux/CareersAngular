@@ -3,10 +3,11 @@
     <!-- Cover Photo Section -->
     <div class="cover-section">
       <img
-        [src]="getUserCoverImage()"
         alt="Cover Photo"
+        [src]="userData.userCoverPhotoImage"
         class="cover-preview"
       />
+      <!-- [src]="getUserCoverImage()" -->
       <div class="cover-controls">
         <h4>Cover Photo</h4>
         <p>Upload a new cover photo. Recommended size: 1200x300px</p>
@@ -59,10 +60,11 @@
     <!-- Avatar Section -->
     <div class="avatar-section">
       <img
-        [src]="getUserProfileImage()"
         alt="Profile Avatar"
+        [src]="userData.userProfileImage"
         class="avatar-preview"
       />
+      <!-- [src]="getUserProfileImage()"np,m -->
       <div class="avatar-controls">
         <h4>Profile Picture</h4>
         <p>Upload a new profile picture. Recommended size: 200x200px</p>
