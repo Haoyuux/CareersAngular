@@ -37,7 +37,10 @@ export class CertificateTabComponent implements OnInit {
 
   dataCert: CreateOrEditCertificateDto = new CreateOrEditCertificateDto();
   onSaveCertificate() {
-    this.dataCert.id = '00000000-0000-0000-0000-000000000000';
+    // For new certificate, use empty GUID string
+    if (!this.dataCert.id || this.dataCert.id === '') {
+      this.dataCert.id = '00000000-0000-0000-0000-000000000000';
+    }
 
     this.userService.createOrEditCertificate(this.dataCert).subscribe({
       next: (res) => {
@@ -45,8 +48,17 @@ export class CertificateTabComponent implements OnInit {
           this.visible = false;
           this.onGetUserCertificate();
           this.dataCert = new CreateOrEditCertificateDto();
-          this.ngxToastrMessage.showtoastr(res.data, 'Updated Successfully');
+          this.ngxToastrMessage.showtoastr(res.data, 'Success');
+        } else {
+          this.ngxToastrMessage.showtoastr(
+            res.errorMessage ?? 'Error',
+            'Error'
+          );
         }
+      },
+      error: (err) => {
+        console.error('Certificate save error:', err);
+        this.ngxToastrMessage.showtoastr('Failed to save certificate', 'Error');
       },
     });
   }
@@ -56,6 +68,7 @@ export class CertificateTabComponent implements OnInit {
     this.userService.getUserCertificate().subscribe({
       next: (res) => {
         this.getCertificate = res.data;
+        console.table(this.getCertificate);
       },
     });
   }
@@ -101,12 +114,14 @@ export class CertificateTabComponent implements OnInit {
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = () => {
-        const base64 = reader.result as string;
+        const result = reader.result as string;
+        const base64 = result.split(',')[1];
+
         // this.onSaveCertificate(base64, file.name, file.type);
 
-        this.dataCert.profileImageBase64 = base64 ?? '';
-        this.dataCert.profileImageFileName = file.name ?? '';
-        this.dataCert.profileImageContentType = file.type ?? '';
+        this.dataCert.certificateImageBase64 = base64 ?? '';
+        this.dataCert.certificateImageFileName = file.name ?? '';
+        this.dataCert.certificateImageContentType = file.type ?? '';
       };
       reader.readAsDataURL(file);
     }

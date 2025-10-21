@@ -207,9 +207,9 @@
               <h3 class="cert-name">{{ item.name }}</h3>
 
               <!-- Optional type pill -->
-              <span class="cert-pill" *ngIf="item.certificateType">
+              <!-- <span class="cert-pill" *ngIf="item.certificateType">
                 {{ item.certificateType }}
-              </span>
+              </span> -->
             </div>
 
             <p class="cert-issuer" *ngIf="item.issuer">{{ item.issuer }}</p>
@@ -221,14 +221,14 @@
               </span>
 
               <!-- Optional attachment/link -->
-              <a
+              <!-- <a
                 class="cert-link"
                 *ngIf="item.uploadFile"
                 (click)="openCertificate(item)"
                 style="cursor: pointer"
               >
                 View Attachment
-              </a>
+              </a> -->
             </div>
             <!-- *ngIf="item.attachmentUrl"
           [href]="item.attachmentUrl" -->

@@ -7,8 +7,10 @@ import {
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material.module';
 import {
+  ApplicantdataDto,
   GetAllJobPostsDto,
   HrmsServices,
+  UserServices,
 } from 'src/app/services/nswag/service-proxie';
 import { FormsModule } from '@angular/forms';
 import { authService } from 'src/app/services/auth-services/auth-services';
@@ -52,7 +54,8 @@ export class MainDashboardComponent implements OnInit, AfterViewInit {
     private _hrmsService: HrmsServices,
     public authservice: authService,
     private cdr: ChangeDetectorRef,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private _userService: UserServices
   ) {}
   ngAfterViewInit(): void {
     // throw new Error('Method not implemented.');
@@ -63,8 +66,12 @@ export class MainDashboardComponent implements OnInit, AfterViewInit {
     // this.testSpinner();
   }
 
-  // jobPostData: ApiResponseMessageOfIListOfGetAllJobPostsDto =
-  //   new ApiResponseMessageOfIListOfGetAllJobPostsDto();
+  dataApplyJob: ApplicantdataDto = new ApplicantdataDto();
+  onApplyJob() {
+    this._userService.insertToApplicantMasterList(this.dataApplyJob).subscribe({
+      next: (res) => {},
+    });
+  }
 
   jobPostData: GetAllJobPostsDto[] = [];
   onGetJobPosting() {

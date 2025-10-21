@@ -69,36 +69,31 @@ export class UserProfileComponent implements OnInit {
 
   // Open certificate in new tab using Blob
   openCertificate(item: GetUserCertificateDto) {
-    if (!item.uploadFile) return;
-
-    try {
-      // Remove data URL prefix if it exists
-      let base64Data = item.uploadFile;
-      if (base64Data.includes(',')) {
-        base64Data = base64Data.split(',')[1];
-      }
-
-      // Convert base64 to binary
-      const byteCharacters = atob(base64Data);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-
-      // Determine MIME type - adjust based on your file type
-      const mimeType = this.getMimeType(base64Data);
-      const blob = new Blob([byteArray], { type: mimeType });
-
-      // Create blob URL and open in new tab
-      const blobUrl = URL.createObjectURL(blob);
-      window.open(blobUrl, '_blank');
-
-      // Clean up blob URL after a delay
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
-    } catch (error) {
-      console.error('Error opening certificate:', error);
-    }
+    // if (!item.uploadFile) return;
+    // try {
+    //   // Remove data URL prefix if it exists
+    //   let base64Data = item.uploadFile;
+    //   if (base64Data.includes(',')) {
+    //     base64Data = base64Data.split(',')[1];
+    //   }
+    //   // Convert base64 to binary
+    //   const byteCharacters = atob(base64Data);
+    //   const byteNumbers = new Array(byteCharacters.length);
+    //   for (let i = 0; i < byteCharacters.length; i++) {
+    //     byteNumbers[i] = byteCharacters.charCodeAt(i);
+    //   }
+    //   const byteArray = new Uint8Array(byteNumbers);
+    //   // Determine MIME type - adjust based on your file type
+    //   const mimeType = this.getMimeType(base64Data);
+    //   const blob = new Blob([byteArray], { type: mimeType });
+    //   // Create blob URL and open in new tab
+    //   const blobUrl = URL.createObjectURL(blob);
+    //   window.open(blobUrl, '_blank');
+    //   // Clean up blob URL after a delay
+    //   setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+    // } catch (error) {
+    //   console.error('Error opening certificate:', error);
+    // }
   }
 
   // Detect MIME type from base64 or file signature

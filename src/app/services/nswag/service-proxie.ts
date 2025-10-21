@@ -1503,6 +1503,58 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    insertToApplicantMasterList(applyDto: ApplicantdataDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/InsertToApplicantMasterList";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(applyDto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processInsertToApplicantMasterList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processInsertToApplicantMasterList(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processInsertToApplicantMasterList(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
@@ -2816,9 +2868,9 @@ export class CreateOrEditCertificateDto implements ICreateOrEditCertificateDto {
     highlights!: string;
     dateAchieved!: Date;
     certificateType!: number;
-    profileImageBase64!: string;
-    profileImageFileName!: string;
-    profileImageContentType!: string;
+    certificateImageBase64!: string;
+    certificateImageFileName!: string;
+    certificateImageContentType!: string;
 
     constructor(data?: ICreateOrEditCertificateDto) {
         if (data) {
@@ -2837,9 +2889,9 @@ export class CreateOrEditCertificateDto implements ICreateOrEditCertificateDto {
             this.highlights = _data["highlights"];
             this.dateAchieved = _data["dateAchieved"] ? new Date(_data["dateAchieved"].toString()) : undefined as any;
             this.certificateType = _data["certificateType"];
-            this.profileImageBase64 = _data["profileImageBase64"];
-            this.profileImageFileName = _data["profileImageFileName"];
-            this.profileImageContentType = _data["profileImageContentType"];
+            this.certificateImageBase64 = _data["certificateImageBase64"];
+            this.certificateImageFileName = _data["certificateImageFileName"];
+            this.certificateImageContentType = _data["certificateImageContentType"];
         }
     }
 
@@ -2858,9 +2910,9 @@ export class CreateOrEditCertificateDto implements ICreateOrEditCertificateDto {
         data["highlights"] = this.highlights;
         data["dateAchieved"] = this.dateAchieved ? this.dateAchieved.toISOString() : undefined as any;
         data["certificateType"] = this.certificateType;
-        data["profileImageBase64"] = this.profileImageBase64;
-        data["profileImageFileName"] = this.profileImageFileName;
-        data["profileImageContentType"] = this.profileImageContentType;
+        data["certificateImageBase64"] = this.certificateImageBase64;
+        data["certificateImageFileName"] = this.certificateImageFileName;
+        data["certificateImageContentType"] = this.certificateImageContentType;
         return data;
     }
 }
@@ -2872,9 +2924,9 @@ export interface ICreateOrEditCertificateDto {
     highlights: string;
     dateAchieved: Date;
     certificateType: number;
-    profileImageBase64: string;
-    profileImageFileName: string;
-    profileImageContentType: string;
+    certificateImageBase64: string;
+    certificateImageFileName: string;
+    certificateImageContentType: string;
 }
 
 export class ApiResponseMessageOfIListOfGetUserCertificateDto implements IApiResponseMessageOfIListOfGetUserCertificateDto {
@@ -2937,10 +2989,10 @@ export class GetUserCertificateDto implements IGetUserCertificateDto {
     name!: string;
     issuer!: string;
     highlights!: string;
-    dateAchieved!: Date;
-    certificateType!: number;
-    uploadFile!: string;
+    dateAchieved!: Date | undefined;
     type!: CertificateTypeEnum;
+    imageUrl!: string;
+    fileName!: string;
 
     constructor(data?: IGetUserCertificateDto) {
         if (data) {
@@ -2958,9 +3010,9 @@ export class GetUserCertificateDto implements IGetUserCertificateDto {
             this.issuer = _data["issuer"];
             this.highlights = _data["highlights"];
             this.dateAchieved = _data["dateAchieved"] ? new Date(_data["dateAchieved"].toString()) : undefined as any;
-            this.certificateType = _data["certificateType"];
-            this.uploadFile = _data["uploadFile"];
             this.type = _data["type"];
+            this.imageUrl = _data["imageUrl"];
+            this.fileName = _data["fileName"];
         }
     }
 
@@ -2978,9 +3030,9 @@ export class GetUserCertificateDto implements IGetUserCertificateDto {
         data["issuer"] = this.issuer;
         data["highlights"] = this.highlights;
         data["dateAchieved"] = this.dateAchieved ? this.dateAchieved.toISOString() : undefined as any;
-        data["certificateType"] = this.certificateType;
-        data["uploadFile"] = this.uploadFile;
         data["type"] = this.type;
+        data["imageUrl"] = this.imageUrl;
+        data["fileName"] = this.fileName;
         return data;
     }
 }
@@ -2990,10 +3042,10 @@ export interface IGetUserCertificateDto {
     name: string;
     issuer: string;
     highlights: string;
-    dateAchieved: Date;
-    certificateType: number;
-    uploadFile: string;
+    dateAchieved: Date | undefined;
     type: CertificateTypeEnum;
+    imageUrl: string;
+    fileName: string;
 }
 
 export enum CertificateTypeEnum {
@@ -3202,6 +3254,50 @@ export interface IApiResponseMessageOfIListOfGetRequirmentsDto {
     data: GetRequirmentsDto[];
     isSuccess: boolean;
     errorMessage: string;
+}
+
+export class ApplicantdataDto implements IApplicantdataDto {
+    id!: string;
+    jobPostingId!: string;
+    jobTitleId!: string;
+
+    constructor(data?: IApplicantdataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.jobPostingId = _data["jobPostingId"];
+            this.jobTitleId = _data["jobTitleId"];
+        }
+    }
+
+    static fromJS(data: any): ApplicantdataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApplicantdataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["jobPostingId"] = this.jobPostingId;
+        data["jobTitleId"] = this.jobTitleId;
+        return data;
+    }
+}
+
+export interface IApplicantdataDto {
+    id: string;
+    jobPostingId: string;
+    jobTitleId: string;
 }
 
 export interface FileResponse {
