@@ -68,12 +68,11 @@ export class CertificateTabComponent implements OnInit {
     this.userService.getUserCertificate().subscribe({
       next: (res) => {
         this.getCertificate = res.data;
-        console.table(this.getCertificate);
       },
     });
   }
 
-  onDeleteCertificate(id: string) {
+  onDeleteCertificate(id: string, appBinaryId: string) {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete this education record?',
       header: 'Confirm Deletion',
@@ -81,7 +80,7 @@ export class CertificateTabComponent implements OnInit {
       acceptButtonStyleClass: 'p-button-danger',
 
       accept: () => {
-        this.userService.deleteUserCertificate(id).subscribe({
+        this.userService.deleteUserCertificate(id, appBinaryId).subscribe({
           next: (res) => {
             if (res.isSuccess) {
               this.onGetUserCertificate();

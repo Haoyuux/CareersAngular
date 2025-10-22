@@ -1200,12 +1200,16 @@ export class UserServices {
         return _observableOf(null as any);
     }
 
-    deleteUserCertificate(certificateId: string | undefined): Observable<ApiResponseMessageOfString> {
+    deleteUserCertificate(certificateId: string | undefined, appBinaryID: string | undefined): Observable<ApiResponseMessageOfString> {
         let url_ = this.baseUrl + "/api/User/DeleteUserCertificate?";
         if (certificateId === null)
             throw new globalThis.Error("The parameter 'certificateId' cannot be null.");
         else if (certificateId !== undefined)
             url_ += "certificateId=" + encodeURIComponent("" + certificateId) + "&";
+        if (appBinaryID === null)
+            throw new globalThis.Error("The parameter 'appBinaryID' cannot be null.");
+        else if (appBinaryID !== undefined)
+            url_ += "appBinaryID=" + encodeURIComponent("" + appBinaryID) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1982,6 +1986,7 @@ export class GetRequirmentsDto implements IGetRequirmentsDto {
     status!: string;
     filebyte!: string;
     name!: string;
+    imageUrl!: string;
 
     constructor(data?: IGetRequirmentsDto) {
         if (data) {
@@ -2002,6 +2007,7 @@ export class GetRequirmentsDto implements IGetRequirmentsDto {
             this.status = _data["status"];
             this.filebyte = _data["filebyte"];
             this.name = _data["name"];
+            this.imageUrl = _data["imageUrl"];
         }
     }
 
@@ -2022,6 +2028,7 @@ export class GetRequirmentsDto implements IGetRequirmentsDto {
         data["status"] = this.status;
         data["filebyte"] = this.filebyte;
         data["name"] = this.name;
+        data["imageUrl"] = this.imageUrl;
         return data;
     }
 }
@@ -2035,6 +2042,7 @@ export interface IGetRequirmentsDto {
     status: string;
     filebyte: string;
     name: string;
+    imageUrl: string;
 }
 
 export class ApiResponseMessageOfString implements IApiResponseMessageOfString {
@@ -2986,6 +2994,7 @@ export interface IApiResponseMessageOfIListOfGetUserCertificateDto {
 
 export class GetUserCertificateDto implements IGetUserCertificateDto {
     id!: string;
+    appBinaryId!: string;
     name!: string;
     issuer!: string;
     highlights!: string;
@@ -3006,6 +3015,7 @@ export class GetUserCertificateDto implements IGetUserCertificateDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.appBinaryId = _data["appBinaryId"];
             this.name = _data["name"];
             this.issuer = _data["issuer"];
             this.highlights = _data["highlights"];
@@ -3026,6 +3036,7 @@ export class GetUserCertificateDto implements IGetUserCertificateDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["appBinaryId"] = this.appBinaryId;
         data["name"] = this.name;
         data["issuer"] = this.issuer;
         data["highlights"] = this.highlights;
@@ -3039,6 +3050,7 @@ export class GetUserCertificateDto implements IGetUserCertificateDto {
 
 export interface IGetUserCertificateDto {
     id: string;
+    appBinaryId: string;
     name: string;
     issuer: string;
     highlights: string;

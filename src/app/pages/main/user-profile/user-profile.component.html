@@ -103,10 +103,14 @@
       <article class="card">
         <h2 class="card-title">R&eacute;sum&eacute;</h2>
         <ul class="links">
-          <li>
+          <li *ngIf="userData.userResumeFile; else noResume">
             <a href="javascript:void(0)" (click)="openResume()">View Résumé</a>
           </li>
         </ul>
+
+        <ng-template #noResume>
+          <p style="color: gray; font-style: italic">No résumé uploaded.</p>
+        </ng-template>
       </article>
     </aside>
 
@@ -221,14 +225,17 @@
               </span>
 
               <!-- Optional attachment/link -->
-              <!-- <a
+              <a
                 class="cert-link"
-                *ngIf="item.uploadFile"
                 (click)="openCertificate(item)"
-                style="cursor: pointer"
+                style="
+                  cursor: pointer;
+                  color: #3b82f6;
+                  text-decoration: underline;
+                "
               >
                 View Attachment
-              </a> -->
+              </a>
             </div>
             <!-- *ngIf="item.attachmentUrl"
           [href]="item.attachmentUrl" -->

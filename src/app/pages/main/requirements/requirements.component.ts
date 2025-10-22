@@ -40,6 +40,8 @@ export class RequirementsComponent implements OnInit {
     this.userService.getRequirementsV1().subscribe({
       next: (res) => {
         this.getHrmsReq = res.data;
+
+        console.table(this.getHrmsReq);
       },
     });
   }
@@ -63,8 +65,8 @@ export class RequirementsComponent implements OnInit {
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = () => {
-        const base64 = reader.result as string;
-        // this.onSaveCertificate(base64, file.name, file.type);
+        const result = reader.result as string;
+        const base64 = result.split(',')[1];
 
         this.dataSave.userReqFileBase64 = base64 ?? '';
         this.dataSave.userReqFileName = file.name ?? '';
@@ -74,6 +76,14 @@ export class RequirementsComponent implements OnInit {
         this.onUploadReq();
       };
       reader.readAsDataURL(file);
+    }
+  }
+
+  openRequirement(): void {
+    if (this.dataSave?.userReqFileName) {
+      window.open(this.dataSave.userReqFileName, '_blank');
+    } else {
+      this.ngxToastrMessage.showtoastr('No résumé available.', 'Notice');
     }
   }
 }

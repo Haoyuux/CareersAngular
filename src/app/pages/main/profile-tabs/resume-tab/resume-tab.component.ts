@@ -18,6 +18,9 @@ import { LoadingService } from 'src/app/services/auth-services/loading-services'
   styleUrl: './resume-tab.component.scss',
 })
 export class ResumeTabComponent implements OnInit {
+  userData: UserDto = new UserDto();
+  hasResumeValue: boolean = false;
+
   constructor(
     private _userService: UserServices,
     private _hrmsService: HrmsServices,
@@ -30,83 +33,58 @@ export class ResumeTabComponent implements OnInit {
     this.onGetDetails();
   }
 
-  userData: UserDto = new UserDto();
-  hasResumeValue: boolean = false;
-
-  onGetDetails() {
+  onGetDetails(): void {
     this.loadingService.show();
     this._userService.getUserProfileDetails().subscribe({
       next: (res) => {
         this.userData = res.data;
-        // Update hasResume value once
-        // this.hasResumeValue = !!(this.userData && this.userData.userResumeByte);
+        // ✅ Mark résumé as existing only if URL is present
+        this.hasResumeValue = !!this.userData?.userResumeFile;
         this.loadingService.hide();
       },
-      error: (err) => {
+      error: () => {
         this.loadingService.hide();
+        this.ngxToastrMessage.showtoastr(
+          'Failed to load user details',
+          'Error'
+        );
       },
     });
   }
 
-  // getUserResume(): string {
-  //   if (this.userData && this.userData.userResumeByte) {
-  //     return `data:application/pdf;base64,${this.userData.userResumeByte}`;
-  //   }
-  //   return '';
-  // }
-
-  // getResumeName(): string {
-  //   if (this.userData && this.userData.userResumeByte) {
-  //     return this.userData.firstName
-  //       ? `${this.userData.firstName}_Resume.pdf`
-  //       : 'Resume.pdf';
-  //   }
-  //   return 'No resume uploaded';
-  // }
-
-  hasResume(): boolean {
-    return this.hasResumeValue;
-  }
-
-  base64ToBlobUrl(base64: string, mimeType: string): string {
-    const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
+  getResumeName(): string {
+    if (this.hasResumeValue && this.userData.userResumeFile) {
+      try {
+        const url = new URL(this.userData.userResumeFile);
+        return decodeURIComponent(
+          url.pathname.split('/').pop() || 'Resume.pdf'
+        );
+      } catch {
+        return 'Resume.pdf';
+      }
     }
-
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: mimeType });
-    return URL.createObjectURL(blob);
+    return 'No résumé uploaded';
   }
 
   openResume(): void {
-    // const b64 = this.userData?.userResumeByte;
-    // if (!b64) return;
-    // const blobUrl = this.base64ToBlobUrl(b64, 'application/pdf');
-    // // Open in new tab/window; noopener for security
-    // const win = window.open(blobUrl, '_blank', 'noopener');
-    // // Revoke after a while to free memory
-    // setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
-    // if (!win) {
-    //   // Popup blocked—fallback: prompt user to allow popups
-    //   this.ngxToastrMessage.showtoastr(
-    //     'Please allow pop-ups to view the PDF.',
-    //     'Notice'
-    //   );
-    // }
+    if (this.userData?.userResumeFile) {
+      window.open(this.userData.userResumeFile, '_blank');
+    } else {
+      this.ngxToastrMessage.showtoastr('No résumé available.', 'Notice');
+    }
   }
 
-  onFileSelected(event: Event) {
+  onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       const reader = new FileReader();
+
       reader.onload = () => {
         const base64 = reader.result as string;
         this.onUploadResume(base64, file.name, file.type);
       };
+
       reader.readAsDataURL(file);
     }
   }
@@ -115,7 +93,7 @@ export class ResumeTabComponent implements OnInit {
     base64Image?: string,
     fileName?: string,
     contentType?: string
-  ) {
+  ): void {
     const payload = new InsertOrUpdateUserResumeDto({
       userResumeBase64: base64Image ?? '',
       userResumeFileName: fileName ?? '',
@@ -138,7 +116,7 @@ export class ResumeTabComponent implements OnInit {
     });
   }
 
-  onRemoveResume() {
+  onRemoveResume(): void {
     const payload = new InsertOrUpdateUserResumeDto({
       userResumeBase64: '',
       userResumeFileName: '',
