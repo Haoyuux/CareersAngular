@@ -15,6 +15,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { authService } from 'src/app/services/auth-services/auth-services';
 import { LoadingService } from 'src/app/services/auth-services/loading-services';
+import { NgxToastrMessageComponent } from 'src/app/services/ngx-toastr-message/ngx-toastr-message.component';
 
 interface JobPosting {
   id: number;
@@ -55,7 +56,8 @@ export class MainDashboardComponent implements OnInit, AfterViewInit {
     public authservice: authService,
     private cdr: ChangeDetectorRef,
     private loadingService: LoadingService,
-    private _userService: UserServices
+    private _userService: UserServices,
+    private ngxToastrMessage: NgxToastrMessageComponent
   ) {}
   ngAfterViewInit(): void {
     // throw new Error('Method not implemented.');
@@ -67,9 +69,17 @@ export class MainDashboardComponent implements OnInit, AfterViewInit {
   }
 
   dataApplyJob: ApplicantdataDto = new ApplicantdataDto();
-  onApplyJob() {
+  onApplyJob(jobPostingId: string, jobTitleId: string) {
+    this.dataApplyJob.jobPostingId = jobPostingId;
+    this.dataApplyJob.jobTitleId = jobTitleId;
     this._userService.insertToApplicantMasterList(this.dataApplyJob).subscribe({
-      next: (res) => {},
+      next: (res) => {
+        if (res.isSuccess) {
+          this.ngxToastrMessage.showtoastr('Applied Successfully', res.data);
+        } else {
+          this.ngxToastrMessage.showtoastrInfo('Notice', res.errorMessage);
+        }
+      },
     });
   }
 

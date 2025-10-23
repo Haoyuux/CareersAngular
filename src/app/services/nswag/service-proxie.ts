@@ -1559,6 +1559,54 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    getJobApplicationStatus(): Observable<ApiResponseMessageOfIListOfApplicantJobLogsHeaderDto> {
+        let url_ = this.baseUrl + "/api/User/GetJobApplicationStatus";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetJobApplicationStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetJobApplicationStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfApplicantJobLogsHeaderDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfApplicantJobLogsHeaderDto>;
+        }));
+    }
+
+    protected processGetJobApplicationStatus(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfApplicantJobLogsHeaderDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfApplicantJobLogsHeaderDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
@@ -3310,6 +3358,177 @@ export interface IApplicantdataDto {
     id: string;
     jobPostingId: string;
     jobTitleId: string;
+}
+
+export class ApiResponseMessageOfIListOfApplicantJobLogsHeaderDto implements IApiResponseMessageOfIListOfApplicantJobLogsHeaderDto {
+    data!: ApplicantJobLogsHeaderDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfIListOfApplicantJobLogsHeaderDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(ApplicantJobLogsHeaderDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfIListOfApplicantJobLogsHeaderDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfApplicantJobLogsHeaderDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfIListOfApplicantJobLogsHeaderDto {
+    data: ApplicantJobLogsHeaderDto[];
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class ApplicantJobLogsHeaderDto implements IApplicantJobLogsHeaderDto {
+    jobName!: string;
+    status!: number;
+    jobstatus!: number;
+    mrfCategory!: string;
+    locationName!: string;
+    businessUnitName!: string;
+    applicantJobLogsDtos!: ApplicantJobLogsDto[];
+
+    constructor(data?: IApplicantJobLogsHeaderDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.jobName = _data["jobName"];
+            this.status = _data["status"];
+            this.jobstatus = _data["jobstatus"];
+            this.mrfCategory = _data["mrfCategory"];
+            this.locationName = _data["locationName"];
+            this.businessUnitName = _data["businessUnitName"];
+            if (Array.isArray(_data["applicantJobLogsDtos"])) {
+                this.applicantJobLogsDtos = [] as any;
+                for (let item of _data["applicantJobLogsDtos"])
+                    this.applicantJobLogsDtos!.push(ApplicantJobLogsDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ApplicantJobLogsHeaderDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApplicantJobLogsHeaderDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobName"] = this.jobName;
+        data["status"] = this.status;
+        data["jobstatus"] = this.jobstatus;
+        data["mrfCategory"] = this.mrfCategory;
+        data["locationName"] = this.locationName;
+        data["businessUnitName"] = this.businessUnitName;
+        if (Array.isArray(this.applicantJobLogsDtos)) {
+            data["applicantJobLogsDtos"] = [];
+            for (let item of this.applicantJobLogsDtos)
+                data["applicantJobLogsDtos"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IApplicantJobLogsHeaderDto {
+    jobName: string;
+    status: number;
+    jobstatus: number;
+    mrfCategory: string;
+    locationName: string;
+    businessUnitName: string;
+    applicantJobLogsDtos: ApplicantJobLogsDto[];
+}
+
+export class ApplicantJobLogsDto implements IApplicantJobLogsDto {
+    jobNameMother!: string;
+    descriptionLogs!: string;
+    status!: number;
+    creationTime!: Date;
+
+    constructor(data?: IApplicantJobLogsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.jobNameMother = _data["jobNameMother"];
+            this.descriptionLogs = _data["descriptionLogs"];
+            this.status = _data["status"];
+            this.creationTime = _data["creationTime"] ? new Date(_data["creationTime"].toString()) : undefined as any;
+        }
+    }
+
+    static fromJS(data: any): ApplicantJobLogsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApplicantJobLogsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobNameMother"] = this.jobNameMother;
+        data["descriptionLogs"] = this.descriptionLogs;
+        data["status"] = this.status;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : undefined as any;
+        return data;
+    }
+}
+
+export interface IApplicantJobLogsDto {
+    jobNameMother: string;
+    descriptionLogs: string;
+    status: number;
+    creationTime: Date;
 }
 
 export interface FileResponse {

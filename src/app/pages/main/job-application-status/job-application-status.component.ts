@@ -1,8 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MaterialModule } from 'src/app/material.module';
+import { LoadingService } from 'src/app/services/auth-services/loading-services';
+import {
+  ApplicantJobLogsHeaderDto,
+  HrmsServices,
+  UserServices,
+} from 'src/app/services/nswag/service-proxie';
 
 interface JobPosting {
   id: string;
@@ -33,7 +39,31 @@ interface TimelineItem {
   templateUrl: './job-application-status.component.html',
   styleUrl: './job-application-status.component.scss',
 })
-export class JobApplicationStatusComponent {
+export class JobApplicationStatusComponent implements OnInit {
+  /**
+   *
+   */
+  constructor(
+    private userService: UserServices,
+    private _hrmsService: HrmsServices,
+    private loadingService: LoadingService
+  ) {}
+  ngOnInit(): void {
+    this.onGetUserApplicationLogs();
+  }
+
+  jobstatusData: ApplicantJobLogsHeaderDto[] = [];
+  onGetUserApplicationLogs() {
+    this.userService.getJobApplicationStatus().subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          console.table(res);
+          this.jobstatusData = res.data;
+        }
+      },
+    });
+  }
+
   jobs: JobPosting[] = [
     {
       id: 'JOB-2024-001',
@@ -255,13 +285,92 @@ export class JobApplicationStatusComponent {
     this.pageSize = event.pageSize;
   }
 
-  getStatusClass(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      Active: 'status-active',
-      'In Progress': 'status-progress',
-      Completed: 'status-completed',
-      'On Hold': 'status-hold',
+  // getStatusClass(status: string): string {
+  //   const statusMap: { [key: string]: string } = {
+  //     Active: 'status-active',
+  //     'In Progress': 'status-progress',
+  //     Completed: 'status-completed',
+  //     'On Hold': 'status-hold',
+  //   };
+  //   return statusMap[status] || '';
+  // }
+
+  getStatusClass(status: number): string {
+    const statusMap: { [key: number]: string } = {
+      0: 'status-pending',
+      1: 'status-active',
+      2: 'status-in-progress',
+      3: 'status-closed',
     };
-    return statusMap[status] || '';
+    return statusMap[status] || 'status-default';
+  }
+
+  getStatusText(status: number): string {
+    const statusMap: { [key: number]: string } = {
+      0: 'Pending',
+      1: 'Active',
+      2: 'In Progress',
+      3: 'Closed',
+    };
+    return statusMap[status] || 'Unknown';
+  }
+
+  getActivityColor(status: number, index: number): string {
+    const colors = ['primary', 'accent', 'success', 'warning', 'info'];
+    // You can map based on status or just cycle through colors
+    return colors[index % colors.length];
+  }
+
+  typescriptformatTime(date: string | Date): string {
+    if (!date) return '';
+    const d = date instanceof Date ? date : new Date(date);
+    return d.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
+  formatTime(date: string | Date): string {
+    if (!date) return '';
+    const d = date instanceof Date ? date : new Date(date);
+    return d.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
+  formatFullDate(date: string | Date): string {
+    if (!date) return '';
+    const d = date instanceof Date ? date : new Date(date);
+    return d.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  }
+
+  formatDate(date: string | Date | null): string {
+    if (!date) return 'N/A';
+
+    const d = date instanceof Date ? date : new Date(date);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - d.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+    return `${Math.floor(diffDays / 30)} months ago`;
+  }
+
+  getLatestActivityDate(job: any): string | Date | null {
+    const logs = job.applicantJobLogsDtos;
+    if (!logs || logs.length === 0) return null;
+    return logs[logs.length - 1]?.creationTime;
   }
 }

@@ -79,11 +79,13 @@ export class RequirementsComponent implements OnInit {
     }
   }
 
-  openRequirement(): void {
-    if (this.dataSave?.userReqFileName) {
-      window.open(this.dataSave.userReqFileName, '_blank');
+  openRequirement(requirement: any): void {
+    const fileUrl = requirement?.imageUrl;
+
+    if (fileUrl) {
+      window.open(fileUrl, '_blank');
     } else {
-      this.ngxToastrMessage.showtoastr('No résumé available.', 'Notice');
+      this.ngxToastrMessage.showtoastr('No document available.', 'Notice');
     }
   }
 }

@@ -4,49 +4,52 @@
     <p class="page-subtitle">Track and manage all active job postings</p>
   </div>
 
+  @if(jobstatusData && jobstatusData.length > 0) {
   <mat-accordion class="job-accordion">
-    @for(job of paginatedJobs; track job.id) {
-    <mat-expansion-panel class="job-panel">
+    <mat-expansion-panel class="job-panel" *ngFor="let job of jobstatusData">
       <mat-expansion-panel-header class="job-panel-header">
         <mat-panel-title class="job-header-title">
           <div class="job-header-layout">
             <!-- Left: Job Title and Meta -->
             <div class="job-left-section">
-              <h3 class="job-title-text">{{ job.title }}</h3>
+              <h3 class="job-title-text">{{ job.jobName }}</h3>
               <div class="job-meta-info">
                 <span class="meta-item">
                   <mat-icon class="meta-icon">business</mat-icon>
-                  {{ job.company }}
+                  {{ job.businessUnitName }}
                 </span>
                 <span class="meta-item">
                   <mat-icon class="meta-icon">location_on</mat-icon>
-                  {{ job.location }}
+                  {{ job.locationName }}
                 </span>
-                <span class="job-type-badge">{{ job.type }}</span>
+                <span class="job-type-badge">{{ job.mrfCategory }}</span>
               </div>
             </div>
 
             <!-- Right: Status and Stats -->
             <div class="job-right-section">
-              <div class="status-badge" [ngClass]="getStatusClass(job.status)">
-                {{
-                  job.status === "In Progress"
-                    ? "IN PROGRESS"
-                    : job.status.toUpperCase()
-                }}
+              <div
+                class="status-badge"
+                [ngClass]="getStatusClass(job.jobstatus)"
+              >
+                {{ getStatusText(job.jobstatus) }}
               </div>
               <div class="job-stats-grid">
                 <div class="stat-column">
                   <span class="stat-label">SALARY</span>
-                  <span class="stat-value">{{ job.salary }}</span>
+                  <span class="stat-value">Not disclosed</span>
                 </div>
                 <div class="stat-column">
-                  <span class="stat-label">APPLICANTS</span>
-                  <span class="stat-value">{{ job.applicants }}</span>
+                  <span class="stat-label">ACTIVITIES</span>
+                  <span class="stat-value">{{
+                    job.applicantJobLogsDtos?.length || 0
+                  }}</span>
                 </div>
                 <div class="stat-column">
-                  <span class="stat-label">POSTED</span>
-                  <span class="stat-value">{{ job.posted }}</span>
+                  <span class="stat-label">LATEST</span>
+                  <span class="stat-value">{{
+                    formatDate(getLatestActivityDate(job))
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -54,55 +57,69 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
+      <!-- Daily Activities Section -->
       <div class="panel-content">
         <mat-card class="cardWithShadow activity-card">
           <mat-card-content>
-            <mat-card-title>Daily activities</mat-card-title>
+            <mat-card-title>Application Timeline</mat-card-title>
+            @if(job.applicantJobLogsDtos && job.applicantJobLogsDtos.length > 0)
+            {
             <div class="timeline m-t-24">
-              @for(stat of job.stats; track stat.id) {
+              @for(activity of job.applicantJobLogsDtos; track $index; let i =
+              $index) {
               <div class="timeline-item d-flex overflow-hidden">
                 <div class="time text-right mat-subtitle-1 f-s-14">
-                  {{ stat.time }}
+                  {{ formatTime(activity.creationTime) }}
                 </div>
                 <div class="point d-flex align-items-center">
-                  <span class="timeline-badge bg-{{ stat.color }} m-y-8"></span>
+                  <span
+                    class="timeline-badge bg-{{
+                      getActivityColor(activity.status, i)
+                    }} m-y-8"
+                  ></span>
                   <span class="timline-border d-block"></span>
                 </div>
                 <div class="desc">
-                  @if(stat.subtext) {
                   <span class="mat-subtitle-1 f-s-14 lh-20">{{
-                    stat.subtext
+                    activity.descriptionLogs
                   }}</span>
-                  } @if(stat.title) {
-                  <span class="mat-subtitle-1 f-s-14 lh-20 f-w-600 d-block">{{
-                    stat.title
-                  }}</span>
-                  } @if(stat.link) {
-                  <a
-                    href="#"
-                    class="text-primary text-decoration-none mat-body-1"
-                    >#ML-3467</a
-                  >
-                  }
+                  <span class="mat-body-1 f-s-12 text-muted d-block">
+                    {{ formatFullDate(activity.creationTime) }}
+                  </span>
                 </div>
               </div>
               }
             </div>
+            } @else {
+            <div class="empty-state-timeline">
+              <mat-icon class="empty-icon">event_note</mat-icon>
+              <p class="empty-text">No activities yet</p>
+              <span class="empty-subtext"
+                >Activities will appear here once there are updates</span
+              >
+            </div>
+            }
           </mat-card-content>
         </mat-card>
       </div>
     </mat-expansion-panel>
-    }
   </mat-accordion>
-
-  <mat-paginator
-    [length]="jobs.length"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="pageSizeOptions"
-    [pageIndex]="pageIndex"
-    (page)="onPageChange($event)"
-    showFirstLastButtons
-    class="job-paginator"
-  >
-  </mat-paginator>
+  } @else {
+  <div class="empty-state-container">
+    <div class="empty-state-content">
+      <div class="empty-icon-wrapper">
+        <mat-icon class="empty-main-icon">work_outline</mat-icon>
+      </div>
+      <h2 class="empty-title">No Job Applications Found</h2>
+      <p class="empty-description">
+        You haven't applied to any jobs yet. Start exploring opportunities and
+        your applications will appear here.
+      </p>
+      <button mat-raised-button color="primary" class="empty-action-btn">
+        <mat-icon>search</mat-icon>
+        Browse Jobs
+      </button>
+    </div>
+  </div>
+  }
 </div>
