@@ -1,1 +1,252 @@
-<p>job-offer works!</p>
+<div class="job-offer-container">
+  <div class="header-section">
+    <h1 class="page-title">Job Offer</h1>
+    <p class="page-subtitle">Review your job offer details</p>
+  </div>
+
+  @if(jobOfferData && jobOfferData.length > 0) {
+  <mat-accordion class="offer-accordion">
+    <mat-expansion-panel class="offer-panel" *ngFor="let offer of jobOfferData">
+      <mat-expansion-panel-header class="offer-panel-header">
+        <mat-panel-title class="offer-header-title">
+          <div class="offer-header-layout">
+            <!-- Left: Job Title and Meta -->
+            <div class="offer-left-section">
+              <h3 class="offer-title-text">{{ offer.jobTitle }}</h3>
+              <div class="offer-meta-info">
+                <span class="meta-item">
+                  <mat-icon class="meta-icon">business</mat-icon>
+                  {{ offer.businessUnitName }}
+                </span>
+                <span class="meta-item">
+                  <mat-icon class="meta-icon">location_on</mat-icon>
+                  {{ offer.locationName }}
+                </span>
+                <span class="job-type-badge">{{ offer.mrfCategory }}</span>
+              </div>
+            </div>
+
+            <!-- Right: Status and Info -->
+            <div class="offer-right-section">
+              <div
+                class="status-badge"
+                [ngClass]="{
+                  'status-accepted': offer.isConfirmed,
+                  'status-declined': offer.isRejected,
+                  'status-pending': !offer.isConfirmed && !offer.isRejected
+                }"
+              >
+                {{
+                  offer.isConfirmed
+                    ? "ACCEPTED"
+                    : offer.isRejected
+                    ? "DECLINED"
+                    : "PENDING RESPONSE"
+                }}
+              </div>
+              <div class="offer-stats-grid">
+                <div class="stat-column">
+                  <span class="stat-label">SALARY</span>
+                  <span class="stat-value">Not disclosed</span>
+                </div>
+                <div class="stat-column">
+                  <span class="stat-label">START DATE</span>
+                  <span class="stat-value">{{
+                    formatDate(offer.startDate)
+                  }}</span>
+                </div>
+                <div class="stat-column">
+                  <span class="stat-label">VALID UNTIL</span>
+                  <span class="stat-value">{{
+                    formatDate(offer.noLaterThan)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <!-- Accordion Content -->
+      <div class="panel-content">
+        <!-- Offer Details Section -->
+        <mat-card class="cardWithShadow details-card">
+          <mat-card-content>
+            <mat-card-title>Offer Details</mat-card-title>
+            <div class="offer-details-grid">
+              <div class="detail-item">
+                <span class="detail-label">Position</span>
+                <span class="detail-value">{{ offer.jobTitle }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Business Unit</span>
+                <span class="detail-value">{{ offer.businessUnitName }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Location</span>
+                <span class="detail-value">{{ offer.locationName }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Start Date</span>
+                <span class="detail-value">{{
+                  formatFullDate(offer.startDate)
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Contract ID</span>
+                <span class="detail-value">{{ offer.contractId }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Offer Valid Until</span>
+                <span class="detail-value">{{
+                  formatFullDate(offer.noLaterThan)
+                }}</span>
+              </div>
+            </div>
+
+            @if(offer.isRejected && offer.rejectionRemarks) {
+            <div class="rejection-remarks">
+              <mat-icon class="remarks-icon">info</mat-icon>
+              <div class="remarks-content">
+                <span class="remarks-label">Rejection Remarks:</span>
+                <span class="remarks-text">{{ offer.rejectionRemarks }}</span>
+              </div>
+            </div>
+            }
+          </mat-card-content>
+        </mat-card>
+
+        <!-- PDF Preview Section -->
+        @if(offer.pdfByte) {
+        <mat-card class="cardWithShadow pdf-preview-card">
+          <mat-card-content>
+            <mat-card-title>Offer Letter Document</mat-card-title>
+
+            <div class="pdf-header">
+              <div class="pdf-title-section">
+                <mat-icon class="pdf-icon">description</mat-icon>
+                <div>
+                  <h3 class="pdf-title">
+                    Offer_Letter_{{ offer.jobTitle.replace(" ", "_") }}.pdf
+                  </h3>
+                  <p class="pdf-subtitle">Official job offer document</p>
+                </div>
+              </div>
+              <button
+                mat-icon-button
+                class="download-btn"
+                title="Download PDF"
+                (click)="downloadPDF(offer)"
+              >
+                <mat-icon>download</mat-icon>
+              </button>
+            </div>
+
+            <!-- <div class="pdf-preview-area">
+              <iframe
+                [src]="getPdfUrl(offer.pdfByte)"
+                class="pdf-iframe"
+                frameborder="0"
+              >
+              </iframe>
+            </div>
+
+            <div class="pdf-actions">
+              <button
+                mat-stroked-button
+                color="primary"
+                class="view-fullscreen-btn"
+                (click)="viewFullScreen(offer)"
+              >
+                <mat-icon>open_in_full</mat-icon>
+                View Full Screen
+              </button>
+            </div> -->
+          </mat-card-content>
+        </mat-card>
+        }
+
+        <!-- Decision Section - Only show if not confirmed or rejected -->
+        @if(!offer.isConfirmed && !offer.isRejected) {
+        <mat-card class="cardWithShadow decision-card">
+          <mat-card-content>
+            <div class="decision-header">
+              <mat-icon class="decision-icon">help_outline</mat-icon>
+              <h3 class="decision-title">Do you accept the Job Offer?</h3>
+            </div>
+            <p class="decision-description">
+              Please review the offer letter carefully before making your
+              decision. This action cannot be undone once submitted.
+            </p>
+
+            <div class="decision-actions">
+              <button mat-raised-button color="primary" class="accept-btn">
+                <mat-icon>check_circle</mat-icon>
+                Yes, Accept Offer
+              </button>
+              <button mat-stroked-button color="warn" class="decline-btn">
+                <mat-icon>cancel</mat-icon>
+                No, Decline Offer
+              </button>
+            </div>
+
+            <div class="decision-note">
+              <mat-icon class="note-icon">info</mat-icon>
+              <span class="note-text"
+                >You have until
+                <strong>{{ formatFullDate(offer.noLaterThan) }}</strong> to
+                respond to this offer.</span
+              >
+            </div>
+          </mat-card-content>
+        </mat-card>
+        }
+
+        <!-- Confirmation Message - Show if confirmed -->
+        @if(offer.isConfirmed) {
+        <mat-card class="cardWithShadow confirmation-card">
+          <mat-card-content>
+            <div class="confirmation-content">
+              <mat-icon class="confirmation-icon">check_circle</mat-icon>
+              <h3 class="confirmation-title">Offer Accepted</h3>
+              <p class="confirmation-description">
+                You have accepted this job offer. The HR team will contact you
+                soon with next steps.
+              </p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        }
+
+        <!-- Rejection Message - Show if rejected -->
+        @if(offer.isRejected) {
+        <mat-card class="cardWithShadow rejection-card">
+          <mat-card-content>
+            <div class="rejection-content">
+              <mat-icon class="rejection-icon">cancel</mat-icon>
+              <h3 class="rejection-title">Offer Declined</h3>
+              <p class="rejection-description">
+                You have declined this job offer. Thank you for your time.
+              </p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        }
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  } @else {
+  <div class="empty-state-container">
+    <div class="empty-state-content">
+      <div class="empty-icon-wrapper">
+        <mat-icon class="empty-main-icon">work_outline</mat-icon>
+      </div>
+      <h2 class="empty-title">No Job Offers Found</h2>
+      <p class="empty-description">
+        You don't have any job offers at the moment. Job offers will appear here
+        once they are available.
+      </p>
+    </div>
+  </div>
+  }
+</div>

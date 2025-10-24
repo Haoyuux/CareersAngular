@@ -5,6 +5,7 @@ import { JobApplicationStatusComponent } from './job-application-status/job-appl
 import { JobOfferComponent } from './job-offer/job-offer.component';
 import { AppointmentCalendarComponent } from './appointment-calendar/appointment-calendar.component';
 import { RequirementsComponent } from './requirements/requirements.component';
+import { MainDashboardJobdetailsViewComponent } from './main-dashboard-jobdetails-view/main-dashboard-jobdetails-view.component';
 
 export const mainRoutes: Routes = [
   {
@@ -13,6 +14,10 @@ export const mainRoutes: Routes = [
       {
         path: 'main-dashboard',
         component: MainDashboardComponent,
+      },
+      {
+        path: 'main-dashboard-jobdetails-view/:id',
+        component: MainDashboardJobdetailsViewComponent,
       },
       {
         path: 'user-profile',

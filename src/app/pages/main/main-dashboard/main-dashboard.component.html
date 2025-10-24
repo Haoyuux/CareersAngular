@@ -1,10 +1,5 @@
 <div class="job-container">
   <!-- Left Side - Job Headers -->
-  <!-- [style.border-color]="
-        job.id === selectedJobId
-          ? getBorderColor(job.theme)
-          : 'rgba(255, 255, 255, 0.2)'
-      " -->
   <div class="job-header">
     <div class="search-bar">
       <input
@@ -30,7 +25,6 @@
             [attr.fill]="'#383c42ff'"
           >
             <rect width="60" height="60" rx="12" />
-            <!-- [attr.fill]="getLogoColor(job.theme)" -->
             <text
               x="50%"
               y="50%"
@@ -50,7 +44,6 @@
           <h2 class="company-name">{{ job.bussinessUnit }}</h2>
           <div class="job-meta">
             <span class="location">{{ job.location }}</span>
-            <!-- <span class="job-type">{{ job.type }}</span> -->
             <span class="salary">
               PHP
               {{ job.minRate * 27 | number : "1.0-0" }}
@@ -65,15 +58,17 @@
         </div>
       </div>
 
-      <div class="action-buttons">
+      <!-- Button only shows on desktop (above 768px) -->
+      <div class="action-buttons desktop-only">
         <button
           class="apply-btn primary"
-          (click)="onApplyJob(job.jobPostingId!, job.jobTitleId!)"
+          (click)="
+            onApplyJob(job.jobPostingId!, job.jobTitleId!);
+            $event.stopPropagation()
+          "
         >
           Apply Now
         </button>
-        <!-- <button class="save-btn secondary">💾 Save Job</button>
-        <button class="share-btn secondary">📤 Share</button> -->
       </div>
 
       <div class="job-tags">
@@ -99,10 +94,6 @@
     <section class="section">
       <h3>Key Responsibilities</h3>
       <ul>
-        <!-- <li *ngFor="let responsibility of selectedJob.responsibilities">
-          {{ responsibility }}
-        </li> -->
-
         <div
           class="key-responsibilities"
           [innerHTML]="selectedJob?.essentialDuties"
@@ -165,42 +156,15 @@
       </ul>
     </section>
 
-    <!-- <section class="section">
-      <h3>Benefits</h3>
-      <ul>
-        <li *ngFor="let benefit of selectedJob.benefits">
-          {{ benefit }}
-        </li>
-        Benefits
-      </ul>
-    </section> -->
-
-    <!-- <section class="section">
-      <h3>About</h3>
-      {{ selectedJob.company }}
-      <p>
-        {{ selectedJob.companyDescription }}
-   
-      </p>
-
-      <div class="company-stats">
-        <div class="stat">
-          <span class="stat-number">{{ selectedJob.stats.employees }}</span>
-          <span class="stat-label">Employees</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">{{ selectedJob.stats.users }}</span>
-          <span class="stat-label">Users</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">{{ selectedJob.stats.countries }}</span>
-          <span class="stat-label">Countries</span>
-        </div>
-      </div>
-    </section> -->
-
     <div class="apply-section">
-      <button class="apply-btn primary large">Apply for this Position</button>
+      <button
+        class="apply-btn primary large"
+        (click)="
+          onApplyJob(selectedJob?.jobPostingId!, selectedJob?.jobTitleId!)
+        "
+      >
+        Apply for this Position
+      </button>
       <p class="apply-note">
         By applying, you agree to our Terms of Service and Privacy Policy
       </p>

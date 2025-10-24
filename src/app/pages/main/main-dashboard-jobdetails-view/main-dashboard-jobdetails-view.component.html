@@ -1,0 +1,169 @@
+<div class="job-details-page">
+  <!-- Header with Back Button -->
+  <div class="details-header">
+    <button class="back-btn" (click)="goBack()">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Back to Jobs
+    </button>
+  </div>
+
+  <!-- Job Card Summary -->
+  <!-- <div class="job-summary-card">
+    <div class="company-info-header">
+      <div class="company-logo">
+        <svg
+          width="70"
+          height="70"
+          viewBox="0 0 70 70"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          [attr.fill]="'#383c42ff'"
+        >
+          <rect width="70" height="70" rx="14" />
+          <text
+            x="50%"
+            y="50%"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            fill="white"
+            font-weight="bold"
+            font-size="28"
+          >
+            {{ selectedJob?.logoInitial }}
+          </text>
+        </svg>
+      </div>
+      <div class="company-details-header">
+        <h1 class="job-title-large">{{ selectedJob?.jobTitleName }}</h1>
+        <h2 class="company-name-large">{{ selectedJob?.bussinessUnit }}</h2>
+        <div class="job-meta-header">
+          <span class="location">{{ selectedJob?.location }}</span>
+          <span class="salary">
+            PHP
+            {{ selectedJob?.minRate * 27 | number : "1.0-0" }}
+            -
+            {{
+              selectedJob?.maxRate - (selectedJob?.maxRate % 1000)
+                | number : "1.0-0"
+            }}
+            /MONTH
+          </span>
+          <span class="posted-date">{{
+            selectedJob?.creationTime | date : "MMM d, yyyy"
+          }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-section">
+      <button
+        class="apply-btn-large primary"
+        (click)="
+          onApplyJob(selectedJob?.jobPostingId!, selectedJob?.jobTitleId!)
+        "
+      >
+        Apply Now
+      </button>
+    </div>
+  </div> -->
+
+  <!-- Job Details Content -->
+  <div class="job-content">
+    <div class="job-poster">
+      <img
+        src="../../assets/images/backgrounds/BrigadaJobBanner.png"
+        alt="Job Poster"
+      />
+    </div>
+
+    <section class="section">
+      <h3>About the Role</h3>
+      <div class="about-role" [innerHTML]="selectedJob?.jobDescription"></div>
+    </section>
+
+    <section class="section">
+      <h3>Key Responsibilities</h3>
+      <div
+        class="key-responsibilities"
+        [innerHTML]="selectedJob?.essentialDuties"
+      ></div>
+    </section>
+
+    <section class="section">
+      <h3>Requirements</h3>
+      <div class="requirements-grid">
+        <div class="requirement-item" *ngIf="selectedJob?.education">
+          <h4 class="sub-header">Education</h4>
+          <div class="requirements" [innerHTML]="selectedJob?.education"></div>
+        </div>
+
+        <div class="requirement-item" *ngIf="selectedJob?.skills">
+          <h4 class="sub-header">Skills</h4>
+          <div class="requirements" [innerHTML]="selectedJob?.skills"></div>
+        </div>
+
+        <div class="requirement-item" *ngIf="selectedJob?.experience">
+          <h4 class="sub-header">Experience</h4>
+          <div class="requirements" [innerHTML]="selectedJob?.experience"></div>
+        </div>
+
+        <div class="requirement-item" *ngIf="selectedJob?.professionalCert">
+          <h4 class="sub-header">Professional Certificate</h4>
+          <div
+            class="requirements"
+            [innerHTML]="selectedJob?.professionalCert"
+          ></div>
+        </div>
+
+        <div class="requirement-item" *ngIf="selectedJob?.specialSkills">
+          <h4 class="sub-header">Special Skills</h4>
+          <div
+            class="requirements"
+            [innerHTML]="selectedJob?.specialSkills"
+          ></div>
+        </div>
+
+        <div class="requirement-item" *ngIf="selectedJob?.training">
+          <h4 class="sub-header">Training</h4>
+          <div class="requirements" [innerHTML]="selectedJob?.training"></div>
+        </div>
+
+        <div class="requirement-item" *ngIf="selectedJob?.workingConditions">
+          <h4 class="sub-header">Working Condition</h4>
+          <div
+            class="requirements"
+            [innerHTML]="selectedJob?.workingConditions"
+          ></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" *ngIf="selectedJob?.specialized">
+      <h3>Nice to Have</h3>
+      <div class="requirements" [innerHTML]="selectedJob?.specialized"></div>
+    </section>
+
+    <div class="apply-section-bottom">
+      <button
+        class="apply-btn-large primary"
+        (click)="
+          onApplyJob(selectedJob?.jobPostingId!, selectedJob?.jobTitleId!)
+        "
+      >
+        Apply for this Position
+      </button>
+      <p class="apply-note">
+        By applying, you agree to our Terms of Service and Privacy Policy
+      </p>
+    </div>
+  </div>
+</div>

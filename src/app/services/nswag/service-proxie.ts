@@ -1607,6 +1607,54 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    getUserJobOffer(): Observable<ApiResponseMessageOfIListOfGetUserJobOfferDtoV1> {
+        let url_ = this.baseUrl + "/api/User/GetUserJobOffer";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserJobOffer(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserJobOffer(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfGetUserJobOfferDtoV1>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfGetUserJobOfferDtoV1>;
+        }));
+    }
+
+    protected processGetUserJobOffer(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfGetUserJobOfferDtoV1> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfGetUserJobOfferDtoV1.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
@@ -3529,6 +3577,141 @@ export interface IApplicantJobLogsDto {
     descriptionLogs: string;
     status: number;
     creationTime: Date;
+}
+
+export class ApiResponseMessageOfIListOfGetUserJobOfferDtoV1 implements IApiResponseMessageOfIListOfGetUserJobOfferDtoV1 {
+    data!: GetUserJobOfferDtoV1[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfIListOfGetUserJobOfferDtoV1) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(GetUserJobOfferDtoV1.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfIListOfGetUserJobOfferDtoV1 {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfGetUserJobOfferDtoV1();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfIListOfGetUserJobOfferDtoV1 {
+    data: GetUserJobOfferDtoV1[];
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class GetUserJobOfferDtoV1 implements IGetUserJobOfferDtoV1 {
+    jobTitle!: string;
+    contractId!: string;
+    pdfByte!: string | undefined;
+    isConfirmed!: boolean | undefined;
+    isRejected!: boolean | undefined;
+    rejectionRemarks!: string;
+    startDate!: string;
+    businessUnitName!: string;
+    locationName!: string;
+    noLaterThan!: string;
+    mrfCategory!: string;
+    mrfCategoryString!: string;
+
+    constructor(data?: IGetUserJobOfferDtoV1) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.jobTitle = _data["jobTitle"];
+            this.contractId = _data["contractId"];
+            this.pdfByte = _data["pdfByte"];
+            this.isConfirmed = _data["isConfirmed"];
+            this.isRejected = _data["isRejected"];
+            this.rejectionRemarks = _data["rejectionRemarks"];
+            this.startDate = _data["startDate"];
+            this.businessUnitName = _data["businessUnitName"];
+            this.locationName = _data["locationName"];
+            this.noLaterThan = _data["noLaterThan"];
+            this.mrfCategory = _data["mrfCategory"];
+            this.mrfCategoryString = _data["mrfCategoryString"];
+        }
+    }
+
+    static fromJS(data: any): GetUserJobOfferDtoV1 {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetUserJobOfferDtoV1();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobTitle"] = this.jobTitle;
+        data["contractId"] = this.contractId;
+        data["pdfByte"] = this.pdfByte;
+        data["isConfirmed"] = this.isConfirmed;
+        data["isRejected"] = this.isRejected;
+        data["rejectionRemarks"] = this.rejectionRemarks;
+        data["startDate"] = this.startDate;
+        data["businessUnitName"] = this.businessUnitName;
+        data["locationName"] = this.locationName;
+        data["noLaterThan"] = this.noLaterThan;
+        data["mrfCategory"] = this.mrfCategory;
+        data["mrfCategoryString"] = this.mrfCategoryString;
+        return data;
+    }
+}
+
+export interface IGetUserJobOfferDtoV1 {
+    jobTitle: string;
+    contractId: string;
+    pdfByte: string | undefined;
+    isConfirmed: boolean | undefined;
+    isRejected: boolean | undefined;
+    rejectionRemarks: string;
+    startDate: string;
+    businessUnitName: string;
+    locationName: string;
+    noLaterThan: string;
+    mrfCategory: string;
+    mrfCategoryString: string;
 }
 
 export interface FileResponse {
