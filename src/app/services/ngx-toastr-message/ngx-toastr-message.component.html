@@ -28,6 +28,7 @@
     color: #374151;
     line-height: 1.6;
     margin: 0 1.5rem 1rem 1.5rem; /* ✅ Handles spacing manually */
+    width: 100%;
   }
 </style>
 
@@ -53,9 +54,9 @@
     ></button>
     <button
       pButton
-      label="Yes, Delete"
+      label="Yes"
       icon="pi pi-check"
-      class="p-button-danger"
+      class="p-button-primary"
       (click)="cd.accept()"
     ></button>
   </ng-template>

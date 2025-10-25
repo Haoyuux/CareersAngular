@@ -246,6 +246,29 @@
   }
 }
 
+.status-confirmed {
+  background-color: #86efac; /* light green (Tailwind’s green-300) */
+  color: #065f46; /* darker green text for contrast */
+}
+
+.status-not-confirmed {
+  background-color: #ef4444; /* red */
+}
+
+.status-pending {
+  background-color: #f59e0b; /* amber/yellow */
+}
+
+.status-badges-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    gap: 6px;
+  }
+}
+
 .status-badge {
   padding: 8px 16px;
   border-radius: 4px;
@@ -1232,6 +1255,243 @@
   }
 }
 
+// Decline Dialog Styles
+.decline-dialog {
+  padding: 0 !important;
+
+  h2[mat-dialog-title] {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 20px 0;
+    padding: 24px 24px 0 24px;
+
+    @media (max-width: 480px) {
+      font-size: 18px;
+      padding: 20px 20px 0 20px;
+      margin: 0 0 16px 0;
+    }
+  }
+
+  .dialog-content {
+    padding: 0 24px 24px 24px;
+
+    @media (max-width: 480px) {
+      padding: 0 20px 20px 20px;
+    }
+  }
+
+  .offer-info-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 20px;
+
+    @media (max-width: 480px) {
+      padding: 12px;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .info-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: #6b7280;
+      flex-shrink: 0;
+
+      @media (max-width: 480px) {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    .info-details {
+      flex: 1;
+      min-width: 0;
+
+      .info-job-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0 0 4px 0;
+        word-wrap: break-word;
+
+        @media (max-width: 480px) {
+          font-size: 15px;
+        }
+      }
+
+      .info-company {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0;
+
+        @media (max-width: 480px) {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+
+  .remarks-field {
+    width: 100%;
+    margin-bottom: 16px;
+
+    @media (max-width: 480px) {
+      margin-bottom: 12px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-size: 14px;
+      line-height: 1.6;
+
+      @media (max-width: 480px) {
+        font-size: 13px;
+        min-height: 100px;
+      }
+    }
+  }
+
+  .dialog-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fef3c7;
+    padding: 12px 16px;
+    border-radius: 6px;
+    border-left: 4px solid #f59e0b;
+    margin-bottom: 20px;
+
+    @media (max-width: 480px) {
+      padding: 10px 12px;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .note-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      color: #f59e0b;
+      flex-shrink: 0;
+      margin-top: 2px;
+
+      @media (max-width: 480px) {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .note-text {
+      font-size: 13px;
+      color: #78350f;
+      line-height: 1.5;
+
+      @media (max-width: 480px) {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .dialog-actions {
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    gap: 12px;
+
+    @media (max-width: 480px) {
+      padding: 12px 20px;
+      gap: 10px;
+      flex-direction: column-reverse;
+
+      button {
+        width: 100%;
+        margin: 0 !important;
+      }
+    }
+
+    .cancel-btn {
+      padding: 10px 24px !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      text-transform: none !important;
+
+      @media (max-width: 480px) {
+        padding: 10px 20px !important;
+        font-size: 13px !important;
+      }
+
+      mat-icon {
+        margin-right: 6px;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+
+        @media (max-width: 480px) {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+
+    .submit-decline-btn {
+      padding: 10px 24px !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      text-transform: none !important;
+
+      @media (max-width: 480px) {
+        padding: 10px 20px !important;
+        font-size: 13px !important;
+      }
+
+      mat-icon {
+        margin-right: 6px;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+
+        @media (max-width: 480px) {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+}
+
+// Material Dialog Overrides
+::ng-deep {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 12px !important;
+    max-width: 600px !important;
+
+    @media (max-width: 768px) {
+      max-width: 90vw !important;
+    }
+
+    @media (max-width: 480px) {
+      max-width: 95vw !important;
+      border-radius: 8px !important;
+    }
+  }
+
+  .mat-mdc-form-field-hint-wrapper,
+  .mat-mdc-form-field-error-wrapper {
+    padding: 0 16px;
+  }
+}
+
 // Utility Classes
 .d-flex {
   display: flex;
@@ -1239,4 +1499,385 @@
 
 .align-items-center {
   align-items: center;
+}
+
+// Decline Dialog Content
+.decline-dialog-content {
+  padding: 8px 0;
+
+  @media (max-width: 768px) {
+    padding: 4px 0;
+  }
+}
+
+// Offer Summary
+.offer-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    padding: 14px;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .summary-icon {
+    font-size: 32px;
+    color: #6b7280;
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      font-size: 28px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 24px;
+    }
+  }
+
+  .summary-details {
+    flex: 1;
+    min-width: 0;
+
+    .summary-job-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 4px 0;
+      word-wrap: break-word;
+
+      @media (max-width: 768px) {
+        font-size: 16px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 15px;
+      }
+    }
+
+    .summary-company {
+      font-size: 14px;
+      color: #6b7280;
+      margin: 0;
+
+      @media (max-width: 768px) {
+        font-size: 13px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+// Warning Notice
+.warning-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 6px;
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    padding: 12px 14px;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 12px;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .warning-icon {
+    font-size: 20px;
+    color: #f59e0b;
+    flex-shrink: 0;
+    margin-top: 2px;
+
+    @media (max-width: 768px) {
+      font-size: 18px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 16px;
+    }
+  }
+
+  .warning-text {
+    font-size: 14px;
+    color: #78350f;
+    line-height: 1.6;
+    margin: 0;
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 12px;
+      line-height: 1.5;
+    }
+  }
+}
+
+// Form Field
+.form-field {
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 16px;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+
+    @media (max-width: 768px) {
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .optional-text {
+      font-weight: 400;
+      color: #9ca3af;
+      font-size: 13px;
+
+      @media (max-width: 768px) {
+        font-size: 12px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 11px;
+      }
+    }
+  }
+
+  .remarks-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.6;
+    color: #1f2937;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    resize: vertical;
+    min-height: 140px;
+    transition: all 0.2s ease;
+
+    @media (max-width: 768px) {
+      padding: 10px 12px;
+      font-size: 13px;
+      min-height: 120px;
+    }
+
+    @media (max-width: 480px) {
+      padding: 8px 10px;
+      font-size: 12px;
+      min-height: 100px;
+      line-height: 1.5;
+    }
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    &:hover:not(:focus) {
+      border-color: #9ca3af;
+    }
+  }
+
+  .char-counter {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+
+    @media (max-width: 480px) {
+      margin-top: 4px;
+    }
+
+    .counter-text {
+      font-size: 12px;
+      color: #6b7280;
+
+      @media (max-width: 768px) {
+        font-size: 11px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 10px;
+      }
+    }
+  }
+}
+
+// Dialog Actions
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+
+  @media (max-width: 768px) {
+    gap: 10px;
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    @media (max-width: 768px) {
+      padding: 9px 20px;
+      font-size: 13px;
+      gap: 6px;
+    }
+
+    @media (max-width: 480px) {
+      width: 100%;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+
+    i {
+      font-size: 16px;
+
+      @media (max-width: 768px) {
+        font-size: 15px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 14px;
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .cancel-button {
+    background: #ffffff;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+
+    &:hover:not(:disabled) {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+
+    &:active:not(:disabled) {
+      background: #f3f4f6;
+    }
+  }
+
+  .submit-button {
+    background: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    &:hover:not(:disabled) {
+      background: #dc2626;
+      box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+    }
+
+    &:active:not(:disabled) {
+      background: #b91c1c;
+      transform: translateY(1px);
+    }
+  }
+}
+
+// PrimeNG Dialog Overrides
+::ng-deep {
+  .p-dialog {
+    .p-dialog-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e5e7eb;
+
+      @media (max-width: 768px) {
+        padding: 18px 20px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 16px;
+      }
+
+      .p-dialog-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #111827;
+
+        @media (max-width: 768px) {
+          font-size: 18px;
+        }
+
+        @media (max-width: 480px) {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .p-dialog-content {
+      padding: 24px;
+
+      @media (max-width: 768px) {
+        padding: 20px;
+      }
+
+      @media (max-width: 480px) {
+        padding: 16px;
+      }
+    }
+  }
 }

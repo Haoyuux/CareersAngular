@@ -22,27 +22,40 @@
                   <mat-icon class="meta-icon">location_on</mat-icon>
                   {{ offer.locationName }}
                 </span>
-                <span class="job-type-badge">{{ offer.mrfCategory }}</span>
+                <span class="job-type-badge">Full Time</span>
               </div>
             </div>
 
             <!-- Right: Status and Info -->
             <div class="offer-right-section">
-              <div
-                class="status-badge"
-                [ngClass]="{
-                  'status-accepted': offer.isConfirmed,
-                  'status-declined': offer.isRejected,
-                  'status-pending': !offer.isConfirmed && !offer.isRejected
-                }"
-              >
-                {{
-                  offer.isConfirmed
-                    ? "ACCEPTED"
-                    : offer.isRejected
-                    ? "DECLINED"
-                    : "PENDING RESPONSE"
-                }}
+              <div class="status-badges-container">
+                <!-- Rejection Status Badge -->
+                <div
+                  class="status-badge"
+                  [ngClass]="getRejectStatusClass(offer.isRejected)"
+                >
+                  {{
+                    offer.isRejected === null || offer.isRejected === undefined
+                      ? "PENDING"
+                      : offer.isRejected
+                      ? "DECLINED"
+                      : "ACCEPTED"
+                  }}
+                </div>
+                <!-- Confirmation Status Badge -->
+                <div
+                  class="status-badge"
+                  [ngClass]="getConfirmStatusClass(offer.isConfirmed)"
+                >
+                  {{
+                    offer.isConfirmed === null ||
+                    offer.isConfirmed === undefined
+                      ? "PENDING"
+                      : offer.isConfirmed
+                      ? "CONFIRMED"
+                      : "NOT CONFIRMED"
+                  }}
+                </div>
               </div>
               <div class="offer-stats-grid">
                 <div class="stat-column">
@@ -180,11 +193,21 @@
             </p>
 
             <div class="decision-actions">
-              <button mat-raised-button color="primary" class="accept-btn">
+              <button
+                mat-raised-button
+                color="primary"
+                class="accept-btn"
+                (click)="acceptOffer(offer)"
+              >
                 <mat-icon>check_circle</mat-icon>
                 Yes, Accept Offer
               </button>
-              <button mat-stroked-button color="warn" class="decline-btn">
+              <button
+                mat-stroked-button
+                color="warn"
+                class="decline-btn"
+                (click)="openDeclineDialog(offer)"
+              >
                 <mat-icon>cancel</mat-icon>
                 No, Decline Offer
               </button>
@@ -203,7 +226,7 @@
         }
 
         <!-- Confirmation Message - Show if confirmed -->
-        @if(offer.isConfirmed) {
+        @if(offer.isRejected == false ) {
         <mat-card class="cardWithShadow confirmation-card">
           <mat-card-content>
             <div class="confirmation-content">
@@ -250,3 +273,64 @@
   </div>
   }
 </div>
+
+<p-dialog
+  header="Decline Job Offer"
+  [(visible)]="visible"
+  [modal]="true"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+>
+  <div class="decline-dialog-content">
+    <!-- Offer Summary -->
+    <div class="offer-summary" *ngIf="selectedOffer">
+      <i class="pi pi-briefcase summary-icon"></i>
+      <div class="summary-details">
+        <h3 class="summary-job-title">{{ selectedOffer.jobTitle }}</h3>
+        <p class="summary-company">{{ selectedOffer.businessUnitName }}</p>
+      </div>
+    </div>
+
+    <!-- Warning Notice -->
+    <div class="warning-notice">
+      <i class="pi pi-exclamation-triangle warning-icon"></i>
+      <p class="warning-text">
+        This action cannot be undone. Are you sure you want to decline this
+        offer?
+      </p>
+    </div>
+
+    <!-- Textarea Field -->
+    <div class="form-field">
+      <label for="remarks" class="field-label">
+        Reason for declining <span class="optional-text">(Optional)</span>
+      </label>
+      <textarea
+        id="remarks"
+        class="remarks-textarea"
+        [(ngModel)]="declineRemarks"
+        placeholder="Please provide your reason for declining this offer..."
+        rows="6"
+        maxlength="500"
+      ></textarea>
+      <div class="char-counter">
+        <span class="counter-text">{{ declineRemarks.length || 0 }}/500</span>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="dialog-actions">
+      <button type="button" class="cancel-button" (click)="visible = false">
+        <i class="pi pi-times"></i>
+        Cancel
+      </button>
+      <button type="button" class="submit-button" (click)="onSubmitDecline()">
+        <i class="pi pi-check"></i>
+        Submit Decline
+      </button>
+    </div>
+  </div>
+</p-dialog>

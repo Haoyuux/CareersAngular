@@ -1655,6 +1655,58 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    updateJobOfferStatus(dto: UpdateJobOfferStatusDto): Observable<ApiResponseMessageOfString> {
+        let url_ = this.baseUrl + "/api/User/UpdateJobOfferStatus";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(dto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateJobOfferStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateJobOfferStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfString>;
+        }));
+    }
+
+    protected processUpdateJobOfferStatus(response: HttpResponseBase): Observable<ApiResponseMessageOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
@@ -3712,6 +3764,50 @@ export interface IGetUserJobOfferDtoV1 {
     noLaterThan: string;
     mrfCategory: string;
     mrfCategoryString: string;
+}
+
+export class UpdateJobOfferStatusDto implements IUpdateJobOfferStatusDto {
+    contractId!: string;
+    isRejected!: boolean;
+    rejectionRemarks!: string;
+
+    constructor(data?: IUpdateJobOfferStatusDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.contractId = _data["contractId"];
+            this.isRejected = _data["isRejected"];
+            this.rejectionRemarks = _data["rejectionRemarks"];
+        }
+    }
+
+    static fromJS(data: any): UpdateJobOfferStatusDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateJobOfferStatusDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["contractId"] = this.contractId;
+        data["isRejected"] = this.isRejected;
+        data["rejectionRemarks"] = this.rejectionRemarks;
+        return data;
+    }
+}
+
+export interface IUpdateJobOfferStatusDto {
+    contractId: string;
+    isRejected: boolean;
+    rejectionRemarks: string;
 }
 
 export interface FileResponse {
