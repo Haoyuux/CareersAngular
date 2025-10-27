@@ -180,7 +180,7 @@
         }
 
         <!-- Decision Section - Only show if not confirmed or rejected -->
-        @if(!offer.isConfirmed && !offer.isRejected) {
+        @if(!offer.isConfirmed && offer.isRejected == null) {
         <mat-card class="cardWithShadow decision-card">
           <mat-card-content>
             <div class="decision-header">
