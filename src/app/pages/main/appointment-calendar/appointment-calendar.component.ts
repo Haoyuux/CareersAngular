@@ -12,8 +12,10 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { LoadingService } from 'src/app/services/auth-services/loading-services';
 import {
   GetAppointmentDto,
+  UpdateUserAppointmentDto,
   UserServices,
 } from 'src/app/services/nswag/service-proxie';
+import { NgxToastrMessageComponent } from 'src/app/services/ngx-toastr-message/ngx-toastr-message.component';
 
 @Component({
   selector: 'app-appointment-calendar',
@@ -37,7 +39,8 @@ export class AppointmentCalendarComponent implements OnInit {
 
   constructor(
     private userService: UserServices,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private ngxToastrMessage: NgxToastrMessageComponent
   ) {}
 
   ngOnInit(): void {
@@ -276,6 +279,28 @@ export class AppointmentCalendarComponent implements OnInit {
       error: (err) => {
         this.loadingService.hide();
         console.error('Error fetching appointments:', err);
+      },
+    });
+  }
+
+  updateData: UpdateUserAppointmentDto = new UpdateUserAppointmentDto();
+  onUpdateStatus(appointmentId: string, status: number) {
+    if (status == 1) {
+      this.updateData.remarks = '';
+    } else {
+      this.updateData.remarks = this.notGoingReason;
+    }
+    this.updateData.id = appointmentId;
+    this.updateData.status = status;
+    this.userService.updateUserAppointment(this.updateData).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.onGetUserAppointments();
+
+          this.ngxToastrMessage.showtoastr(res.data, 'Updated Successfully');
+
+          this.visible = false;
+        }
       },
     });
   }

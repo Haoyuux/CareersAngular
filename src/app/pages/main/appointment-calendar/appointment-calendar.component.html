@@ -28,111 +28,117 @@
   [closable]="true"
   [appendTo]="'body'"
 >
-  <div class="event-details" *ngIf="selectedEvent">
-    <div class="detail-row">
-      <i class="pi pi-calendar"></i>
-      <span class="detail-label">Date:</span>
-      <span class="detail-value">
-        {{ getFormattedDate(selectedEvent.date) }}
-      </span>
+  <div class="appointment-dialog" *ngIf="selectedEvent">
+    <div class="appointment-section">
+      <h4 class="section-title">Appointment Details</h4>
+
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label class="detail-label">Date</label>
+          <span class="detail-value">{{
+            getFormattedDate(selectedEvent.date)
+          }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label class="detail-label">Time</label>
+          <span class="detail-value">{{
+            getFormattedTime(selectedEvent.date)
+          }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label class="detail-label">Job Title</label>
+          <span class="detail-value">{{ selectedEvent.jobTitle }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label class="detail-label">Status</label>
+          <span
+            class="detail-badge"
+            [ngClass]="{
+              'status-pending': selectedEvent.status === 0,
+              'status-going': selectedEvent.status === 1,
+              'status-notgoing': selectedEvent.status === 2
+            }"
+          >
+            {{ statusLabel }}
+          </span>
+        </div>
+
+        <div
+          class="detail-item"
+          *ngIf="
+            selectedEvent.fullData?.remarks &&
+            selectedEvent.fullData.remarks.trim() !== ''
+          "
+        >
+          <label class="detail-label">Response</label>
+          <span class="detail-value">{{ selectedEvent.fullData.remarks }}</span>
+        </div>
+
+        <div class="detail-item" *ngIf="selectedEvent.isConfirmed">
+          <label class="detail-label">Confirmation</label>
+          <span class="detail-badge status-confirmed">Confirmed by PMD</span>
+        </div>
+      </div>
     </div>
 
-    <div class="detail-row">
-      <i class="pi pi-clock"></i>
-      <span class="detail-label">Time:</span>
-      <span class="detail-value">
-        {{ getFormattedTime(selectedEvent.date) }}
-      </span>
-    </div>
-
-    <div class="detail-row">
-      <i class="pi pi-briefcase"></i>
-      <span class="detail-label">Job Title:</span>
-      <span class="detail-value">{{ selectedEvent.jobTitle }}</span>
-    </div>
-
-    <!-- ✅ STATUS DISPLAY -->
-    <div class="detail-row">
-      <i class="pi pi-info-circle"></i>
-      <span class="detail-label">Status:</span>
-      <span
-        class="detail-value"
-        [ngStyle]="{
-          color:
-            selectedEvent.status === 1
-              ? '#1cc88a'
-              : selectedEvent.status === 2
-              ? '#e74a3b'
-              : '#4e73df'
-        }"
-      >
-        {{ statusLabel }}
-      </span>
-    </div>
-
-    <!-- ✅ CONFIRMATION INDICATOR -->
-    <div class="detail-row" *ngIf="selectedEvent.isConfirmed">
-      <i class="pi pi-check-circle"></i>
-      <span class="detail-label status-confirmed">Confirmed by PMD</span>
-    </div>
-  </div>
-
-  <!-- ✅ Only show buttons when not confirmed -->
-  <div *ngIf="!isEventConfirmed">
-    <div class="response-section" *ngIf="!showReasonTextarea">
-      <h4>Will you be attending this appointment?</h4>
+    <!-- Response Buttons -->
+    <div
+      class="response-section"
+      *ngIf="!isEventConfirmed && !showReasonTextarea"
+    >
+      <h4 class="section-title">Response</h4>
+      <p class="section-desc">Will you be attending this appointment?</p>
       <div class="button-group">
         <p-button
           label="Going"
           icon="pi pi-check"
-          (onClick)="onGoingClick()"
+          (onClick)="onUpdateStatus(selectedEvent.appointmentId, 1)"
           styleClass="p-button-success"
-          [disabled]="isEventConfirmed"
         ></p-button>
         <p-button
           label="Not Going"
           icon="pi pi-times"
           (onClick)="onNotGoingClick()"
           styleClass="p-button-danger"
-          [disabled]="isEventConfirmed"
         ></p-button>
       </div>
     </div>
-  </div>
 
-  <!-- ✅ Reason Section -->
-  <div class="reason-section" *ngIf="showReasonTextarea">
-    <h4>Please provide a reason for not attending:</h4>
-    <textarea
-      pInputTextarea
-      [(ngModel)]="notGoingReason"
-      rows="5"
-      placeholder="Enter your reason here..."
-      class="reason-textarea"
-      [autoResize]="true"
-    ></textarea>
+    <!-- Reason Section -->
+    <div class="reason-section" *ngIf="showReasonTextarea">
+      <h4 class="section-title">Reason for Not Attending</h4>
+      <textarea
+        pInputTextarea
+        [(ngModel)]="notGoingReason"
+        rows="4"
+        placeholder="Enter your reason here..."
+        class="reason-textarea"
+        [autoResize]="true"
+      ></textarea>
 
-    <div class="button-group">
-      <p-button
-        label="Submit"
-        icon="pi pi-send"
-        (onClick)="onSubmitNotGoing()"
-        [disabled]="!notGoingReason.trim()"
-        styleClass="p-button-primary"
-      ></p-button>
-      <p-button
-        label="Cancel"
-        icon="pi pi-times"
-        (onClick)="onCancelModal()"
-        styleClass="p-button-secondary"
-      ></p-button>
+      <div class="button-group">
+        <p-button
+          label="Submit"
+          icon="pi pi-send"
+          (onClick)="onUpdateStatus(selectedEvent.appointmentId, 2)"
+          [disabled]="!notGoingReason.trim()"
+          styleClass="p-button-primary"
+        ></p-button>
+        <p-button
+          label="Cancel"
+          icon="pi pi-times"
+          (onClick)="onCancelModal()"
+          styleClass="p-button-secondary"
+        ></p-button>
+      </div>
     </div>
-  </div>
 
-  <div
-    *ngIf="isEventConfirmed"
-    style="margin-top: 8px; color: #ffb700; font-weight: 500"
-  >
-    This appointment is already confirmed by PMD.
+    <div *ngIf="isEventConfirmed" class="confirmed-message">
+      <i class="pi pi-check-circle"></i>
+      This appointment has been confirmed by PMD.
+    </div>
   </div>
 </p-dialog>
