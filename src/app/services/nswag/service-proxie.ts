@@ -1707,6 +1707,54 @@ export class UserServices {
         }
         return _observableOf(null as any);
     }
+
+    getAppointment(): Observable<ApiResponseMessageOfIListOfGetAppointmentDto> {
+        let url_ = this.baseUrl + "/api/User/GetAppointment";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAppointment(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAppointment(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfIListOfGetAppointmentDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfIListOfGetAppointmentDto>;
+        }));
+    }
+
+    protected processGetAppointment(response: HttpResponseBase): Observable<ApiResponseMessageOfIListOfGetAppointmentDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfIListOfGetAppointmentDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export class ApiResponseMessageHrmsOfIListOfGetAllJobPostsDto implements IApiResponseMessageHrmsOfIListOfGetAllJobPostsDto {
@@ -3808,6 +3856,117 @@ export interface IUpdateJobOfferStatusDto {
     contractId: string;
     isRejected: boolean;
     rejectionRemarks: string;
+}
+
+export class ApiResponseMessageOfIListOfGetAppointmentDto implements IApiResponseMessageOfIListOfGetAppointmentDto {
+    data!: GetAppointmentDto[];
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfIListOfGetAppointmentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(GetAppointmentDto.fromJS(item));
+            }
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfIListOfGetAppointmentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfIListOfGetAppointmentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfIListOfGetAppointmentDto {
+    data: GetAppointmentDto[];
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class GetAppointmentDto implements IGetAppointmentDto {
+    appointmentId!: string;
+    events!: string;
+    scheduledDateTime!: Date | undefined;
+    jobTitle!: string;
+    status!: number;
+    isConfirmed!: boolean | undefined;
+
+    constructor(data?: IGetAppointmentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.appointmentId = _data["appointmentId"];
+            this.events = _data["events"];
+            this.scheduledDateTime = _data["scheduledDateTime"] ? new Date(_data["scheduledDateTime"].toString()) : undefined as any;
+            this.jobTitle = _data["jobTitle"];
+            this.status = _data["status"];
+            this.isConfirmed = _data["isConfirmed"];
+        }
+    }
+
+    static fromJS(data: any): GetAppointmentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAppointmentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["appointmentId"] = this.appointmentId;
+        data["events"] = this.events;
+        data["scheduledDateTime"] = this.scheduledDateTime ? this.scheduledDateTime.toISOString() : undefined as any;
+        data["jobTitle"] = this.jobTitle;
+        data["status"] = this.status;
+        data["isConfirmed"] = this.isConfirmed;
+        return data;
+    }
+}
+
+export interface IGetAppointmentDto {
+    appointmentId: string;
+    events: string;
+    scheduledDateTime: Date | undefined;
+    jobTitle: string;
+    status: number;
+    isConfirmed: boolean | undefined;
 }
 
 export interface FileResponse {
