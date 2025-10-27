@@ -1,1 +1,18 @@
-<p>appointment-calendar works!</p>
+<div class="appointment-calender-container">
+  <full-calendar [options]="calendarOptions"></full-calendar>
+
+  <div class="calendar-legend">
+    <div class="legend-item">
+      <span class="legend-color pending"></span> Pending
+    </div>
+    <div class="legend-item">
+      <span class="legend-color not-going"></span> Not Going
+    </div>
+    <div class="legend-item">
+      <span class="legend-color going"></span> Going
+    </div>
+    <div class="legend-item">
+      <span class="legend-color confirmed"></span> Confirmed by PMD
+    </div>
+  </div>
+</div>

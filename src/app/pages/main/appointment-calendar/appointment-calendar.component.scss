@@ -1,0 +1,187 @@
+.appointment-calender-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px;
+  background: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    padding: 32px 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 24px 12px;
+  }
+
+  @media (max-width: 360px) {
+    padding: 16px 8px;
+  }
+}
+
+/* FullCalendar container */
+:host ::ng-deep .fc {
+  font-family: "Poppins", sans-serif;
+  background-color: #ffffff;
+  color: #333;
+  border-radius: 16px;
+  border: 1px solid #f1f1f1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 10px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Calendar toolbar (month name, buttons) */
+:host ::ng-deep .fc-toolbar {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+:host ::ng-deep .fc-toolbar-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Calendar buttons (prev, next, today) */
+:host ::ng-deep .fc-button {
+  border-radius: 8px !important;
+  background-color: #f1f3f4 !important;
+  color: #333 !important;
+  border: none !important;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+:host ::ng-deep .fc-button:hover {
+  background-color: #e0e0e0 !important;
+}
+
+/* Active or focused buttons */
+:host ::ng-deep .fc-button-active {
+  background-color: #4e73df !important;
+  color: white !important;
+}
+
+/* Day numbers */
+:host ::ng-deep .fc-daygrid-day-number {
+  font-size: 0.85rem;
+  color: #444;
+  font-weight: 500;
+  padding: 4px;
+}
+
+/* Day cells */
+:host ::ng-deep .fc-daygrid-day {
+  border: 1px solid #f0f0f0;
+  min-height: 80px;
+  background-color: #fff;
+}
+
+/* Highlight today's date */
+:host ::ng-deep .fc-day-today {
+  background-color: #eaf0ff !important;
+  border: 1px solid #cbd6ff !important;
+}
+
+/* Events (like “Sam”, “Holiday”) */
+:host ::ng-deep .fc-event {
+  border: none !important;
+  border-radius: 6px !important;
+  font-size: 0.7rem !important;
+  font-weight: 500 !important;
+  padding: 2px 6px !important;
+  text-align: center;
+}
+
+/* Event colors based on status */
+:host ::ng-deep .fc-event.pending {
+  background-color: #4e73df !important; /* Blue */
+}
+
+:host ::ng-deep .fc-event.not-going {
+  background-color: #e74a3b !important; /* Red */
+}
+
+:host ::ng-deep .fc-event.going {
+  background-color: #1cc88a !important; /* Green */
+}
+
+:host ::ng-deep .fc-event.confirmed {
+  background-color: #f6c23e !important; /* Gold */
+}
+
+/* Legend styling */
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+  font-family: "Poppins", sans-serif;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.legend-color.pending {
+  background-color: #4e73df;
+}
+
+.legend-color.not-going {
+  background-color: #e74a3b;
+}
+
+.legend-color.going {
+  background-color: #1cc88a;
+}
+
+.legend-color.confirmed {
+  background-color: #f6c23e;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  :host ::ng-deep .fc-daygrid-day-number {
+    font-size: 0.7rem;
+  }
+
+  :host ::ng-deep .fc-toolbar-title {
+    font-size: 0.9rem;
+  }
+
+  :host ::ng-deep .fc-button {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+
+  :host ::ng-deep .fc-daygrid-day {
+    min-height: 55px;
+  }
+
+  .calendar-legend {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
