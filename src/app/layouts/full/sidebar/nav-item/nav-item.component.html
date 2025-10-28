@@ -1,18 +1,16 @@
-@if(item.navCap) { @if(item.divider) {
+<!-- Only show item if user has required role -->
+@if(canShowItem()) { @if(item.navCap) { @if(item.divider) {
 <span class="sidebar-divider"></span>
 }
 <div mat-subheader class="nav-caption">
   {{ item.navCap }}
 </div>
 } @else {
-<a
-  mat-list-item
+<mat-list-item
   (click)="onItemSelected(item)"
-  [ngClass]="{
-      'mat-toolbar mat-primary activeMenu': item.route
-        ? router.isActive(item.route, true)
-        : false,
-    }"
+  [class.mat-toolbar]="item.route && router.isActive(item.route, true)"
+  [class.mat-primary]="item.route && router.isActive(item.route, true)"
+  [class.activeMenu]="item.route && router.isActive(item.route, true)"
   class="menu-list-item"
 >
   <span
@@ -22,5 +20,5 @@
   ></span>
 
   <span class="hide-menu">{{ item.displayName }}</span>
-</a>
-}
+</mat-list-item>
+} }

@@ -137,7 +137,7 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private kickToLogin() {
-    console.warn('[AUTH] redirect → /login');
-    this.router.navigate(['/login']);
+    console.warn('[AUTH] redirect → /user-authentication/user-login');
+    this.router.navigate(['/user-authentication/user-login']);
   }
 }

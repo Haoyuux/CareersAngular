@@ -77,7 +77,7 @@ export class UserLoginComponent {
         const roles = user?.roles || [];
 
         if (roles.includes('Admin')) {
-          this.router.navigate(['/admin/admin-dashboard']);
+          this.router.navigate(['/main/main-dashboard']);
         } else {
           this.router.navigate(['/main/main-dashboard']);
         }

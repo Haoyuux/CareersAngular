@@ -581,6 +581,54 @@ export class UserServices {
         return _observableOf(null as any);
     }
 
+    getUserRoleByRefreshToken(): Observable<ApiResponseMessageOfUserRoleDto> {
+        let url_ = this.baseUrl + "/api/User/GetUserRoleByRefreshToken";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetUserRoleByRefreshToken(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetUserRoleByRefreshToken(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseMessageOfUserRoleDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseMessageOfUserRoleDto>;
+        }));
+    }
+
+    protected processGetUserRoleByRefreshToken(response: HttpResponseBase): Observable<ApiResponseMessageOfUserRoleDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseMessageOfUserRoleDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     insertOrUpdateUserProfile(input: InsertOrUpdateUserProfileDto): Observable<ApiResponseMessageOfString> {
         let url_ = this.baseUrl + "/api/User/InsertOrUpdateUserProfile";
         url_ = url_.replace(/[?&]$/, "");
@@ -2354,9 +2402,9 @@ export class UserDto implements IUserDto {
     address!: string | undefined;
     aboutMe!: string | undefined;
     streetDetails!: string | undefined;
-    userProfileImage!: string;
-    userCoverPhotoImage!: string;
-    userResumeFile!: string;
+    userProfileImage!: string | undefined;
+    userCoverPhotoImage!: string | undefined;
+    userResumeFile!: string | undefined;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -2440,9 +2488,9 @@ export interface IUserDto {
     address: string | undefined;
     aboutMe: string | undefined;
     streetDetails: string | undefined;
-    userProfileImage: string;
-    userCoverPhotoImage: string;
-    userResumeFile: string;
+    userProfileImage: string | undefined;
+    userCoverPhotoImage: string | undefined;
+    userResumeFile: string | undefined;
 }
 
 export class RegisterUserDto implements IRegisterUserDto {
@@ -2681,6 +2729,113 @@ export interface IApiResponseMessageOfUserDto {
     data: UserDto;
     isSuccess: boolean;
     errorMessage: string;
+}
+
+export class ApiResponseMessageOfUserRoleDto implements IApiResponseMessageOfUserRoleDto {
+    data!: UserRoleDto;
+    isSuccess!: boolean;
+    errorMessage!: string;
+
+    constructor(data?: IApiResponseMessageOfUserRoleDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+        if (!data) {
+            this.data = new UserRoleDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"] ? UserRoleDto.fromJS(_data["data"]) : new UserRoleDto();
+            this.isSuccess = _data["isSuccess"];
+            this.errorMessage = _data["errorMessage"];
+        }
+    }
+
+    static fromJS(data: any): ApiResponseMessageOfUserRoleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseMessageOfUserRoleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
+        data["isSuccess"] = this.isSuccess;
+        data["errorMessage"] = this.errorMessage;
+        return data;
+    }
+}
+
+export interface IApiResponseMessageOfUserRoleDto {
+    data: UserRoleDto;
+    isSuccess: boolean;
+    errorMessage: string;
+}
+
+export class UserRoleDto implements IUserRoleDto {
+    userId!: string;
+    userName!: string;
+    roles!: string[];
+    isAdmin!: boolean;
+    isUser!: boolean;
+
+    constructor(data?: IUserRoleDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.userName = _data["userName"];
+            if (Array.isArray(_data["roles"])) {
+                this.roles = [] as any;
+                for (let item of _data["roles"])
+                    this.roles!.push(item);
+            }
+            this.isAdmin = _data["isAdmin"];
+            this.isUser = _data["isUser"];
+        }
+    }
+
+    static fromJS(data: any): UserRoleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserRoleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["userName"] = this.userName;
+        if (Array.isArray(this.roles)) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item);
+        }
+        data["isAdmin"] = this.isAdmin;
+        data["isUser"] = this.isUser;
+        return data;
+    }
+}
+
+export interface IUserRoleDto {
+    userId: string;
+    userName: string;
+    roles: string[];
+    isAdmin: boolean;
+    isUser: boolean;
 }
 
 export class InsertOrUpdateUserProfileDto implements IInsertOrUpdateUserProfileDto {
