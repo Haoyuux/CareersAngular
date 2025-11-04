@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
 import { NgxToastrMessageComponent } from 'src/app/services/ngx-toastr-message/ngx-toastr-message.component';
 import {
   CreateOrUpdateReqSubmissionDto,
@@ -12,11 +13,12 @@ import {
 @Component({
   selector: 'app-requirements',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, DialogModule],
   templateUrl: './requirements.component.html',
   styleUrl: './requirements.component.scss',
 })
 export class RequirementsComponent implements OnInit {
+  visible: boolean = false;
   constructor(
     private _hrmsService: HrmsServices,
     private userService: UserServices,
@@ -24,6 +26,10 @@ export class RequirementsComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.onGetHrmsRequirements();
+  }
+
+  openInfo() {
+    this.visible = true;
   }
 
   // getHrmsReq: GetRequirmentsDto[] = [];
@@ -41,9 +47,19 @@ export class RequirementsComponent implements OnInit {
       next: (res) => {
         this.getHrmsReq = res.data;
 
-        console.table(this.getHrmsReq);
+        this.checkAndShowInstructions();
       },
     });
+  }
+
+  checkAndShowInstructions() {
+    // Check if there is at least one uploaded file
+    const hasAtLeastOneUpload = this.getHrmsReq.some(
+      (req) =>
+        req.fileName && req.fileName !== '-' && req.fileName.trim() !== ''
+    );
+
+    this.visible = !hasAtLeastOneUpload;
   }
 
   dataSave: CreateOrUpdateReqSubmissionDto =

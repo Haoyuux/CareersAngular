@@ -1,8 +1,23 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>Requirements</h1>
-      <p>Upload and manage your required documents</p>
+      <div class="header-content">
+        <div>
+          <h1>Requirements</h1>
+          <p>Upload and manage your required documents</p>
+        </div>
+        <button class="btn-instructions" (click)="visible = true">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          View Instructions
+        </button>
+      </div>
     </div>
 
     <div class="table-container">
@@ -192,3 +207,76 @@
     </div> -->
   </div>
 </body>
+
+<p-dialog
+  header="Document Submission Instructions"
+  [(visible)]="visible"
+  [modal]="true"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+  [maximizable]="true"
+>
+  <div class="instructions">
+    <p class="intro">
+      Follow these steps to submit your requirements correctly and on time,
+      <strong>please read carefully!</strong>
+    </p>
+
+    <ol>
+      <li>
+        <strong>Scan/photograph.</strong> Take a photo for each document, ensure
+        legible text and signatures and save as PDF.
+      </li>
+      <li>
+        <strong>Follow file restrictions.</strong> The uploaded file must not
+        exceed <strong>25MB</strong>, accepted formats are <code>PDF</code> and
+        <code>JPG</code>.
+      </li>
+      <li>
+        <strong>Name files clearly.</strong> Use consistent, clear names.<br />
+        Format should be:
+        <code>NAME OF DOCUMENT_LAST NAME, FIRST NAME, MIDDLE INITIAL</code>
+        <br />
+        Example:<br />
+        <em>APPLICATION LETTER_DELA CRUZ, JUAN C.</em>
+      </li>
+      <li>
+        <strong>Choose Proper file.</strong> Attach each file to the portal.
+        Double-check attachments before uploading them.
+      </li>
+      <li>
+        <strong>Additional Requirements.</strong> This will vary depending on
+        the applicant's case. Refer to the official instructions provided by the
+        Hiring Team.
+      </li>
+      <li>
+        <strong>Complete all required documents.</strong> Take a screenshot of
+        the confirmation page.
+      </li>
+      <li>
+        <strong>Submit hard copies.</strong> All uploaded documents must be
+        submitted during onboarding to the
+        <em>Hiring and Recruitment Section</em>, Brigada Complex, NLSA Rd. Purok
+        Bayanihan, Brgy. San Isidro, General Santos City. Place them inside a
+        <span class="highlight1">yellow folder</span> and insert into a
+        <span class="highlight">red expanded envelope</span>.
+      </li>
+    </ol>
+
+    <p class="note">
+      ⚠️ <strong>Important:</strong> Documents with missing parts, unsigned,
+      blurry, or incorrect format will not be accepted. Ensure that all
+      requirements are accurate and properly labeled. Submit all requirements
+      <u>within 3 days after accepting the Job Offer</u> so we can process your
+      application smoothly.
+    </p>
+
+    <p class="closing">
+      This is one step closer to the next stage. Let's keep the process quick
+      and easy!
+    </p>
+  </div>
+</p-dialog>

@@ -112,7 +112,6 @@ export const navItems: NavItem[] = [
     navCap: 'Auth',
     divider: true,
     roles: ['Admin'],
-    // No roles = visible to everyone (including unauthenticated)
   },
   {
     displayName: 'Login',
