@@ -13,12 +13,12 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { HeaderComponent } from './header/header.component';
+import { TokenService } from 'src/app/services/token-service/token-service'; // ✅ Import
 
 const MOBILE_VIEW = 'screen and (max-width: 768px)';
 const TABLET_VIEW = 'screen and (min-width: 769px) and (max-width: 1024px)';
 const MONITOR_VIEW = 'screen and (min-width: 1024px)';
 const BELOWMONITOR = 'screen and (max-width: 1023px)';
-
 
 @Component({
   selector: 'app-full',
@@ -37,9 +37,7 @@ const BELOWMONITOR = 'screen and (max-width: 1023px)';
   styleUrls: [],
   encapsulation: ViewEncapsulation.None,
 })
-
 export class FullComponent implements OnInit {
-
   navItems = navItems;
 
   @ViewChild('leftsidenav')
@@ -56,17 +54,18 @@ export class FullComponent implements OnInit {
     return this.isMobileScreen;
   }
 
-  constructor(private breakpointObserver: BreakpointObserver, private navService: NavService) {
-    
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private navService: NavService,
+    private tokenService: TokenService // ✅ Inject TokenService
+  ) {
     this.htmlElement = document.querySelector('html')!;
     this.htmlElement.classList.add('light-theme');
     this.layoutChangesSubscription = this.breakpointObserver
       .observe([MOBILE_VIEW, TABLET_VIEW, MONITOR_VIEW])
       .subscribe((state) => {
         // SidenavOpened must be reset true when layout changes
-
         this.isMobileScreen = state.breakpoints[MOBILE_VIEW];
-
         this.isContentWidthFixed = state.breakpoints[MONITOR_VIEW];
       });
   }
@@ -87,5 +86,10 @@ export class FullComponent implements OnInit {
 
   onSidenavOpenedChange(isOpened: boolean) {
     this.isCollapsedWidthFixed = !this.isOver;
+  }
+
+  // ✅ Add method to check if user is authenticated
+  isAuthenticated(): boolean {
+    return this.tokenService.isAuthenticated();
   }
 }
