@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { environment } from 'src/app/environments/environment';
+import { Router } from '@angular/router';
 
 export interface User {
   id: string;
@@ -15,22 +16,23 @@ export interface LoginResponse {
   errorMessage: string | null;
   data: {
     userID: string;
-    userToken: string; // access token (JWT)
-    newRefreshToken: string | null; // cookie is set server-side; body may be null
+    userToken: string;
+    newRefreshToken: string | null;
     userName: string;
-    userRole: string[]; // roles array
+    userRole: string[];
   } | null;
 }
 
 @Injectable({ providedIn: 'root' })
 export class TokenService {
-  private readonly apiUrl = environment.apiUrl; // e.g. https://localhost:5001/api
+  private readonly apiUrl = environment.apiUrl;
 
   // In-memory access token + helpers
   private accessToken: string | null = null;
-  private tokenExpiry: Date | null = null; // from JWT exp when available
+  private tokenExpiry: Date | null = null;
   private refreshTimer: any = null;
   private isRefreshing = false;
+  private expiryCheckInterval: any = null;
 
   // App-wide state
   private currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -39,16 +41,26 @@ export class TokenService {
   public currentUser$ = this.currentUserSubject.asObservable();
   public isInitialized$ = this.isInitializedSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-    // APP_INITIALIZER will call initializeAuth(); don't run it here.
+  constructor(private http: HttpClient, private router: Router) {
+    // Start periodic expiry check (every 30 seconds)
+    this.startExpiryCheck();
   }
 
-  /** Called at app bootstrap via APP_INITIALIZER. Exchanges cookie -> access token. */
+  /** Called at app bootstrap via APP_INITIALIZER */
   async initializeAuth(): Promise<void> {
     try {
-      await this.tryRefreshToken(); // sends cookie with withCredentials
-      console.log('[Auth] Session restored from cookie');
-    } catch {
+      // ✅ Check if we have any cookies before attempting refresh
+      const hasCookies = document.cookie.length > 0;
+
+      if (!hasCookies) {
+        console.log('[Auth] No cookies found, skipping refresh attempt');
+        this.clearAuthData();
+      } else {
+        // Only try to refresh if we have cookies
+        await this.tryRefreshToken();
+        console.log('[Auth] Session restored from cookie');
+      }
+    } catch (error) {
       console.log('[Auth] No valid refresh token — starting unauthenticated');
       this.clearAuthData();
     } finally {
@@ -58,27 +70,34 @@ export class TokenService {
 
   /** Getter used by interceptors */
   getAccessToken(): string | null {
-    if (this.accessToken && this.tokenExpiry && new Date() < this.tokenExpiry) {
+    // Check if token is expired before returning
+    if (this.accessToken && this.tokenExpiry) {
+      if (new Date() >= this.tokenExpiry) {
+        console.warn('[Auth] Access token expired, clearing...');
+        this.handleTokenExpiration();
+        return null;
+      }
       return this.accessToken;
     }
     return null;
   }
 
   isAuthenticated(): boolean {
-    return this.getAccessToken() !== null;
+    const token = this.getAccessToken();
+    return token !== null;
   }
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
-  /** Optional direct login (you use NSwag in your component; this is here for completeness) */
+  /** Optional direct login */
   async login(userName: string, password: string): Promise<LoginResponse> {
     const res = await firstValueFrom(
       this.http.post<LoginResponse>(
         `${this.apiUrl}/user/login`,
         { userName, password },
-        { withCredentials: true } // receive/set refresh cookie from API origin
+        { withCredentials: true }
       )
     );
 
@@ -88,9 +107,9 @@ export class TokenService {
     return res!;
   }
 
-  /** Called by initializer / interceptor to rotate access token using refresh cookie */
+  /** Called by initializer / interceptor to rotate access token */
   async refreshToken(): Promise<boolean> {
-    if (this.isRefreshing) return false; // prevent parallel refreshes
+    if (this.isRefreshing) return false;
     this.isRefreshing = true;
 
     try {
@@ -98,7 +117,7 @@ export class TokenService {
         this.http.post<LoginResponse>(
           `${this.apiUrl}/api/User/refresh-token`,
           {},
-          { withCredentials: true } // send HttpOnly refresh cookie
+          { withCredentials: true }
         )
       );
 
@@ -109,8 +128,26 @@ export class TokenService {
 
       this.clearAuthData();
       return false;
-    } catch {
+    } catch (error: any) {
+      // Don't log error if it's just "no refresh token" on public pages
+      const isPublicPage =
+        this.router.url.includes('main-dashboard') ||
+        this.router.url.includes('user-login');
+
+      if (
+        !isPublicPage ||
+        error?.error?.errorMessage !== 'Refresh token is required'
+      ) {
+        console.error('[Auth] Refresh token failed:', error);
+      }
+
       this.clearAuthData();
+
+      // Don't redirect if on public pages
+      if (!isPublicPage) {
+        this.router.navigate(['/user-authentication/user-login']);
+      }
+
       return false;
     } finally {
       this.isRefreshing = false;
@@ -138,6 +175,7 @@ export class TokenService {
       );
     } finally {
       this.clearAuthData();
+      this.router.navigate(['/user-authentication/user-login']);
     }
   }
 
@@ -159,6 +197,7 @@ export class TokenService {
     this.currentUserSubject.next(user);
 
     this.scheduleTokenRefresh();
+    console.log('[Auth] Token expires at:', this.tokenExpiry);
   }
 
   private clearAuthData(): void {
@@ -188,6 +227,39 @@ export class TokenService {
     }, msUntilRefresh);
   }
 
+  // Periodic expiry check (runs every 30 seconds)
+  private startExpiryCheck(): void {
+    // Check every 30 seconds if token is expired
+    this.expiryCheckInterval = setInterval(() => {
+      if (this.tokenExpiry && new Date() >= this.tokenExpiry) {
+        console.warn('[Auth] Token expired during periodic check');
+        this.handleTokenExpiration();
+      }
+    }, 30000); // 30 seconds
+  }
+
+  // Handle token expiration
+  private handleTokenExpiration(): void {
+    console.log('[Auth] Handling token expiration...');
+    this.clearAuthData();
+
+    // Only redirect if not already on login or public pages
+    const currentUrl = this.router.url;
+    const isPublicPage =
+      currentUrl.includes('main-dashboard') ||
+      currentUrl.includes('user-login') ||
+      currentUrl.includes('user-register');
+
+    if (
+      !isPublicPage &&
+      !currentUrl.includes('user-authentication/user-login')
+    ) {
+      this.router.navigate(['/user-authentication/user-login'], {
+        queryParams: { expired: 'true' },
+      });
+    }
+  }
+
   hasRole(role: string): boolean {
     const u = this.getCurrentUser();
     return u?.roles?.includes(role) ?? false;
@@ -202,7 +274,20 @@ export class TokenService {
     return this.isRefreshing;
   }
 
-  // ---- helpers ----
+  // Manual token validation
+  public isTokenValid(): boolean {
+    if (!this.accessToken || !this.tokenExpiry) {
+      return false;
+    }
+    return new Date() < this.tokenExpiry;
+  }
+
+  // Get remaining time until expiry
+  public getTokenRemainingTime(): number {
+    if (!this.tokenExpiry) return 0;
+    return Math.max(0, this.tokenExpiry.getTime() - Date.now());
+  }
+
   /** Extract 'exp' (epoch seconds) from a JWT without verifying it */
   private getJwtExp(token: string): number | null {
     try {
@@ -214,6 +299,16 @@ export class TokenService {
       return typeof obj.exp === 'number' ? obj.exp : null;
     } catch {
       return null;
+    }
+  }
+
+  // Cleanup on destroy
+  ngOnDestroy(): void {
+    if (this.expiryCheckInterval) {
+      clearInterval(this.expiryCheckInterval);
+    }
+    if (this.refreshTimer) {
+      clearTimeout(this.refreshTimer);
     }
   }
 }

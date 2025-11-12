@@ -15,12 +15,10 @@ export const mainRoutes: Routes = [
       {
         path: 'main-dashboard',
         component: MainDashboardComponent,
-        data: { roles: ['User', 'Admin'] },
       },
       {
         path: 'main-dashboard-jobdetails-view/:id',
         component: MainDashboardJobdetailsViewComponent,
-        data: { roles: ['User', 'Admin'] },
       },
       {
         path: 'user-profile',

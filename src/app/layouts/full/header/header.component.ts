@@ -12,6 +12,8 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MatButtonModule } from '@angular/material/button';
 import { authService } from 'src/app/services/auth-services/auth-services';
 import { NgxToastrMessageComponent } from 'src/app/services/ngx-toastr-message/ngx-toastr-message.component';
+import { UserServices } from 'src/app/services/nswag/service-proxie';
+import { TokenService } from 'src/app/services/token-service/token-service';
 
 @Component({
   selector: 'app-header',
@@ -35,14 +37,45 @@ export class HeaderComponent {
   constructor(
     private authservice: authService,
     private ngxToastrMessage: NgxToastrMessageComponent,
-    private router: Router
+    private router: Router,
+    private _userService: UserServices,
+    private tokenService: TokenService
   ) {}
+
+  isAuthenticated(): boolean {
+    return this.tokenService.isAuthenticated();
+  }
+
+  getCurrentUser() {
+    return this.tokenService.getCurrentUser();
+  }
+
+  onLogin() {
+    this.router.navigate(['/user-authentication/user-login']);
+  }
 
   onClickLogout() {
     this.authservice.onlogout();
-
     this.ngxToastrMessage.showtoastr('Logout Successfully', 'Good Bye');
-
     this.router.navigate(['/user-authentication/user-login']);
+  }
+
+  onRegister() {
+    this.router.navigate(['/user-authentication/user-register']);
+  }
+
+  async onLogout() {
+    try {
+      await this._userService.logout().toPromise();
+
+      await this.tokenService.logout();
+
+      this.ngxToastrMessage.showtoastr('Logout Successfully', 'Good Bye');
+    } catch (error) {
+      console.error('[Logout] Error:', error);
+      // Still logout locally even if backend fails
+      await this.tokenService.logout();
+      this.ngxToastrMessage.showtoastr('Logout Successfully', 'Good Bye');
+    }
   }
 }

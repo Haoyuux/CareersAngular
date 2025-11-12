@@ -13,9 +13,9 @@
     ></i>
   </button>
   }
-  <!-- --------------------------------------------------------------- -->
-  <!-- Notification Dropdown -->
-  <!-- --------------------------------------------------------------- -->
+
+  <!-- Show notifications only when authenticated -->
+  @if(isAuthenticated()) {
   <button
     mat-mini-fab
     color="inherit"
@@ -26,62 +26,316 @@
       <i class="iconify icon-20 d-flex" data-icon="solar:bell-line-duotone"></i>
     </span>
   </button>
+  }
 
   <span class="flex-1-auto"></span>
 
-  <a href="#" target="_blank" mat-flat-button color="primary">Download Free</a>
+  <!-- --------------------------------------------------------------- -->
+  <!-- Show Login/Register buttons when NOT authenticated -->
+  <!-- --------------------------------------------------------------- -->
+  @if(!isAuthenticated()) {
+  <div class="auth-buttons d-flex align-items-center gap-2">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="onLogin()"
+      class="login-btn"
+    >
+      Sign In
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="onRegister()"
+      class="register-btn"
+    >
+      Get Started
+    </button>
+  </div>
+  }
 
   <!-- --------------------------------------------------------------- -->
-  <!-- profile Dropdown -->
+  <!-- Show Profile menu when authenticated -->
   <!-- --------------------------------------------------------------- -->
+  @if(isAuthenticated()) {
   <button
-    mat-fab
-    extended
-    color="inherit"
+    mat-button
     [matMenuTriggerFor]="profilemenu"
-    aria-label="Notifications"
-    class="d-flex justify-content-center profile-btn-dd"
+    class="profile-menu-trigger"
   >
-    <img
-      src="/assets/images/profile/user-1.jpg"
-      class="rounded-circle object-cover icon-35 profile-dd"
-      width="35"
-    />
+    <div class="d-flex align-items-center gap-2">
+      <img
+        src="/assets/images/profile/user-1.jpg"
+        class="rounded-circle profile-avatar"
+        alt="Profile"
+      />
+      <div class="profile-info hide-on-mobile">
+        <div class="profile-name">
+          {{ getCurrentUser()?.userName || "User" }}
+        </div>
+        <div class="profile-role">
+          {{ getCurrentUser()?.roles?.[0] || 'Member' }}
+        </div>
+      </div>
+      <mat-icon class="dropdown-icon">keyboard_arrow_down</mat-icon>
+    </div>
   </button>
-  <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
-    <button mat-menu-item>
-      <mat-icon class="d-flex align-items-center"
-        ><i
-          data-icon="solar:shield-user-line-duotone"
-          class="iconify icon-22"
-        ></i></mat-icon
-      >My Profile
-    </button>
-    <button mat-menu-item>
-      <mat-icon class="d-flex align-items-center"
-        ><i
-          data-icon="solar:user-id-line-duotone"
-          class="iconify icon-22"
-        ></i></mat-icon
-      >My Account
-    </button>
-    <button mat-menu-item>
-      <mat-icon class="d-flex align-items-center"
-        ><i
-          data-icon="solar:checklist-minimalistic-line-duotone"
-          class="iconify icon-22"
-        ></i> </mat-icon
-      >My Task
+
+  <mat-menu #profilemenu="matMenu" class="profile-dropdown" xPosition="before">
+    <div class="profile-header">
+      <img
+        src="/assets/images/profile/user-1.jpg"
+        class="rounded-circle"
+        width="48"
+        alt="Profile"
+      />
+      <div class="profile-details">
+        <div class="profile-name-large">{{ getCurrentUser()?.userName }}</div>
+        <div class="profile-email">
+          {{ getCurrentUser()?.id || "user@example.com" }}
+        </div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item routerLink="/main/user-profile">
+      <mat-icon>
+        <i data-icon="solar:user-circle-line-duotone" class="iconify"></i>
+      </mat-icon>
+      <span>My Profile</span>
     </button>
 
-    <div class="p-x-12 m-t-12">
-      <a
-        (click)="onClickLogout()"
-        mat-stroked-button
-        color="primary"
-        class="w-100"
-        >Logout</a
-      >
-    </div>
+    <button mat-menu-item routerLink="/main/job-application">
+      <mat-icon>
+        <i data-icon="solar:document-text-line-duotone" class="iconify"></i>
+      </mat-icon>
+      <span>My Applications</span>
+    </button>
+
+    <button mat-menu-item routerLink="/main/job-offer">
+      <mat-icon>
+        <i data-icon="solar:star-line-duotone" class="iconify"></i>
+      </mat-icon>
+      <span>Job Offers</span>
+    </button>
+
+    <button mat-menu-item>
+      <mat-icon>
+        <i data-icon="solar:settings-line-duotone" class="iconify"></i>
+      </mat-icon>
+      <span>Settings</span>
+    </button>
+
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item (click)="onLogout()" class="logout-item">
+      <mat-icon>
+        <i data-icon="solar:logout-2-line-duotone" class="iconify"></i>
+      </mat-icon>
+      <span>Sign Out</span>
+    </button>
   </mat-menu>
+  }
 </mat-toolbar>
+
+<style>
+  .topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    padding: 0 24px;
+    height: 70px;
+
+    .auth-buttons {
+      gap: 12px;
+
+      .login-btn {
+        border-radius: 8px;
+        padding: 0 24px;
+        height: 40px;
+        font-weight: 500;
+        font-size: 14px;
+        border: 2px solid;
+        text-transform: none;
+        letter-spacing: 0;
+
+        &:hover {
+          background-color: rgba(var(--primary-rgb), 0.04);
+        }
+      }
+
+      .register-btn {
+        border-radius: 8px;
+        padding: 0 24px;
+        height: 40px;
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: none;
+        letter-spacing: 0;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+        &:hover {
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    .profile-menu-trigger {
+      border-radius: 50px;
+      padding: 6px 12px 6px 6px;
+      height: auto;
+      text-transform: none;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+
+      .profile-avatar {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border: 2px solid #e5e7eb;
+      }
+
+      .profile-info {
+        text-align: left;
+        line-height: 1.3;
+        margin-left: 4px;
+
+        .profile-name {
+          font-weight: 600;
+          font-size: 14px;
+          color: #1f2937;
+        }
+
+        .profile-role {
+          font-size: 12px;
+          color: #6b7280;
+        }
+      }
+
+      .dropdown-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: #6b7280;
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .profile-dropdown {
+    margin-top: 8px;
+    min-width: 280px;
+
+    .mat-mdc-menu-content {
+      padding: 0;
+    }
+
+    .profile-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+
+      img {
+        border: 3px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .profile-details {
+        flex: 1;
+
+        .profile-name-large {
+          font-weight: 600;
+          font-size: 16px;
+          margin-bottom: 2px;
+        }
+
+        .profile-email {
+          font-size: 13px;
+          opacity: 0.9;
+        }
+      }
+    }
+
+    .mat-mdc-menu-item {
+      height: 48px;
+      padding: 0 20px;
+      font-size: 14px;
+
+      mat-icon {
+        margin-right: 12px;
+        color: #6b7280;
+
+        .iconify {
+          font-size: 20px;
+        }
+      }
+
+      &:hover {
+        background-color: rgba(var(--primary-rgb), 0.04);
+
+        mat-icon {
+          color: var(--primary-color);
+        }
+      }
+    }
+
+    .logout-item {
+      color: #dc2626;
+
+      mat-icon {
+        color: #dc2626;
+      }
+
+      &:hover {
+        background-color: rgba(220, 38, 38, 0.04);
+      }
+    }
+
+    mat-divider {
+      margin: 8px 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hide-on-mobile {
+      display: none !important;
+    }
+
+    .topbar {
+      padding: 0 16px;
+      height: 64px;
+
+      .auth-buttons {
+        .login-btn {
+          padding: 0 16px;
+          height: 36px;
+          font-size: 13px;
+        }
+
+        .register-btn {
+          padding: 0 16px;
+          height: 36px;
+          font-size: 13px;
+        }
+      }
+
+      .profile-menu-trigger {
+        padding: 4px;
+
+        .profile-avatar {
+          width: 36px;
+          height: 36px;
+        }
+      }
+    }
+  }
+
+  .gap-2 {
+    gap: 8px;
+  }
+</style>
