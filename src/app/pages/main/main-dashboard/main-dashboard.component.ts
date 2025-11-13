@@ -17,6 +17,7 @@ import { authService } from 'src/app/services/auth-services/auth-services';
 import { LoadingService } from 'src/app/services/auth-services/loading-services';
 import { NgxToastrMessageComponent } from 'src/app/services/ngx-toastr-message/ngx-toastr-message.component';
 import { Router } from '@angular/router';
+import { TokenService } from 'src/app/services/token-service/token-service';
 
 @Component({
   selector: 'app-main-dashboard',
@@ -37,7 +38,8 @@ export class MainDashboardComponent implements OnInit, AfterViewInit {
     private loadingService: LoadingService,
     private _userService: UserServices,
     private ngxToastrMessage: NgxToastrMessageComponent,
-    private router: Router
+    private router: Router,
+    private tokenService: TokenService
   ) {}
 
   ngAfterViewInit(): void {
@@ -119,6 +121,19 @@ export class MainDashboardComponent implements OnInit, AfterViewInit {
   }
 
   onApplyJob(jobPostingId: string, jobTitleId: string) {
+    if (!this.tokenService.isAuthenticated()) {
+      this.ngxToastrMessage.showtoastrInfo(
+        'Login Required',
+        'Please sign in to apply for this job'
+      );
+
+      // this.router.navigate(['/user-authentication/user-login'], {
+      //   queryParams: { redirect: this.router.url },
+      // });
+      return;
+    }
+
+    // ✅ User is authenticated, proceed with application
     this.dataApplyJob.jobPostingId = jobPostingId;
     this.dataApplyJob.jobTitleId = jobTitleId;
 

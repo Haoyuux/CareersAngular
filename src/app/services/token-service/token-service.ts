@@ -183,7 +183,6 @@ export class TokenService {
   public setAuthData(data: NonNullable<LoginResponse['data']>): void {
     this.accessToken = data.userToken;
 
-    // Prefer JWT exp if present; fallback to 8h to match your server
     const exp = this.getJwtExp(data.userToken);
     this.tokenExpiry = exp
       ? new Date(exp * 1000)
@@ -243,7 +242,6 @@ export class TokenService {
     console.log('[Auth] Handling token expiration...');
     this.clearAuthData();
 
-    // Only redirect if not already on login or public pages
     const currentUrl = this.router.url;
     const isPublicPage =
       currentUrl.includes('main-dashboard') ||
@@ -274,7 +272,6 @@ export class TokenService {
     return this.isRefreshing;
   }
 
-  // Manual token validation
   public isTokenValid(): boolean {
     if (!this.accessToken || !this.tokenExpiry) {
       return false;
@@ -282,13 +279,11 @@ export class TokenService {
     return new Date() < this.tokenExpiry;
   }
 
-  // Get remaining time until expiry
   public getTokenRemainingTime(): number {
     if (!this.tokenExpiry) return 0;
     return Math.max(0, this.tokenExpiry.getTime() - Date.now());
   }
 
-  /** Extract 'exp' (epoch seconds) from a JWT without verifying it */
   private getJwtExp(token: string): number | null {
     try {
       const payload = token.split('.')[1];
@@ -302,7 +297,6 @@ export class TokenService {
     }
   }
 
-  // Cleanup on destroy
   ngOnDestroy(): void {
     if (this.expiryCheckInterval) {
       clearInterval(this.expiryCheckInterval);

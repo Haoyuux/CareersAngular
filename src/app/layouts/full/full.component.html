@@ -5,23 +5,25 @@
   dir="ltr"
 >
   <!-- ============================================================== -->
-  <!-- Vertical Sidebar - Hidden when no user logged in -->
+  <!-- Vertical Sidebar - Only open when authenticated -->
   <!-- ============================================================== -->
-
-  @if(isAuthenticated()) {
   <mat-sidenav
     #leftsidenav
     [mode]="isOver ? 'over' : 'side'"
-    [opened]="!isOver"
+    [opened]="!isOver && isAuthenticated()"
     (openedChange)="onSidenavOpenedChange($event)"
     (closedStart)="onSidenavClosedStart()"
     class="sidebarNav"
   >
     <div class="flex-layout">
+      <!-- ✅ Logo/Branding always visible when sidebar is open -->
       <app-sidebar
         (toggleMobileNav)="sidenav.toggle()"
         [showToggle]="isOver"
       ></app-sidebar>
+
+      <!-- ✅ Navigation menu -->
+      @if(isAuthenticated()) {
       <ng-scrollbar class="position-relative" style="height: 100%">
         <mat-nav-list class="sidebar-list">
           @for(item of navItems; track item) {
@@ -30,23 +32,36 @@
           }
         </mat-nav-list>
       </ng-scrollbar>
+      }
     </div>
   </mat-sidenav>
-  }
 
   <!-- ============================================================== -->
   <!-- Main Content -->
   <!-- ============================================================== -->
   <mat-sidenav-content class="contentWrapper" #content>
-    <!-- ============================================================== -->
-    <!-- VerticalHeader - Always visible -->
-    <!-- ============================================================== -->
+    <!-- ✅ Add logo in header when not authenticated -->
+    @if(!isAuthenticated()) {
+    <div class="header-logo">
+      <img
+        src="./assets/images/logos/samplelogo.svg"
+        alt="Brigada Careers"
+        height="40"
+      />
+    </div>
+    }
 
     <app-header
       [showToggle]="!isOver"
       (toggleCollapsed)="toggleCollapsed()"
       (toggleMobileNav)="sidenav.toggle()"
     ></app-header>
+
+    <style>
+      .pageWrapper {
+        padding: 0px !important;
+      }
+    </style>
 
     <div class="body-wrapper">
       <style>
@@ -55,12 +70,16 @@
             padding: 0px !important;
           }
         }
+
+        /* ✅ Logo in header when sidebar is hidden */
+        .header-logo {
+          position: fixed;
+          top: 15px;
+          left: 24px;
+          z-index: 1000;
+        }
       </style>
-      <main class="pageWrapper" [class.no-sidebar]="!isAuthenticated()">
-        <!-- maxWidth -->
-        <!-- ============================================================== -->
-        <!-- Outlet -->
-        <!-- ============================================================== -->
+      <main class="pageWrapper">
         <router-outlet></router-outlet>
       </main>
     </div>

@@ -5,9 +5,13 @@
       <!-- Use your uploaded cover image here -->
       <img
         class="cover-photo"
-        [src]="userData.userCoverPhotoImage"
-        alt="Cover Photo"
+        [src]="userData.userCoverPhotoImage || ''"
+        *ngIf="userData.userCoverPhotoImage"
       />
+
+      <div class="cover-placeholder" *ngIf="!userData.userCoverPhotoImage">
+        <span>No cover photo</span>
+      </div>
     </div>
 
     <!-- The bar below the cover -->
@@ -15,7 +19,9 @@
       <div class="bar-avatar">
         <img
           class="avatar"
-          [src]="userData.userProfileImage"
+          [src]="
+            userData.userProfileImage || './assets/images/profile/user-1.jpg'
+          "
           alt="User Profile"
         />
       </div>
@@ -44,51 +50,66 @@
     <aside class="col-left">
       <article class="card">
         <h2 class="card-title">About</h2>
-        <p>
+
+        <!-- BIO -->
+        <p *ngIf="userData.aboutMe; else noBio" class="about-bio">
           {{ userData.aboutMe }}
         </p>
+
+        <ng-template #noBio>
+          <p class="empty-state">No bio added yet.</p>
+        </ng-template>
+
         <ul class="about-list">
-          <li>
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <li [class.empty]="!userData.gender">
+            <svg viewBox="0 0 24 24">
               <path
                 d="M12 12c2.2 0 4-1.8 4-4S14.2 4 12 4 8 5.8 8 8s1.8 4 4 4zm0 2c-3.3 0-8 1.7-8 5v1h16v-1c0-3.3-4.7-5-8-5z"
               />
             </svg>
-            <span>{{ userData.gender }}</span>
+            <span>{{ userData.gender || "Gender not provided" }}</span>
           </li>
-          <li>
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+
+          <li [class.empty]="!userData.civilStatus">
+            <svg viewBox="0 0 24 24">
               <path
                 d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V18h6v-1c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v1h6v-1.5c0-2.33-4.67-3.5-7-3.5H8z"
               />
             </svg>
-            <span>{{ userData.civilStatus }}</span>
+            <span>{{
+              userData.civilStatus || "Civil status not provided"
+            }}</span>
           </li>
 
-          <li>
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <li [class.empty]="!userData.address">
+            <svg viewBox="0 0 24 24">
               <path
                 d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"
               />
             </svg>
-            <span>{{ userData.address }}</span>
+            <span>{{ userData.address || "Location not provided" }}</span>
           </li>
-          <li>
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+
+          <li [class.empty]="!userData.email">
+            <svg viewBox="0 0 24 24">
               <path d="M21 8V7l-3 2-2-1-3 2-2-1-3 2V7H2v12h19V8z" />
             </svg>
-            <span>{{ userData.email }}</span>
+            <span>{{ userData.email || "Email not provided" }}</span>
           </li>
         </ul>
       </article>
 
       <article class="card">
         <h2 class="card-title">Skills</h2>
-        <div class="chips">
+        <div *ngIf="getSkills.length > 0; else skillEmpty" class="chips">
           <span class="chip" *ngFor="let item of getSkills">{{
             item.name
           }}</span>
         </div>
+
+        <ng-template #skillEmpty>
+          <p class="empty-state">No skills added yet.</p>
+        </ng-template>
       </article>
 
       <!-- <article class="card">

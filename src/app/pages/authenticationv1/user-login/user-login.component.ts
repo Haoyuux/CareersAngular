@@ -34,12 +34,12 @@ import { TokenStorage } from '../../../services/token-service/token-store';
   styleUrl: './user-login.component.scss',
 })
 export class UserLoginComponent {
-  isLoading = false; // Add loading state
+  isLoading = false;
 
   constructor(
     private userService: UserServices,
     private authservice: authService,
-    private tokenService: TokenService, // Add TokenService
+    private tokenService: TokenService,
     private router: Router,
     private ngxToastrMessage: NgxToastrMessageComponent
   ) {}
