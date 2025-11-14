@@ -127,6 +127,160 @@
 </div>
 
 <p-dialog
+  header="Verify Your Identity"
+  [(visible)]="visible1"
+  [modal]="true"
+  [breakpoints]="{
+    '1199px': '45vw',
+    '991px': '55vw',
+    '767px': '75vw',
+    '575px': '95vw'
+  }"
+  [style]="{ width: '440px', maxWidth: '95vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="true"
+  class="otp-dialog"
+>
+  <div class="otp-container">
+    <!-- Icon/Badge -->
+    <div class="otp-icon">
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+    </div>
+
+    <!-- Instructions -->
+    <div class="otp-header">
+      <h3>Enter Verification Code</h3>
+      <p class="otp-description">
+        We've sent a 6-digit verification code to
+        <strong>{{ datareg.email }}</strong
+        >. Please enter it below to continue.
+      </p>
+    </div>
+
+    <!-- OTP Input Fields -->
+    <div class="otp-inputs-wrapper">
+      <div class="otp-inputs" #otpContainer>
+        <input
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          class="otp-input"
+          [(ngModel)]="otp[0]"
+          (input)="onOtpInput($event, 0)"
+          (keydown.backspace)="onOtpBackspace($event, 0)"
+          (paste)="onPaste($event)"
+          autocomplete="off"
+        />
+        <input
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          class="otp-input"
+          [(ngModel)]="otp[1]"
+          (input)="onOtpInput($event, 1)"
+          (keydown.backspace)="onOtpBackspace($event, 1)"
+          autocomplete="off"
+        />
+        <input
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          class="otp-input"
+          [(ngModel)]="otp[2]"
+          (input)="onOtpInput($event, 2)"
+          (keydown.backspace)="onOtpBackspace($event, 2)"
+          autocomplete="off"
+        />
+        <input
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          class="otp-input"
+          [(ngModel)]="otp[3]"
+          (input)="onOtpInput($event, 3)"
+          (keydown.backspace)="onOtpBackspace($event, 3)"
+          autocomplete="off"
+        />
+        <input
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          class="otp-input"
+          [(ngModel)]="otp[4]"
+          (input)="onOtpInput($event, 4)"
+          (keydown.backspace)="onOtpBackspace($event, 4)"
+          autocomplete="off"
+        />
+        <input
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          class="otp-input"
+          [(ngModel)]="otp[5]"
+          (input)="onOtpInput($event, 5)"
+          (keydown.backspace)="onOtpBackspace($event, 5)"
+          autocomplete="off"
+        />
+      </div>
+      <p class="otp-error" *ngIf="otpError">{{ otpError }}</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="otp-actions">
+      <button
+        pButton
+        label="Verify Code"
+        class="p-button-primary verify-btn"
+        (click)="verifyOtp()"
+        [disabled]="!isOtpComplete()"
+        [loading]="isVerifying"
+      ></button>
+    </div>
+
+    <!-- Resend Section -->
+    <div class="otp-footer">
+      <div class="resend-section">
+        <span class="resend-text">Didn't receive the code?</span>
+        <button
+          class="resend-btn"
+          (click)="onSendOtp()"
+          [disabled]="resendTimer > 0"
+        >
+          {{ resendTimer > 0 ? "Resend in " + resendTimer + "s" : "Resend" }}
+        </button>
+      </div>
+      <div class="help-text">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9 12l2 2 4-4"></path>
+        </svg>
+        <span>Code expires in 5 minutes</span>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog
   header="Terms and Conditions"
   [(visible)]="visible"
   [modal]="true"
