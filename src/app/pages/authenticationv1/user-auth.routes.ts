@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { UserRegisterComponent } from './user-register/user-register.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 export const UserAuthenticationRoutes: Routes = [
   {
@@ -13,6 +14,10 @@ export const UserAuthenticationRoutes: Routes = [
       {
         path: 'user-register',
         component: UserRegisterComponent,
+      },
+      {
+        path: 'forgot-password',
+        component: ForgotPasswordComponent,
       },
     ],
   },

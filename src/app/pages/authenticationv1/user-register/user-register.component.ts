@@ -52,7 +52,7 @@ export class UserRegisterComponent implements OnDestroy {
 
   onSendOtp() {
     this.userService
-      .sendOtp(
+      .sendRegistrationOtp(
         this.datareg.email!,
         this.datareg.firstName!,
         this.datareg.userName
